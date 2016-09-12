@@ -52,6 +52,29 @@ public class MainActivity extends AppCompatActivity {
             case R.id.help:
                 //startActivity(new Intent(this, Help.class));
                 return true;
+            case R.id.quit:
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Do you wish to close this application?")
+                        .setTitle("Quit?")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })                ;
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                Log.d("Main","quitDialog");
+
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }

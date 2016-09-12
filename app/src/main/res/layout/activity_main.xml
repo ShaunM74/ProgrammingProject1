@@ -7,14 +7,49 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="group4.programmingproject1.MainActivity">
+    tools:context="group4.programmingproject1.MainActivity"
+    android:background="#000000">
 
-    <TextView
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView"
+        android:id="@+id/imageButton"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/cancelbutton"
+        android:background="#000000"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton2"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:src="@drawable/settings"
+        android:background="#000000" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameButton"
+        android:text="@string/app_name"
+        android:background="#00bcd4"
+        android:layout_alignTop="@+id/imageButton2"
+        android:layout_alignEnd="@+id/imageButton4"
+        android:layout_toEndOf="@+id/imageButton2"
+        android:layout_above="@+id/imageButton4"
+        android:textStyle="bold"
+        android:textSize="20dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton4"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/alertbutton"
+        android:layout_above="@+id/imageButton"
+        android:layout_below="@+id/imageButton2"
+        android:background="#000000" />
+
 </RelativeLayout>
