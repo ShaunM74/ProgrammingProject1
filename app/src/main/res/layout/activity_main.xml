@@ -14,7 +14,8 @@
         android:src="@drawable/cancelbutton"
         android:background="#00bcd4"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:clickable="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -24,7 +25,8 @@
         android:layout_alignParentStart="true"
         android:src="@drawable/settings"
         android:background="#00bcd4"
-        android:contentDescription="Settings button" />
+        android:contentDescription="Settings button"
+        android:clickable="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -38,7 +40,9 @@
         android:layout_above="@+id/imageButton4"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:clickable="true"
+        android:onClick="doAboutButton" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -49,6 +53,8 @@
         android:layout_below="@+id/imageButton2"
         android:layout_alignEnd="@+id/imageButton"
         android:layout_alignStart="@+id/imageButton2"
-        android:background="#ff0000" />
+        android:background="#ff0000"
+        android:clickable="true"
+        android:onClick="doAlert" />
 
 </RelativeLayout>

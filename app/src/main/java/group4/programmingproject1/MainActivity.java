@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +22,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public void doAboutButton(View view) {
+        doAbout();
+    }
 
+    private void doAbout()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Alert! App\nVersion 0.1\nGroup 4\nRMIT")
+                .setTitle("Alert!")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        // 3. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Log.d("Main","Created about dialog");
+
+    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -34,19 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.about: {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Alert! App\nVersion 0.1\nGroup 4\nRMIT")
-                        .setTitle("Alert!")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-                // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                Log.d("Main","createDialog");
+                doAbout();
                 return true;
             }
             case R.id.help:
