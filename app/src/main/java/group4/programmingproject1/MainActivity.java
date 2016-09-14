@@ -10,16 +10,48 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     final Context context = this;
 
+    private ImageButton alertButton = null;
+
+    private ImageButton cancelButton = null;
+
+    private ImageButton settingsButton = null;
+
+    private Button nameButton = null;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        nameButton = (Button) findViewById(R.id.nameButton);
+        alertButton = (ImageButton)findViewById(R.id.alertButton);
+        cancelButton = (ImageButton)findViewById(R.id.cancelButton);
+        settingsButton = (ImageButton)findViewById(R.id.settingsButton);
+
+        alertButton.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
+                    Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
     }
 
     public void doAboutButton(View view) {
@@ -59,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.help:
-                //startActivity(new Intent(this, Help.class));
+
                 return true;
             case R.id.quit:
             {

@@ -2,10 +2,10 @@
 <resources>
     <style name="CustomDialogTheme" parent="@android:style/Theme.Dialog">
         <item name="android:bottomBright">@color/colorPrimary</item>
-        <item name="android:bottomDark">@color/colorPrimary</item>
+        <item name="android:bottomDark">@color/colorPrimaryDark</item>
         <item name="android:bottomMedium">@color/colorPrimary</item>
         <item name="android:centerBright">@color/colorPrimary</item>
-        <item name="android:centerDark">@color/colorPrimary</item>
+        <item name="android:centerDark">@color/colorPrimaryDark</item>
         <item name="android:centerMedium">@color/colorPrimary</item>
         <item name="android:fullBright">@color/colorAccent</item>
         <item name="android:fullDark">@color/colorAccent</item>
