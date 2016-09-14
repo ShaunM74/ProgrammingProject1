@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,17 +43,78 @@ public class MainActivity extends AppCompatActivity {
         settingsButton = (ImageButton)findViewById(R.id.settingsButton);
 
         alertButton.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
-                    Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
-                    return true;
-                }
-
-                return false;
+            @Override
+            public boolean onTouch (View v, MotionEvent event)
+            {
+                return onAlertTouch(v,event);
             }
         });
 
+        cancelButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch (View v, MotionEvent event)
+            {
+                return onCancelTouch(v,event);
+            }
+        });
+
+
     }
+
+
+
+    public boolean onAlertTouch (View v, MotionEvent event) {
+        Rect rect;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+            if(rect.contains(v.getLeft()+(int)event.getX(),v.getTop()+(int)event.getY()))
+            {
+                Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                Toast.makeText(MainActivity.this, "Did not set off alert", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+            Toast.makeText(MainActivity.this, "Alert cancelled", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        else
+        {
+            Log.d("movement",event.toString());
+        }
+        return false;
+    }
+
+    public boolean onCancelTouch (View v, MotionEvent event) {
+        Rect rect;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+            if(rect.contains(v.getLeft()+(int)event.getX(),v.getTop()+(int)event.getY()))
+            {
+                Toast.makeText(MainActivity.this, "Set off cancel", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                Toast.makeText(MainActivity.this, "Did not set off cancel", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+            Toast.makeText(MainActivity.this, "Alert cancelled", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        else
+        {
+            Log.d("movement",event.toString());
+        }
+        return false;
+    }
+
 
     public void doAboutButton(View view) {
         doAbout();
@@ -69,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        // 3. Get the AlertDialog from create()
         AlertDialog dialog = builder.create();
         dialog.show();
         Log.d("Main","Created about dialog");
