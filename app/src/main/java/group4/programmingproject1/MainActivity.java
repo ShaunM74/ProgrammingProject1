@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    final Context context = this;
-
     private ImageButton alertButton = null;
 
     private ImageButton cancelButton = null;
@@ -37,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Assign buttons to variables
         nameButton = (Button) findViewById(R.id.nameButton);
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
         settingsButton = (ImageButton)findViewById(R.id.settingsButton);
 
+        // On touch listeners to report button touches
+        // Using touch listeners to capture finger raised events.
         alertButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch (View v, MotionEvent event)
@@ -61,11 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    // Handles touch events on Alert button
 
     public boolean onAlertTouch (View v, MotionEvent event) {
         Rect rect;
         if (event.getAction() == MotionEvent.ACTION_UP) {
+
+            // Check if event occured within the bounds of the button, if so do button action
+            // Otherwise cancel/ignore the event.
             rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
             if(rect.contains(v.getLeft()+(int)event.getX(),v.getTop()+(int)event.getY()))
             {
@@ -75,21 +79,22 @@ public class MainActivity extends AppCompatActivity {
             {
                 Toast.makeText(MainActivity.this, "Did not set off alert", Toast.LENGTH_LONG).show();
             }
-            return true;
-        }
-        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-            Toast.makeText(MainActivity.this, "Alert cancelled", Toast.LENGTH_LONG).show();
+            // return true to indicate teh touch event was handled
             return true;
         }
 
-        else
-        {
-            Log.d("movement",event.toString());
-        }
+        // Return false to indicate that touch event was not handled.
         return false;
     }
 
+    // Handle touch events on cancel button
+
     public boolean onCancelTouch (View v, MotionEvent event) {
+
+        // Check if event occured within the bounds of the button, if so do button action
+        // Otherwise cancel/ignore the event.
+
+
         Rect rect;
         if (event.getAction() == MotionEvent.ACTION_UP) {
             rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
@@ -103,18 +108,11 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
-        if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-            Toast.makeText(MainActivity.this, "Alert cancelled", Toast.LENGTH_LONG).show();
-            return true;
-        }
-
-        else
-        {
-            Log.d("movement",event.toString());
-        }
+        // Return false to indicate that touch event was not handled.
         return false;
     }
 
+    // Handles clicks on the
 
     public void doAboutButton(View view) {
         doAbout();
@@ -144,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // Handles menu choices.
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -156,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.quit:
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                // Build Alert dialog to confirm quitting
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Do you wish to close this application?")
                         .setTitle("Quit?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -174,8 +174,6 @@ public class MainActivity extends AppCompatActivity {
                 // 3. Get the AlertDialog from create()
                 AlertDialog dialog = builder.create();
                 dialog.show();
-                Log.d("Main","quitDialog");
-
             }
             default:
                 return super.onOptionsItemSelected(item);
