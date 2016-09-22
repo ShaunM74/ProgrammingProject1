@@ -150,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 doAbout();
                 return true;
             }
-            case R.id.help:
-
+            case R.id.help: {
                 return true;
+            }
             case R.id.quit:
             {
                 // Build Alert dialog to confirm quitting
@@ -174,7 +174,15 @@ public class MainActivity extends AppCompatActivity {
                 // 3. Get the AlertDialog from create()
                 AlertDialog dialog = builder.create();
                 dialog.show();
+                return true;
             }
+            case R.id.settings:
+            {
+                Intent intent = new Intent (this, Settings.class);
+                startActivity (intent);
+                return true;
+            }
+
             default:
                 return super.onOptionsItemSelected(item);
         }
