@@ -44,10 +44,10 @@
                 android:paddingStart="6dp"
                 />
 
-            <RadioButton
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton"
+                android:id="@+id/checkbox_TextMsg"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:checked="false" />
@@ -81,10 +81,10 @@
                 android:paddingStart="6dp"
                 android:textStyle="bold"/>
 
-            <RadioButton
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton2"
+                android:id="@+id/Checkbox_Email"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:checked="false" />
@@ -114,10 +114,10 @@
                 android:paddingStart="6dp"
                 android:textStyle="bold"/>
 
-            <RadioButton
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton3"
+                android:id="@+id/Checkbox_EmeNum"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:checked="false" />
@@ -147,10 +147,10 @@
                 android:paddingStart="6dp"
                 android:textStyle="bold"/>
 
-            <RadioButton
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton6"
+                android:id="@+id/Checkbox_RecSound"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:checked="false" />
@@ -180,10 +180,10 @@
                 android:paddingStart="6dp"
                 android:textStyle="bold"/>
 
-            <RadioButton
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton5"
+                android:id="@+id/Checkbox_RecVideo"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:checked="false" />
@@ -251,13 +251,14 @@
                 android:paddingStart="6dp"
                 android:textStyle="bold"/>
 
-            <RadioButton
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/radioButton4"
+                android:id="@+id/checkBox_GPS"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:checked="false" />
+
         </TableRow>
 
         <TableRow
