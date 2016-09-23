@@ -18,5 +18,4 @@
         <activity android:name=".HelpActivity" />
         <activity android:name=".OptionsActivity"></activity>
     </application>
-
 </manifest>
