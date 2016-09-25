@@ -27,7 +27,7 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:background="#00CCCC"
+            android:background="#509BC7"
             android:minHeight="40dp"
             android:gravity="center_vertical">
 
@@ -50,6 +50,7 @@
                 android:id="@+id/checkbox_TextMsg"
                 android:layout_weight="1"
                 android:layout_column="3"
+                android:buttonTint="#FFFFFF"
                 android:checked="false" />
         </TableRow>
 
@@ -65,7 +66,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#00CCCC"
+            android:background="#509BC7"
             android:minHeight="40dp"
             android:gravity="center_vertical">
 
@@ -87,6 +88,7 @@
                 android:id="@+id/Checkbox_Email"
                 android:layout_weight="1"
                 android:layout_column="3"
+                android:buttonTint="#FFFFFF"
                 android:checked="false" />
         </TableRow>
 
@@ -100,7 +102,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#00CCCC"
+            android:background="#509BC7"
             android:minHeight="40dp"
             android:gravity="center_vertical">
 
@@ -120,20 +122,22 @@
                 android:id="@+id/Checkbox_EmeNum"
                 android:layout_weight="1"
                 android:layout_column="3"
+                android:buttonTint="#FFFFFF"
                 android:checked="false" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minHeight="4dp">
+            android:minHeight="4dp"
+            >
 
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#00CCCC"
+            android:background="#509BC7"
             android:minHeight="40dp"
             android:gravity="center_vertical">
 
@@ -153,6 +157,7 @@
                 android:id="@+id/Checkbox_RecSound"
                 android:layout_weight="1"
                 android:layout_column="3"
+                android:buttonTint="#FFFFFF"
                 android:checked="false" />
         </TableRow>
 
@@ -166,7 +171,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#00CCCC"
+            android:background="#509BC7"
             android:minHeight="40dp"
             android:gravity="center_vertical">
 
@@ -186,12 +191,14 @@
                 android:id="@+id/Checkbox_RecVideo"
                 android:layout_weight="1"
                 android:layout_column="3"
+                android:buttonTint="#FFFFFF"
                 android:checked="false" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minHeight="1dp">
+            android:minHeight="2dp"
+            android:background="#FFFFFF">
 
         </TableRow>
         <TableRow
@@ -235,7 +242,7 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:background="#00CCCC"
+            android:background="#509BC7"
             android:minHeight="40dp"
             android:gravity="center_vertical">
 
@@ -257,6 +264,7 @@
                 android:id="@+id/checkBox_GPS"
                 android:layout_weight="1"
                 android:layout_column="3"
+                android:buttonTint="#FFFFFF"
                 android:checked="false" />
 
         </TableRow>
