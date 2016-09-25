@@ -32,7 +32,7 @@ public class Settings extends AppCompatActivity {
         {
             Log.d("Settings","Small logo not found");
         }
-    }
+
 
         //CheckBox assignment
         textBox = (CheckBox)findViewById(R.id.checkbox_TextMsg);
