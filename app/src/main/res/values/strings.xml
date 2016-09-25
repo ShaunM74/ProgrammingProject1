@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProgrammingProject1</string>
+    <string name="app_name">Witty App Name Here</string>
     <string name="settingButtonContent">Settings</string>
     <string name="alertButtonContent">Alert</string>
     <string name="cancelButtonContent">Cancel Alert</string>
