@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
@@ -64,10 +66,40 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Gets current screen orientation and sets it as requested screen orientation
+
+    private void lockScreenRotation()
+    {
+        // Stop the screen orientation changing during an event
+        switch (this.getResources().getConfiguration().orientation)
+        {
+            case Configuration.ORIENTATION_PORTRAIT:
+                this.setRequestedOrientation(
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                this.setRequestedOrientation(
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
+        }
+    }
+
+    // Sets requested orientation to be unspecified, which allows rotation
+
+    private void unlockScreenRotation()
+    {
+        this.setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
+
     // Handles touch events on Alert button
 
     public boolean onAlertTouch (View v, MotionEvent event) {
         Rect rect;
+        if (event.getAction() == MotionEvent.ACTION_DOWN)
+        {
+
+        }
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
             // Check if event occured within the bounds of the button, if so do button action
