@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         Rect rect;
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-
+            lockScreenRotation();
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
             }
             // return true to indicate the touch event was handled
+            unlockScreenRotation();
             return true;
         }
 
