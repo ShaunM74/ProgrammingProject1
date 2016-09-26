@@ -276,7 +276,7 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/checkBox_GPS"
+                android:id="@+id/CheckBox_GPS"
                 android:layout_weight="1"
                 android:layout_column="3"
                 android:buttonTint="#FFFFFF"
