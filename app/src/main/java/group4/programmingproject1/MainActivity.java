@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton alertButton = null;
 
     private ImageButton cancelButton = null;
+
+    private Vibrator vibrator;
 
 
 
@@ -46,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         {
             Log.d("MainActivity","Small logo not found");
         }
+
+        vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+
+
         // Assign buttons to variables
 
         alertButton = (ImageButton)findViewById(R.id.alertButton);
@@ -114,6 +121,22 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
                 MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.police);
                 mediaPlayer.start();
+                int dot = 200;      // Length of a Morse Code "dot" in milliseconds
+                int dash = 500;     // Length of a Morse Code "dash" in milliseconds
+                int short_gap = 200;    // Length of Gap Between dots/dashes
+                int medium_gap = 500;   // Length of Gap Between Letters
+                int long_gap = 1000;    // Length of Gap Between Words
+                long[] pattern = {
+                        0,  // Start immediately
+                        dot, short_gap, dot, short_gap, dot,    // s
+                        medium_gap,
+                        dash, short_gap, dash, short_gap, dash, // o
+                        medium_gap,
+                        dot, short_gap, dot, short_gap, dot,    // s
+                        long_gap
+                };
+
+                vibrator.vibrate(pattern,5);
             }
             // return true to indicate the touch event was handled
             unlockScreenRotation();
@@ -162,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.quit:
             {
                 // Build Alert dialog to confirm quitting
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
                 builder.setMessage("Do you wish to close this application?")
                         .setTitle("Quit?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
