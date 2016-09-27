@@ -106,6 +106,23 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
             lockScreenRotation();
+            int dot = 200;      // Length of a Morse Code "dot" in milliseconds
+            int dash = 500;     // Length of a Morse Code "dash" in milliseconds
+            int short_gap = 200;    // Length of Gap Between dots/dashes
+            int medium_gap = 500;   // Length of Gap Between Letters
+            int long_gap = 1000;    // Length of Gap Between Words
+            long[] pattern = {
+                    0,  // Start immediately
+                    dot, short_gap, dot, short_gap, dot,    // s
+                    medium_gap,
+                    dash, short_gap, dash, short_gap, dash, // o
+                    medium_gap,
+                    dot, short_gap, dot, short_gap, dot,    // s
+                    long_gap
+            };
+
+            vibrator.vibrate(pattern,0);
+
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
@@ -121,24 +138,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
                 MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.police);
                 mediaPlayer.start();
-                int dot = 200;      // Length of a Morse Code "dot" in milliseconds
-                int dash = 500;     // Length of a Morse Code "dash" in milliseconds
-                int short_gap = 200;    // Length of Gap Between dots/dashes
-                int medium_gap = 500;   // Length of Gap Between Letters
-                int long_gap = 1000;    // Length of Gap Between Words
-                long[] pattern = {
-                        0,  // Start immediately
-                        dot, short_gap, dot, short_gap, dot,    // s
-                        medium_gap,
-                        dash, short_gap, dash, short_gap, dash, // o
-                        medium_gap,
-                        dot, short_gap, dot, short_gap, dot,    // s
-                        long_gap
-                };
-
-                vibrator.vibrate(pattern,5);
             }
-            // return true to indicate the touch event was handled
+            vibrator.cancel();
             unlockScreenRotation();
             return true;
         }
