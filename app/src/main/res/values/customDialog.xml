@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CustomDialogTheme" parent="@android:style/Theme.Dialog">
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:bottomBright">@color/colorPrimary</item>
         <item name="android:bottomDark">@color/colorPrimaryDark</item>
         <item name="android:bottomMedium">@color/colorPrimary</item>

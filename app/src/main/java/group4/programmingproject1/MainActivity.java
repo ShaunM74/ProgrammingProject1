@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void doAbout()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
         builder.setMessage("Alert! App\nVersion 0.1\nGroup 4\nRMIT")
                 .setTitle("Alert!")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
