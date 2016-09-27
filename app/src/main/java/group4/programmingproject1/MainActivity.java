@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
             int small_gap = 150;
             int medium_gap = 400;
             int large_gap = 1000;
-            long[] pattern = {
-                    0,  // Start immediately
+            long[] vibPattern = {
+                    0,
                     dot, small_gap, dot, small_gap, dot,
                     medium_gap,
                     dash, small_gap, dash, small_gap, dash,
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     large_gap
             };
 
-            vibrator.vibrate(pattern,0);
+            vibrator.vibrate(vibPattern,0);
 
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
