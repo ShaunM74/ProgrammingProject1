@@ -107,22 +107,21 @@ public class MainActivity extends AppCompatActivity {
         {
             lockScreenRotation();
 
-            int dash = 400;
-            int dot = 150;
+            int beat1 = 350;
+            int beat2 = 100;
             int small_gap = 150;
-            int medium_gap = 400;
-            int large_gap = 1000;
-            long[] vibPattern = {
+            int large_gap = 650;
+            long[] heartbeat = {
                     0,
-                    dot, small_gap, dot, small_gap, dot,
-                    medium_gap,
-                    dash, small_gap, dash, small_gap, dash,
-                    medium_gap,
-                    dot, small_gap, dot, small_gap, dot,
+                    beat1, small_gap, beat2,
+                    large_gap,
+                    beat1, small_gap, beat2,
+                    large_gap,
+                    beat1, small_gap, beat2,
                     large_gap
             };
 
-            vibrator.vibrate(vibPattern,0);
+            vibrator.vibrate(heartbeat,0);
 
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
