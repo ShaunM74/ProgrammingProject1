@@ -106,19 +106,20 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
             lockScreenRotation();
-            int dot = 200;      // Length of a Morse Code "dot" in milliseconds
-            int dash = 500;     // Length of a Morse Code "dash" in milliseconds
-            int short_gap = 200;    // Length of Gap Between dots/dashes
-            int medium_gap = 500;   // Length of Gap Between Letters
-            int long_gap = 1000;    // Length of Gap Between Words
+
+            int dash = 400;
+            int dot = 150;
+            int small_gap = 150;
+            int medium_gap = 400;
+            int large_gap = 1000;
             long[] pattern = {
                     0,  // Start immediately
-                    dot, short_gap, dot, short_gap, dot,    // s
+                    dot, small_gap, dot, small_gap, dot,
                     medium_gap,
-                    dash, short_gap, dash, short_gap, dash, // o
+                    dash, small_gap, dash, small_gap, dash,
                     medium_gap,
-                    dot, short_gap, dot, short_gap, dot,    // s
-                    long_gap
+                    dot, small_gap, dot, small_gap, dot,
+                    large_gap
             };
 
             vibrator.vibrate(pattern,0);
