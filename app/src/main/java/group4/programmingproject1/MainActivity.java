@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             getSupportActionBar().setIcon(R.drawable.appiconsmall);
         }
-        catch (Exception e)
+        catch (NullPointerException e)
         {
             Log.d("MainActivity","Small logo not found");
         }
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
             lockScreenRotation();
-
+            alertButton.setImageResource(R.drawable.alertbuttonon);
             int beat1 = 350;
             int beat2 = 100;
             int small_gap = 150;
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
             }
             vibrator.cancel();
+            alertButton.setImageResource(R.drawable.alertbuttonoff);
             unlockScreenRotation();
             return true;
         }
