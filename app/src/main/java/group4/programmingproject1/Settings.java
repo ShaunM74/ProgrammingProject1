@@ -8,12 +8,15 @@ import android.util.Log;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 
 public class Settings extends AppCompatActivity {
 
     CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
+    Switch cameraSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -145,12 +148,12 @@ public class Settings extends AppCompatActivity {
             {
                 if (callBox.isChecked())
                 {
-                    Toast.makeText(Settings.this,"Send record sound Checked",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Settings.this,"Call Phone Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
                 }
                 else
                 {
-                    Toast.makeText(Settings.this,"Send record sound Unchecked",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Settings.this,"Call Phone Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
                 }
             }
@@ -179,6 +182,24 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+
+        cameraSwitch = (Switch)findViewById(R.id.switch_Camera);
+
+        cameraSwitch.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener()
+
+        {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isChecked)
+                {
+                    Toast.makeText(Settings.this,"Face Camera Selected",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(Settings.this,"Front Camera Selected",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }

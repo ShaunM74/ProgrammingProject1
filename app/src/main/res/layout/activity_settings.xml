@@ -224,7 +224,7 @@
             >
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/switch_Camera"
                 android:layout_weight="2"
                 android:layout_column="2"
                 android:checked="false"
