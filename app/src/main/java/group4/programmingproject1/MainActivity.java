@@ -42,13 +42,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
-        try {
+
+            if(getSupportActionBar() != null)
             getSupportActionBar().setIcon(R.drawable.appiconsmall);
-        }
-        catch (NullPointerException e)
-        {
-            Log.d("MainActivity","Small logo not found");
-        }
 
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
