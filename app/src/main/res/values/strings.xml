@@ -5,6 +5,15 @@
     <string name="cancelButtonContent">Cancel Alert</string>
     <string name="title_activity_settings">Settings</string>
 
+
+    <!-- STRINGS FOR HELP ACTIVITY -->
+    <string name="helpText">InstAlert! is a helper app for sending quick alerts to a trusted
+    contact. These alerts can include a small video or sound clip from either the front or rear
+        facing camera and your GPS co-ordinates.\n Thesealerts can be sent via SMS and/or e-mail.
+    \nYou also have the option to have the application to also bring your phone dialer up with
+        emergency number pre-dialled, ready for you call.</string>
+
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

@@ -178,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.help: {
+                Intent intent = new Intent (this, HelpActivity.class);
+                startActivity (intent);
                 return true;
             }
             case R.id.quit:

@@ -23,6 +23,9 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"/>
+        <activity android:name=".HelpActivity"
+            android:parentActivityName="group4.programmingproject1.MainActivity"/>
+
     </application>
 
 </manifest>
