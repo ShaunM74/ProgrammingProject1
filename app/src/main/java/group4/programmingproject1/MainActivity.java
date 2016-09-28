@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton cancelButton = null;
 
+    private Vibrator vibrator;
+
 
 
 
@@ -39,13 +42,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
-        try {
+
+            if(getSupportActionBar() != null)
             getSupportActionBar().setIcon(R.drawable.appiconsmall);
-        }
-        catch (Exception e)
-        {
-            Log.d("MainActivity","Small logo not found");
-        }
+
+        vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+
+
         // Assign buttons to variables
 
         alertButton = (ImageButton)findViewById(R.id.alertButton);
@@ -99,6 +102,23 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
             lockScreenRotation();
+            alertButton.setImageResource(R.drawable.alertbuttonon);
+            int beat1 = 350;
+            int beat2 = 100;
+            int small_gap = 150;
+            int large_gap = 650;
+            long[] heartbeat = {
+                    0,
+                    beat1, small_gap, beat2,
+                    large_gap,
+                    beat1, small_gap, beat2,
+                    large_gap,
+                    beat1, small_gap, beat2,
+                    large_gap
+            };
+
+            vibrator.vibrate(heartbeat,0);
+
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
@@ -115,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.police);
                 mediaPlayer.start();
             }
-            // return true to indicate the touch event was handled
+            vibrator.cancel();
+            alertButton.setImageResource(R.drawable.alertbuttonoff);
             unlockScreenRotation();
             return true;
         }
@@ -126,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void doAbout()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
         builder.setMessage("Alert! App\nVersion 0.1\nGroup 4\nRMIT")
                 .setTitle("Alert!")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -162,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.quit:
             {
                 // Build Alert dialog to confirm quitting
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
                 builder.setMessage("Do you wish to close this application?")
                         .setTitle("Quit?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {

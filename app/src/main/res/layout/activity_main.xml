@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/alertButton"
-        android:src="@drawable/alertbutton"
+        android:src="@drawable/alertbuttonoff"
         android:layout_above="@+id/cancelButton"
         android:layout_below="@+id/app_toolbar"
         android:background="#ff0000"
