@@ -1,6 +1,8 @@
 package group4.programmingproject1;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ public class Settings extends AppCompatActivity {
 
     CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
     Switch cameraSwitch;
+    Boolean sendTextMessage;
+    String setTextKeyValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,11 +60,14 @@ public class Settings extends AppCompatActivity {
                 {
                     Toast.makeText(Settings.this,"Send Text Message Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
+                    setTextKeyValue = "true";
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Send Text Message Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
+                    //setAddressKeyValue(false);
+                    setTextKeyValue = "false";
                 }
             }
         });
@@ -205,5 +212,58 @@ public class Settings extends AppCompatActivity {
             }
         });
     }
+    //based on tutorial for saving preferences
+    //https://www.youtube.com/watch?v=Tl6lcP_8Dl4
+
+    private void getTextMessageSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.SendTextMessage);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null)
+        {
+            if ( existingTextMsg == "true")
+            {
+                sendTextMessage = true;
+                textBox.setChecked(true);
+            }
+            else
+            {
+                sendTextMessage = false;
+                textBox.setChecked(false);
+            }
+        }
+        else
+        {
+            textBox.setChecked(false);
+        }
+    }
+
+    // set text message key value
+    private void setTextMessageSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.SendTextMessage);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+
+        
+    }
 
 }
+
