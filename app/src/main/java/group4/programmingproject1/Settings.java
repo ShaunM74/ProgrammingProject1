@@ -20,14 +20,20 @@ public class Settings extends AppCompatActivity {
 
     CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
     Switch cameraSwitch;
-    Boolean sendTextMessage;
-    String setTextKeyValue;
+    Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
+    String setTextKeyValue,setGmailKeyValue;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        //getting setting checkbox values for display if checked or not
+        getTextMessageSettingsKeyValueFile();
+        getEmailSettingsKeyValueFile();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
@@ -61,6 +67,7 @@ public class Settings extends AppCompatActivity {
                     Toast.makeText(Settings.this,"Send Text Message Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
                     setTextKeyValue = "true";
+                    setTextMessageSettingsKeyValueFile(setTextKeyValue);
                 }
                 else
                 {
@@ -68,6 +75,7 @@ public class Settings extends AppCompatActivity {
                     //setting values off needs to be saved
                     //setAddressKeyValue(false);
                     setTextKeyValue = "false";
+                    setTextMessageSettingsKeyValueFile(setTextKeyValue);
                 }
             }
         });
@@ -88,6 +96,8 @@ public class Settings extends AppCompatActivity {
                     //v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                     Toast.makeText(Settings.this,"Send Email Message Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
+                    setGmailKeyValue = "true";
+                    setEmailSettingsKeyValueFile(setGmailKeyValue);
                 }
                 else
                 {
@@ -95,6 +105,8 @@ public class Settings extends AppCompatActivity {
                     //v.playSoundEffect(android.view.SoundEffectConstants.CLICK);
                     Toast.makeText(Settings.this,"Send Email Message Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
+                    setGmailKeyValue = "false";
+                    setEmailSettingsKeyValueFile(setGmailKeyValue);
                 }
             }
         });
@@ -227,27 +239,17 @@ public class Settings extends AppCompatActivity {
         String existingTextMsg = sharedPreferences.getString(key,null);
 
 
-        if(existingTextMsg != null)
-        {
-            if ( existingTextMsg == "true")
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
             {
-                sendTextMessage = true;
+                CheckBox textBox = (CheckBox)findViewById(R.id.checkbox_TextMsg);
                 textBox.setChecked(true);
             }
-            else
-            {
-                sendTextMessage = false;
-                textBox.setChecked(false);
-            }
-        }
-        else
-        {
-            textBox.setChecked(false);
         }
     }
 
     // set text message key value
-    private void setTextMessageSettingsKeyValueFile()
+    private void setTextMessageSettingsKeyValueFile(String setTextKeyValue)
     {
         Context context = getApplicationContext();
         String fileName = getString(R.string.OptSettingsFile);
@@ -262,8 +264,44 @@ public class Settings extends AppCompatActivity {
         editor.commit();
 
 
-        
+    }
+    private void getEmailSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.SendEmail);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
+                emailBox.setChecked(true);
+            }
+        }
     }
 
+    // set text message key value
+    private void setEmailSettingsKeyValueFile(String setTextKeyValue)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.SendEmail);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+
+    }
 }
 
