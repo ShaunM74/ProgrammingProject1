@@ -77,5 +77,6 @@
     //Option view Settings file
     <string name="OptSettingsFile">com.optional.Settings.Project.txt</string>
     <string name="SendTextMessage">SendTextMessage</string>
+    <string name="CameraSwitch">CameraSwitch</string>
 
 </resources>
