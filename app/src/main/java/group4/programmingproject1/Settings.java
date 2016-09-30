@@ -21,7 +21,7 @@ public class Settings extends AppCompatActivity {
     CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
     Switch cameraSwitch;
     Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
-    String setTextKeyValue,setGmailKeyValue;
+    String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
 
 
 
@@ -34,6 +34,11 @@ public class Settings extends AppCompatActivity {
         //getting setting checkbox values for display if checked or not
         getTextMessageSettingsKeyValueFile();
         getEmailSettingsKeyValueFile();
+        getCallSettingsKeyValueFile();
+        getSoundSettingsKeyValueFile();
+        getVideoSettingsKeyValueFile();
+        getMapGPSSettingsKeyValueFile();
+        getCameraSwitchSettingsKeyValueFile();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
@@ -127,11 +132,15 @@ public class Settings extends AppCompatActivity {
                 {
                     Toast.makeText(Settings.this,"Send record sound Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
+                    setSoundKeyValue = "true";
+                    setSoundSettingsKeyValueFile(setSoundKeyValue);
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Send record sound Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
+                    setSoundKeyValue = "false";
+                    setSoundSettingsKeyValueFile(setSoundKeyValue);
                 }
             }
         });
@@ -150,11 +159,15 @@ public class Settings extends AppCompatActivity {
                 {
                     Toast.makeText(Settings.this,"Send record video Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
+                    setVideoKeyValue = "true";
+                    setVideoSettingsKeyValueFile(setVideoKeyValue);
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Send record video Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
+                    setVideoKeyValue = "false";
+                    setVideoSettingsKeyValueFile(setVideoKeyValue);
                 }
             }
         });
@@ -173,11 +186,15 @@ public class Settings extends AppCompatActivity {
                 {
                     Toast.makeText(Settings.this,"Call Phone Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
+                    setCallKeyValue = "true";
+                    setCallSettingsKeyValueFile(setCallKeyValue);
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Call Phone Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
+                    setCallKeyValue = "false";
+                    setCallSettingsKeyValueFile(setCallKeyValue);
                 }
             }
         });
@@ -196,11 +213,15 @@ public class Settings extends AppCompatActivity {
                 {
                     Toast.makeText(Settings.this,"Send Gmap/GPS Checked",Toast.LENGTH_SHORT).show();
                     //settings value on needs to be saved
+                    setMapGPSKeyValue = "true";
+                    setMapGPSSettingsKeyValueFile(setMapGPSKeyValue);
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Send Gmap/GPS Unchecked",Toast.LENGTH_SHORT).show();
                     //setting values off needs to be saved
+                    setMapGPSKeyValue = "false";
+                    setMapGPSSettingsKeyValueFile(setMapGPSKeyValue);
                 }
             }
         });
@@ -216,10 +237,14 @@ public class Settings extends AppCompatActivity {
                 if (isChecked)
                 {
                     Toast.makeText(Settings.this,"Face Camera Selected",Toast.LENGTH_SHORT).show();
+                    setCameraKeyValue = "true";
+                    setCameraSwitchSettingsKeyValueFile(setCameraKeyValue);
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Front Camera Selected",Toast.LENGTH_SHORT).show();
+                    setCameraKeyValue = "false";
+                    setCameraSwitchSettingsKeyValueFile(setCameraKeyValue);
                 }
             }
         });
@@ -227,6 +252,9 @@ public class Settings extends AppCompatActivity {
     //based on tutorial for saving preferences
     //https://www.youtube.com/watch?v=Tl6lcP_8Dl4
 
+    //these get and set  check the stored values of the checkbox and set the checks accordingly
+
+    //get txt msg value
     private void getTextMessageSettingsKeyValueFile()
     {
         Context context = getApplicationContext();
@@ -248,7 +276,7 @@ public class Settings extends AppCompatActivity {
         }
     }
 
-    // set text message key value
+    // set txt message key value
     private void setTextMessageSettingsKeyValueFile(String setTextKeyValue)
     {
         Context context = getApplicationContext();
@@ -265,6 +293,7 @@ public class Settings extends AppCompatActivity {
 
 
     }
+    //get email message value
     private void getEmailSettingsKeyValueFile()
     {
         Context context = getApplicationContext();
@@ -286,7 +315,7 @@ public class Settings extends AppCompatActivity {
         }
     }
 
-    // set text message key value
+    // set gmail message key value
     private void setEmailSettingsKeyValueFile(String setTextKeyValue)
     {
         Context context = getApplicationContext();
@@ -297,6 +326,204 @@ public class Settings extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         String key = getString(R.string.SendEmail);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+
+    }
+    //get Phone call message value
+    private void getCallSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.CallEmeNum);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_EmeNum);
+                emailBox.setChecked(true);
+            }
+        }
+    }
+
+    // set Phone call message key value
+    private void setCallSettingsKeyValueFile(String setTextKeyValue)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.CallEmeNum);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+    }
+
+    //get Sound message value
+    private void getSoundSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.RecordSnd);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_RecSound);
+                emailBox.setChecked(true);
+            }
+        }
+    }
+
+    // set Sound message key value
+    private void setSoundSettingsKeyValueFile(String setTextKeyValue)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.RecordSnd);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+
+    }
+
+    //get Video message value
+    private void getVideoSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.RecordVid);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_RecVideo);
+                emailBox.setChecked(true);
+            }
+        }
+    }
+
+    // set Video message key value
+    private void setVideoSettingsKeyValueFile(String setTextKeyValue)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.RecordVid);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+
+    }
+
+    //get MapGPS message value
+    private void getMapGPSSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.MapsGPS);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.CheckBox_GPS);
+                emailBox.setChecked(true);
+            }
+        }
+    }
+
+    // set MapGPS message key value
+    private void setMapGPSSettingsKeyValueFile(String setTextKeyValue)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.MapsGPS);
+        editor.putString(key, setTextKeyValue);
+
+        editor.commit();
+
+
+    }
+
+    //get Camera Switch value
+    private void getCameraSwitchSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String key = getString(R.string.CameraSwitch);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                Switch switchBox = (Switch)findViewById(R.id.switch_Camera);
+                switchBox.setChecked(true);
+            }
+        }
+    }
+
+    // set Camera switch key value
+    private void setCameraSwitchSettingsKeyValueFile(String setTextKeyValue)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = getString(R.string.CameraSwitch);
         editor.putString(key, setTextKeyValue);
 
         editor.commit();
