@@ -148,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
     private void doAbout()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
-        builder.setMessage("Alert! App\nVersion 0.1\nGroup 4\nRMIT")
-                .setTitle("Alert!")
+        builder.setMessage(R.string.aboutText)
+                .setTitle(R.string.app_name)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
-        Log.d("Main","Created about dialog");
 
     }
 
@@ -178,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.help: {
+                Intent intent = new Intent (this, HelpActivity.class);
+                startActivity (intent);
                 return true;
             }
             case R.id.quit:

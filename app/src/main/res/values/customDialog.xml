@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:bottomBright">@color/colorPrimary</item>
-        <item name="android:bottomDark">@color/colorPrimaryDark</item>
-        <item name="android:bottomMedium">@color/colorPrimary</item>
-        <item name="android:centerBright">@color/colorPrimary</item>
-        <item name="android:centerDark">@color/colorPrimaryDark</item>
-        <item name="android:centerMedium">@color/colorPrimary</item>
-        <item name="android:fullBright">@color/colorAccent</item>
-        <item name="android:fullDark">@color/colorAccent</item>
-        <item name="android:topBright">@color/colorPrimary</item>
-        <item name="android:topDark">@color/colorPrimaryDark</item>
+        <item name="android:bottomBright">@color/white</item>
+        <item name="android:bottomDark">@color/white</item>
+        <item name="android:bottomMedium">@color/white</item>
+        <item name="android:centerBright">@color/white</item>
+        <item name="android:centerDark">@color/white</item>
+        <item name="android:centerMedium">@color/white</item>
+        <item name="android:fullBright">@color/orange</item>
+        <item name="android:fullDark">@color/orange</item>
+        <item name="android:topBright">@color/blue</item>
+        <item name="android:topDark">@color/blue</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>
