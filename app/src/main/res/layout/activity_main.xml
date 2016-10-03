@@ -3,8 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="group4.programmingproject1.MainActivity"
     android:background="#00bcd4">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/app_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -21,42 +31,16 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/settingsButton"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/settings"
-        android:background="#00bcd4"
-        android:contentDescription="@string/settingButtonContent"
-        android:clickable="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/nameButton"
-        android:text="@string/app_name"
-        android:background="#00bcd4"
-        android:layout_alignTop="@+id/settingsButton"
-        android:layout_alignEnd="@+id/alertButton"
-        android:layout_toEndOf="@+id/settingsButton"
-        android:layout_above="@+id/alertButton"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-        android:clickable="true"
-        android:onClick="doAboutButton" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/alertButton"
-        android:src="@drawable/alertbutton"
+        android:src="@drawable/alertbuttonoff"
         android:layout_above="@+id/cancelButton"
-        android:layout_below="@+id/settingsButton"
+        android:layout_below="@+id/app_toolbar"
         android:background="#ff0000"
         android:clickable="true"
         android:contentDescription="@string/alertButtonContent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:longClickable="true" />
+        android:longClickable="true"
+        android:scaleType="fitXY" />
 
 </RelativeLayout>
