@@ -84,4 +84,21 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    //Send Option view Settings
+    //English
+    <string name="SendTxtMsg">Send Text Message</string>
+    <string name="SendEmail">Send Email</string>
+    <string name="CallEmeNum">Call Emergency Number</string>
+    <string name="RecordSnd">Record Sound</string>
+    <string name="RecordVid">Record video</string>
+    <string name="FrontCam">Front Camera</string>
+    <string name="FaceCam">Face Camera</string>
+    <string name="MapsGPS">Send Location Maps/GPS</string>
+    <string name="Contact4Eme">Contact for Emergency</string>
+    //Option view Settings file
+    <string name="OptSettingsFile">com.optional.Settings.Project.txt</string>
+    <string name="SendTextMessage">SendTextMessage</string>
+    <string name="CameraSwitch">CameraSwitch</string>
+
 </resources>
