@@ -1,0 +1,121 @@
+package group4.programmingproject1;
+
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Email;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static android.R.attr.button;
+
+public class DevModeActivity extends AppCompatActivity {
+
+    private Button testRegister;
+    private Button testContact;
+    private Button clearTextButton;
+    private TextView TextBox;
+    private static final int CONTACT_PICKER_RESULT = 1001;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dev_mode);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        setSupportActionBar(myToolbar);
+        // Try to set icon, if not found, leave blank
+
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setIcon(R.drawable.appiconsmall);
+
+        testRegister = (Button)findViewById(R.id.testregisterButton);
+        testContact = (Button)findViewById(R.id.testContactButton);
+        clearTextButton = (Button)findViewById(R.id.clearTextButton);
+        TextBox = (TextView)findViewById(R.id.returnTextView);
+
+
+        // On touch listeners to report button touches
+        // Using touch listeners to capture finger raised events.
+        clearTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View v)
+            {
+                TextBox.clearComposingText();
+
+            }
+        });
+
+        testContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(Intent.ACTION_PICK,
+                        ContactsContract.CommonDataKinds.Email.CONTENT_URI);
+                //i.setType(ContactsContract.CommonDataKinds.Email.CONTEN‌​T_TYPE);
+                startActivityForResult(i, CONTACT_PICKER_RESULT);
+            }
+
+        });
+
+
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case CONTACT_PICKER_RESULT:
+                    // handle contact results
+
+                    Cursor cursor = null;
+
+                    try {
+                        Uri result = data.getData();
+                        String id = result.getLastPathSegment();
+
+                        //Get Name
+                        cursor = getContentResolver().query(result, null, null, null, null);
+                        if (cursor.moveToFirst()) {
+                            TextBox.append(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)) + "\n");
+                            TextBox.append(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID)) + "\n");
+                            TextBox.append(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) + "\n");
+                            TextBox.append(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)) + "\n");
+
+                        }
+                        cursor.close();
+
+                        } catch (Exception e) { }
+                    break;
+            }
+
+        } else {
+            // gracefully handle failure
+
+        }
+    }
+
+    /*
+       URL url = new URL("http://www.android.com/");
+   HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+   try {
+     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+     readStream(in);
+   } finally {
+     urlConnection.disconnect();
+   }
+     */
+}

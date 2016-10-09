@@ -209,6 +209,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity (intent);
                 return true;
             }
+            case R.id.devmenu:
+            {
+                Intent intent = new Intent(this, DevModeActivity.class);
+                startActivity(intent);
+                return true;
+            }
 
             default:
                 return super.onOptionsItemSelected(item);
