@@ -4,19 +4,32 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -71,6 +84,14 @@ public class DevModeActivity extends AppCompatActivity {
 
         });
 
+        testRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                new registerDevice().execute();
+            }
+
+        });
 
 
     }
@@ -108,14 +129,52 @@ public class DevModeActivity extends AppCompatActivity {
         }
     }
 
-    /*
-       URL url = new URL("http://www.android.com/");
-   HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-   try {
-     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-     readStream(in);
-   } finally {
-     urlConnection.disconnect();
-   }
-     */
+
+
+    class registerDevice extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String tempString ="";
+            try {
+                URL url = new URL("http://54.70.221.177/testecallRegister.php");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    tempString=readStream(in);
+                } finally {
+                    urlConnection.disconnect();
+                }
+            }
+            catch(Exception e)
+                {
+
+                }
+
+             return tempString;
+        }
+
+        private String readStream(InputStream is) throws IOException {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader r = new BufferedReader(new InputStreamReader(is),1000);
+            for (String line = r.readLine(); line != null; line =r.readLine()){
+                sb.append(line);
+            }
+            is.close();
+            return sb.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String results) {
+            TextBox.append(results.toString());
+
+        }
+    }
+
+
 }

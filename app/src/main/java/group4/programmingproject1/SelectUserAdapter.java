@@ -90,15 +90,15 @@ public class SelectUserAdapter extends BaseAdapter {
             if (data.getThumb() != null) {
                 v.imageView.setImageBitmap(data.getThumb());
             } else {
-                v.imageView.setImageResource(R.drawable.image);
+               // v.imageView.setImageResource(R.drawable.image);
             }
             // Seting round image
-            Bitmap bm = BitmapFactory.decodeResource(view.getResources(), R.drawable.image); // Load default image
-            roundedImage = new ImageView(bm);
-            v.imageView.setImageDrawable(roundedImage);
+            //Bitmap bm = BitmapFactory.decodeResource(view.getResources(), R.drawable.image); // Load default image
+            //roundedImage = new ImageView(bm);
+            //v.imageView.setImageDrawable(roundedImage);
         } catch (OutOfMemoryError e) {
             // Add default picture
-            v.imageView.setImageDrawable(this._c.getDrawable(R.drawable.image));
+           // v.imageView.setImageDrawable(this._c.getDrawable(R.drawable.image));
             e.printStackTrace();
         }
 
