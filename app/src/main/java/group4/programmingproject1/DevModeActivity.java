@@ -41,6 +41,7 @@ public class DevModeActivity extends AppCompatActivity {
     private Button testContact;
     private Button clearTextButton;
     private TextView TextBox;
+    Context context;
     private static final int CONTACT_PICKER_RESULT = 1001;
 
     @Override
@@ -59,7 +60,7 @@ public class DevModeActivity extends AppCompatActivity {
         testContact = (Button)findViewById(R.id.testContactButton);
         clearTextButton = (Button)findViewById(R.id.clearTextButton);
         TextBox = (TextView)findViewById(R.id.returnTextView);
-
+        context=this;
 
         // On touch listeners to report button touches
         // Using touch listeners to capture finger raised events.
@@ -67,8 +68,7 @@ public class DevModeActivity extends AppCompatActivity {
             @Override
             public void onClick (View v)
             {
-                TextBox.clearComposingText();
-
+                TextBox.setText("");
             }
         });
 
@@ -76,10 +76,12 @@ public class DevModeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Intent i = new Intent(Intent.ACTION_PICK,
+ /*               Intent i = new Intent(Intent.ACTION_PICK,
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI);
                 //i.setType(ContactsContract.CommonDataKinds.Email.CONTEN‌​T_TYPE);
-                startActivityForResult(i, CONTACT_PICKER_RESULT);
+                startActivityForResult(i, CONTACT_PICKER_RESULT);*/
+                Intent i = new Intent(context, ContactPickerActivity.class);
+                startActivity(i);
             }
 
         });

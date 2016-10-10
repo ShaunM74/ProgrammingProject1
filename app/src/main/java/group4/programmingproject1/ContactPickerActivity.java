@@ -1,5 +1,6 @@
 package group4.programmingproject1;
 
+        import android.content.Context;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.app.Activity;
@@ -40,17 +41,19 @@ public class ContactPickerActivity extends AppCompatActivity {
     ContentResolver resolver;
     SearchView search;
     SelectUserAdapter adapter;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_contact_picker);
+        context = this;
         selectUsers = new ArrayList<SelectUser>();
         resolver = this.getContentResolver();
         listView = (ListView) findViewById(R.id.contacts_list);
 
-        phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        phones = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.ADDRESS +" like '%@gmail.com'", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+
         LoadContact loadContact = new LoadContact();
         loadContact.execute();
 
@@ -73,6 +76,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
     // Load data on background
@@ -90,7 +94,8 @@ public class ContactPickerActivity extends AppCompatActivity {
             if (phones != null) {
                 Log.e("count", "" + phones.getCount());
                 if (phones.getCount() == 0) {
-                    Toast.makeText(ContactPickerActivity.this, "No contacts in your contact list.", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context, "No contacts in your contact list.", Toast.LENGTH_LONG).show();
+
                 }
 
                 while (phones.moveToNext()) {
@@ -128,7 +133,7 @@ public class ContactPickerActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            adapter = new SelectUserAdapter(selectUsers, ContactPickerActivity.this);
+            adapter = new SelectUserAdapter(selectUsers, context);
             listView.setAdapter(adapter);
 
             // Select item on listclick
