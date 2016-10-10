@@ -43,6 +43,7 @@ public class DevModeActivity extends AppCompatActivity {
     private TextView TextBox;
     Context context;
     private static final int CONTACT_PICKER_RESULT = 1001;
+    private static final int myPickerResult = 12376;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,8 @@ public class DevModeActivity extends AppCompatActivity {
                 //i.setType(ContactsContract.CommonDataKinds.Email.CONTEN‌​T_TYPE);
                 startActivityForResult(i, CONTACT_PICKER_RESULT);*/
                 Intent i = new Intent(context, ContactPickerActivity.class);
-                startActivity(i);
+                startActivityForResult(i,myPickerResult);
+                //startActivity(i);
             }
 
         });
@@ -123,6 +125,12 @@ public class DevModeActivity extends AppCompatActivity {
 
                         } catch (Exception e) { }
                     break;
+                case myPickerResult:
+                {
+                    TextBox.append(data.getStringExtra("name")+"\n");
+                    TextBox.append(data.getStringExtra("email")+"\n");
+                    TextBox.append(data.getStringExtra("phone")+"\n");
+                }
             }
 
         } else {

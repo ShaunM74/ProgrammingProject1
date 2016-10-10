@@ -1,6 +1,7 @@
 package group4.programmingproject1;
 
         import android.content.Context;
+        import android.content.Intent;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.app.Activity;
@@ -52,7 +53,8 @@ public class ContactPickerActivity extends AppCompatActivity {
         resolver = this.getContentResolver();
         listView = (ListView) findViewById(R.id.contacts_list);
 
-        phones = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.ADDRESS +" like '%@gmail.com'", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        phones = getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.ADDRESS +" like '%@gmail.com'", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+
 
         LoadContact loadContact = new LoadContact();
         loadContact.execute();
@@ -90,7 +92,7 @@ public class ContactPickerActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             // Get Contact list from Phone
-
+            ContentResolver cr = getContentResolver();
             if (phones != null) {
                 Log.e("count", "" + phones.getCount());
                 if (phones.getCount() == 0) {
@@ -100,10 +102,29 @@ public class ContactPickerActivity extends AppCompatActivity {
 
                 while (phones.moveToNext()) {
                     Bitmap bit_thumb = null;
-                    String id = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
+                    String id = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID));
+                    Log.d("Debug",id);
                     String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    String EmailAddr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA2));
+                    Log.d("Debug",name);
+                    String phoneNumber="";
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        phoneNumber = pCur.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    }
+                    pCur.close();
+                    //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA1));
+                    Log.d("Debug",phoneNumber);
+                    String EmailAddr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA1));
+                    Log.d("Debug",EmailAddr);
+
+                    Log.d("Debug",phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA1))+","+
+                                    phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2))+","+
+                                    phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA3)));
+
                     String image_thumb = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
                     try {
                         if (image_thumb != null) {
@@ -119,7 +140,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                     selectUser.setThumb(bit_thumb);
                     selectUser.setName(name);
                     selectUser.setPhone(phoneNumber);
-                    selectUser.setEmail(id);
+                    selectUser.setEmail(EmailAddr);
                     selectUser.setCheckedBox(false);
                     selectUsers.add(selectUser);
                 }
@@ -144,6 +165,12 @@ public class ContactPickerActivity extends AppCompatActivity {
                     Log.e("search", "here---------------- listener");
 
                     SelectUser data = selectUsers.get(i);
+                    Intent returnData = new Intent();
+                    returnData.putExtra("name",data.getName());
+                    returnData.putExtra("email",data.getEmail());
+                    returnData.putExtra("phone",data.getPhone());
+                    setResult(RESULT_OK,returnData);
+                    finish();
                 }
             });
 
