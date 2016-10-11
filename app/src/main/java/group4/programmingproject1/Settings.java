@@ -18,10 +18,10 @@ import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
 
-    CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
-    Switch cameraSwitch;
-    Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
-    String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
+    private CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
+    private Switch cameraSwitch;
+    //Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
+    private String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
 
 
 
