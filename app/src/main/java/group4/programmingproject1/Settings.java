@@ -299,6 +299,7 @@ public class Settings extends AppCompatActivity {
                         if (image_thumb != null) {
                             contactImage.setImageURI(Uri.parse(image_thumb));
                         } else {
+                            contactImage.setImageResource(R.drawable.appicon);
                             Log.e("No Image Thumb", "--------------");
                         }
                     } catch (Exception e) {
@@ -351,6 +352,7 @@ public class Settings extends AppCompatActivity {
                 if (existingThumb != null) {
                     contactImage.setImageURI(Uri.parse(existingThumb));
                 } else {
+                    contactImage.setImageResource(R.drawable.appicon);
                     Log.e("No Image Thumb", "--------------");
                 }
             } catch (Exception e) {
@@ -377,9 +379,14 @@ public class Settings extends AppCompatActivity {
         editor.putString(emailKey, contactEmail);
         String phoneKey = getString(R.string.pref_contact_phone_number);
         editor.putString(phoneKey, contactPhone);
-        String thumbKey = getString(R.string.pref_contact_image_uri);
-        editor.putString(thumbKey, contactThumb);
-
+        if(contactThumb != null) {
+            String thumbKey = getString(R.string.pref_contact_image_uri);
+            editor.putString(thumbKey, contactThumb);
+        }
+        else
+        {
+            editor.remove(getString(R.string.pref_contact_image_uri));
+        }
 
 
         editor.commit();
