@@ -2,9 +2,7 @@ package group4.programmingproject1;
 
         import android.graphics.Bitmap;
 
-/**
- * Created by Trinity Tuts on 10-01-2015.
- */
+
 public class SelectUser {
     String name;
 
@@ -18,6 +16,12 @@ public class SelectUser {
 
     Bitmap thumb;
 
+    public String getThumbURI() {return thumbURI;}
+
+    public void setThumbURI(String thumbURI) {this.thumbURI =thumbURI;}
+
+    String thumbURI;
+
     public String getPhone() {
         return phone;
     }
@@ -27,16 +31,6 @@ public class SelectUser {
     }
 
     String phone;
-
-    public Boolean getCheckedBox() {
-        return checkedBox;
-    }
-
-    public void setCheckedBox(Boolean checkedBox) {
-        this.checkedBox = checkedBox;
-    }
-
-    Boolean checkedBox = false;
 
     public String getName() {
         return name;

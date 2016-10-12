@@ -119,11 +119,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                     //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA1));
                     Log.d("Debug",phoneNumber);
                     String EmailAddr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA1));
-                    Log.d("Debug",EmailAddr);
 
-                    Log.d("Debug",phones.getString(phones.getColumnIndex(ContactsContract.Data.DATA1))+","+
-                                    phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2))+","+
-                                    phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA3)));
 
                     String image_thumb = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
                     try {
@@ -137,11 +133,12 @@ public class ContactPickerActivity extends AppCompatActivity {
                     }
 
                     SelectUser selectUser = new SelectUser();
+                    selectUser.setThumbURI(image_thumb);
                     selectUser.setThumb(bit_thumb);
                     selectUser.setName(name);
                     selectUser.setPhone(phoneNumber);
                     selectUser.setEmail(EmailAddr);
-                    selectUser.setCheckedBox(false);
+                    //selectUser.setCheckedBox(false);
                     selectUsers.add(selectUser);
                 }
             } else {
@@ -169,6 +166,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                     returnData.putExtra("name",data.getName());
                     returnData.putExtra("email",data.getEmail());
                     returnData.putExtra("phone",data.getPhone());
+                    returnData.putExtra("thumbURI",data.getThumbURI());
                     setResult(RESULT_OK,returnData);
                     finish();
                 }
