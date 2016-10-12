@@ -1,14 +1,22 @@
 package group4.programmingproject1;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +27,12 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import static group4.programmingproject1.R.id.textView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,12 +43,17 @@ public class MainActivity extends AppCompatActivity {
     private Vibrator vibrator;
 
 
-
-
+    //GPS
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private TextView textView ;
+    private String Longitude = null;
+    private String Latitude = null;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -65,9 +83,49 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // place GPS stuff here
 
 
+        textView = (TextView) findViewById(R.id.gpstesttext);
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener()
+        {
+            @Override
+            public void onLocationChanged(Location location) {
+                //test text
+                //textView.append("\n " + location.getLatitude() + " " + location.getLongitude());
+                //** this is for the test text display over button, comment out to remove
+                //textView.setText(location.getLatitude() + " " + location.getLongitude());
+                textView.setText("Lat:"+Latitude + " " + "Lon:"+Longitude);
+                //**
+                Longitude = String.valueOf(location.getLongitude());
+                Latitude  = String.valueOf(location.getLatitude());
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            //checks if the user has disabled gps and takes to screen to enable
+            @Override
+            public void onProviderDisabled(String provider) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+
+        };
+        //configure button stuff call maybe here****************
+        startGPS();
     }
+
 
     //Gets current screen orientation and sets it as requested screen orientation
 
@@ -118,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             };
 
             vibrator.vibrate(heartbeat,0);
+            startGPSTriggerHeld();
 
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -132,10 +191,15 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
+                //****************************************
+                //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
+                //****************************************
                 MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.police);
                 mediaPlayer.start();
             }
             vibrator.cancel();
+            //GPS stop
+            locationManager.removeUpdates(locationListener);
             alertButton.setImageResource(R.drawable.alertbuttonoff);
             unlockScreenRotation();
             return true;
@@ -221,5 +285,41 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    //GPS STUFF
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode)
+        {
+            case 10:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    startGPS();
+                return;
+        }
+    }
+    //this is the idle gps check function, checks every 30sec
+    void startGPS(){
+        // first check for permissions
+        //if it doesnt have permission it hits return instead of continuing on to call the locationmanager and causing a crash
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
+                        , 10);
+            }
+            return;
+        }
+        locationManager.requestLocationUpdates("gps", 30000, 0, locationListener);
 
+    }
+    // this is the active button held trigger, checks every 1 sec
+    void startGPSTriggerHeld(){
+        // first check for permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
+                        ,10);
+            }
+            return;
+        }
+        locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+    }
 }
