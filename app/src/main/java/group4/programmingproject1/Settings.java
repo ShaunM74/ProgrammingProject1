@@ -27,15 +27,15 @@ import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
 
-    CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
-    Switch cameraSwitch;
-    Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
-    String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
-    TableRow contactRow;
-    TextView contactTextBox;
-    ImageView contactImage;
+    private CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
+    private Switch cameraSwitch;
+    private Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
+    private String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
+    private TableRow contactRow;
+    private TextView contactTextBox;
+    private ImageView contactImage;
     private static final int myPickerResult = 12347;
-    Context context;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -288,13 +288,13 @@ public class Settings extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case myPickerResult: {
-                    ContentResolver resolver;
-                    resolver = this.getContentResolver();
+
                     contactTextBox.setText("Contact selected \n");
                     contactTextBox.append(data.getStringExtra("name") + "\n");
                     contactTextBox.append(data.getStringExtra("email") + "\n");
                     contactTextBox.append(data.getStringExtra("phone") + "\n");
                     String image_thumb = data.getStringExtra("thumbURI");
+                    // Set a default icon if contact doesn't have a thumbnail
                     try {
                         if (image_thumb != null) {
                             contactImage.setImageURI(Uri.parse(image_thumb));
@@ -342,12 +342,12 @@ public class Settings extends AppCompatActivity {
         String existingThumb = sharedPreferences.getString(thumbKey,null);
 
         if(existingName != null) {
-            ContentResolver resolver;
-            resolver = this.getContentResolver();
             contactTextBox.setText("Contact selected \n");
             contactTextBox.append(existingName + "\n");
             contactTextBox.append(existingEmail + "\n");
             contactTextBox.append(existingPhone + "\n");
+
+            // Set a default icon if there is no thumbnail
             try {
                 if (existingThumb != null) {
                     contactImage.setImageURI(Uri.parse(existingThumb));
@@ -379,6 +379,7 @@ public class Settings extends AppCompatActivity {
         editor.putString(emailKey, contactEmail);
         String phoneKey = getString(R.string.pref_contact_phone_number);
         editor.putString(phoneKey, contactPhone);
+        // If contact does not have a thumbnail, remove the key.
         if(contactThumb != null) {
             String thumbKey = getString(R.string.pref_contact_image_uri);
             editor.putString(thumbKey, contactThumb);
