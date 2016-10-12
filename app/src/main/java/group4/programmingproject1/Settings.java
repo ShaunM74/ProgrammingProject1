@@ -1,8 +1,14 @@
 package group4.programmingproject1;
 
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +18,10 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -20,16 +29,25 @@ public class Settings extends AppCompatActivity {
 
     private CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
     private Switch cameraSwitch;
-    //Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
+    private Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
     private String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
-
-
+    private TableRow contactRow;
+    private TextView contactTextBox;
+    private ImageView contactImage;
+    private static final int myPickerResult = 12347;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        context =this;
+
+        contactRow = (TableRow)findViewById(R.id.contactrow);
+        contactTextBox = (TextView)findViewById(R.id.contacttext);
+        contactImage = (ImageView)findViewById(R.id.contactimage);
+
 
         //getting setting checkbox values for display if checked or not
         getTextMessageSettingsKeyValueFile();
@@ -39,6 +57,7 @@ public class Settings extends AppCompatActivity {
         getVideoSettingsKeyValueFile();
         getMapGPSSettingsKeyValueFile();
         getCameraSwitchSettingsKeyValueFile();
+        getContactSettingsKeyValueFile();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
@@ -248,11 +267,134 @@ public class Settings extends AppCompatActivity {
                 }
             }
         });
+
+
+
+        contactRow.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(context, ContactPickerActivity.class);
+                startActivityForResult(i,myPickerResult);
+            }
+
+        });
+
     }
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case myPickerResult: {
+
+                    contactTextBox.setText("Contact selected \n");
+                    contactTextBox.append(data.getStringExtra("name") + "\n");
+                    contactTextBox.append(data.getStringExtra("email") + "\n");
+                    contactTextBox.append(data.getStringExtra("phone") + "\n");
+                    String image_thumb = data.getStringExtra("thumbURI");
+                    // Set a default icon if contact doesn't have a thumbnail
+                    try {
+                        if (image_thumb != null) {
+                            contactImage.setImageURI(Uri.parse(image_thumb));
+                        } else {
+                            contactImage.setImageResource(R.drawable.appicon);
+                            Log.e("No Image Thumb", "--------------");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    setContactKeyValueFile(data.getStringExtra("name"), data.getStringExtra("email"),
+                            data.getStringExtra("phone"), image_thumb);
+
+                }
+            }
+
+        } else {
+            // gracefully handle failure
+
+        }
+    }
+
     //based on tutorial for saving preferences
     //https://www.youtube.com/watch?v=Tl6lcP_8Dl4
 
     //these get and set  check the stored values of the checkbox and set the checks accordingly
+
+    //get values for contact
+    private void getContactSettingsKeyValueFile()
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String nameKey = getString(R.string.pref_contact_name);
+
+        String existingName = sharedPreferences.getString(nameKey,null);
+        String emailKey = getString(R.string.pref_contact_email);
+        String existingEmail = sharedPreferences.getString(emailKey,null);
+        String phoneKey = getString(R.string.pref_contact_phone_number);
+        String existingPhone = sharedPreferences.getString(phoneKey,null);
+        String thumbKey = getString(R.string.pref_contact_image_uri);
+        String existingThumb = sharedPreferences.getString(thumbKey,null);
+
+        if(existingName != null) {
+            contactTextBox.setText("Contact selected \n");
+            contactTextBox.append(existingName + "\n");
+            contactTextBox.append(existingEmail + "\n");
+            contactTextBox.append(existingPhone + "\n");
+
+            // Set a default icon if there is no thumbnail
+            try {
+                if (existingThumb != null) {
+                    contactImage.setImageURI(Uri.parse(existingThumb));
+                } else {
+                    contactImage.setImageResource(R.drawable.appicon);
+                    Log.e("No Image Thumb", "--------------");
+                }
+            } catch (Exception e) {
+
+            }
+
+        }
+    }
+
+    // set txt message key value
+    private void setContactKeyValueFile(String contactName, String contactEmail,
+                                        String contactPhone, String contactThumb)
+    {
+        Context context = getApplicationContext();
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String nameKey = getString(R.string.pref_contact_name);
+        editor.putString(nameKey, contactName);
+        String emailKey = getString(R.string.pref_contact_email);
+        editor.putString(emailKey, contactEmail);
+        String phoneKey = getString(R.string.pref_contact_phone_number);
+        editor.putString(phoneKey, contactPhone);
+        // If contact does not have a thumbnail, remove the key.
+        if(contactThumb != null) {
+            String thumbKey = getString(R.string.pref_contact_image_uri);
+            editor.putString(thumbKey, contactThumb);
+        }
+        else
+        {
+            editor.remove(getString(R.string.pref_contact_image_uri));
+        }
+
+
+        editor.commit();
+
+
+    }
+
 
     //get txt msg value
     private void getTextMessageSettingsKeyValueFile()

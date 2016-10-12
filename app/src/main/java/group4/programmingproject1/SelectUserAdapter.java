@@ -33,13 +33,13 @@ public class SelectUserAdapter extends BaseAdapter {
 
     public List<SelectUser> _data;
     private ArrayList<SelectUser> arraylist;
-    Context _c;
+    Context context;
     ViewHolder v;
     ImageView roundedImage;
 
     public SelectUserAdapter(List<SelectUser> selectUsers, Context context) {
         _data = selectUsers;
-        _c = context;
+        this.context = context;
         this.arraylist = new ArrayList<SelectUser>();
         this.arraylist.addAll(_data);
     }
@@ -59,17 +59,16 @@ public class SelectUserAdapter extends BaseAdapter {
         return i;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View view = convertView;
         if (view == null) {
-            LayoutInflater li = (LayoutInflater) _c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = li.inflate(R.layout.contact_info, null);
-            Log.e("Inside", "here--------------------------- In view1");
+
         } else {
             view = convertView;
-            Log.e("Inside", "here--------------------------- In view2");
+
         }
 
         v = new ViewHolder();
@@ -81,7 +80,7 @@ public class SelectUserAdapter extends BaseAdapter {
 
         final SelectUser data = (SelectUser) _data.get(i);
         v.title.setText(data.getName());
-        v.check.setChecked(data.getCheckedBox());
+        //v.check.setChecked(data.getCheckedBox());
         v.phone.setText(data.getPhone());
 
         // Set image if exists
@@ -103,19 +102,6 @@ public class SelectUserAdapter extends BaseAdapter {
         }
 
         Log.e("Image Thumb", "--------------" + data.getThumb());
-
-        /*// Set check box listener android
-        v.check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CheckBox checkBox = (CheckBox) view;
-                if (checkBox.isChecked()) {
-                    data.setCheckedBox(true);
-                  } else {
-                    data.setCheckedBox(false);
-                }
-            }
-        });*/
 
         view.setTag(data);
         return view;
