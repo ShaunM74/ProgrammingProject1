@@ -29,7 +29,7 @@ public class Settings extends AppCompatActivity {
 
     private CheckBox textBox,emailBox,soundBox,videoBox,callBox,mapgpsBox;
     private Switch cameraSwitch;
-    private Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
+    //private Boolean sendTextMessage,sendEmailMessage,sendSound,SendVideo,sendCall,sendMapGPS,cameraWhich;
     private String setTextKeyValue,setGmailKeyValue,setCallKeyValue,setSoundKeyValue,setVideoKeyValue,setMapGPSKeyValue,setCameraKeyValue;
     private TableRow contactRow;
     private TextView contactTextBox;
@@ -405,7 +405,7 @@ public class Settings extends AppCompatActivity {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 fileName, Context.MODE_PRIVATE);
 
-        String key = getString(R.string.SendTextMessage);
+        String key = getString(R.string.SendTxtMsg);
         String existingTextMsg = sharedPreferences.getString(key,null);
 
 
@@ -428,7 +428,7 @@ public class Settings extends AppCompatActivity {
                 fileName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        String key = getString(R.string.SendTextMessage);
+        String key = getString(R.string.SendTxtMsg);
         editor.putString(key, setTextKeyValue);
 
         editor.commit();

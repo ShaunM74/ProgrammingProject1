@@ -83,9 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // place GPS stuff here
-
-
+        //GPS stuff here
         textView = (TextView) findViewById(R.id.gpstesttext);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -199,7 +197,8 @@ public class MainActivity extends AppCompatActivity {
             }
             vibrator.cancel();
             //GPS stop
-            locationManager.removeUpdates(locationListener);
+            //locationManager.removeUpdates(locationListener);
+            locationManager.requestLocationUpdates("gps", 30000, 0, locationListener);
             alertButton.setImageResource(R.drawable.alertbuttonoff);
             unlockScreenRotation();
             return true;
