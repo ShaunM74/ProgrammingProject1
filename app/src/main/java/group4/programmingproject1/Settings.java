@@ -138,6 +138,7 @@ public class Settings extends AppCompatActivity {
 
 
         soundBox = (CheckBox)findViewById(R.id.Checkbox_RecSound);
+        videoBox = (CheckBox)findViewById(R.id.Checkbox_RecVideo);
 
         //SoundMsg CheckBox
 
@@ -153,6 +154,13 @@ public class Settings extends AppCompatActivity {
                     //settings value on needs to be saved
                     setSoundKeyValue = "true";
                     setSoundSettingsKeyValueFile(setSoundKeyValue);
+                    // IF Video check box is checked uncheck it and set file correctly cant have both
+                    if ( videoBox.isChecked())
+                    {
+                        videoBox.toggle();
+                        setVideoKeyValue = "false";
+                        setVideoSettingsKeyValueFile(setVideoKeyValue);
+                    }
                 }
                 else
                 {
@@ -164,7 +172,7 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        videoBox = (CheckBox)findViewById(R.id.Checkbox_RecVideo);
+        //videoBox = (CheckBox)findViewById(R.id.Checkbox_RecVideo);
 
         //SoundMsg CheckBox
 
@@ -180,6 +188,13 @@ public class Settings extends AppCompatActivity {
                     //settings value on needs to be saved
                     setVideoKeyValue = "true";
                     setVideoSettingsKeyValueFile(setVideoKeyValue);
+                    // IF sound check box is checked uncheck it and set file correctly cant have both
+                    if ( soundBox.isChecked())
+                    {
+                        soundBox.toggle();
+                        setSoundKeyValue = "false";
+                        setSoundSettingsKeyValueFile(setSoundKeyValue);
+                    }
                 }
                 else
                 {
