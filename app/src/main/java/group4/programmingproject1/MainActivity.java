@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView ;
     private String Longitude = null;
     private String Latitude = null;
+    private int slowCheck = 10000;
+    private int shortCheck = 1000;
 
 
     @Override
@@ -198,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             vibrator.cancel();
             //GPS stop
             //locationManager.removeUpdates(locationListener);
-            locationManager.requestLocationUpdates("gps", 30000, 0, locationListener);
+            locationManager.requestLocationUpdates("gps", slowCheck, 0, locationListener);
             alertButton.setImageResource(R.drawable.alertbuttonoff);
             unlockScreenRotation();
             return true;
@@ -306,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        locationManager.requestLocationUpdates("gps", 30000, 0, locationListener);
+        locationManager.requestLocationUpdates("gps", slowCheck, 0, locationListener);
 
     }
     // this is the active button held trigger, checks every 1 sec
@@ -319,6 +321,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+        locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
     }
 }
