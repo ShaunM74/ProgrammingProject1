@@ -4,6 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import org.dyndns.ecall.ecalldataapi.*;
+import org.dyndns.ecall.ecallsendapi.*;
+
 public class AlertService extends Service {
     public AlertService() {
     }
