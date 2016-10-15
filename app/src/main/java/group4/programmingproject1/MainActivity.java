@@ -254,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
                         .setTitle("Quit?")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                //Shut down gps
+                                locationManager.removeUpdates(locationListener);
                                 dialog.cancel();
                                 finish();
                             }
