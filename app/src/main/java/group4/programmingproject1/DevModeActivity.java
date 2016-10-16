@@ -105,11 +105,18 @@ public class DevModeActivity extends AppCompatActivity {
 
         });
 
-        //test value
+        //test values  for checking the dataHandler class REMOVE THIS!!
         dataHandler data1 = new dataHandler();
+        //this code tests if the get and set video time works
+        /*
         TextView testtext = (TextView) findViewById(R.id.testSpinner);
+        data1.setRecordTime(4,getApplicationContext(),getString(R.string.OptSettingsFile));
         testtext.setText( String.valueOf(data1.getRecordTime(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
-
+        */
+        //this code tests actual data values
+        //TextView testtext = (TextView) findViewById(R.id.testSpinner);
+        //data1.setRecordTimeActualBySecondsValue(4,getApplicationContext(),getString(R.string.OptSettingsFile));
+        //testtext.setText( String.valueOf(data1.getRecordTimeActualSecondsValue(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
 
 
 

@@ -77,15 +77,15 @@ public class Settings extends AppCompatActivity {
                 {
                     case 0 :
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "3 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(3);
+                        setVidSndRecSettingsKeyValueFile();
                         break;
                     case 1 :
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "4 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(4);
+                        setVidSndRecSettingsKeyValueFile();
                         break;
                     case 2:
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "5 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(5);
+                        setVidSndRecSettingsKeyValueFile();
                         break;
                     default :
                         break;
@@ -488,18 +488,9 @@ public class Settings extends AppCompatActivity {
 
 
     // set video sound record time key value
-    private void setVidSndRecSettingsKeyValueFile(int setTextKeyValue)
+    // stored values are  0 = 3 sec 1 = 4 sec  2 = 5 sec
+    private void setVidSndRecSettingsKeyValueFile()
     {
- /*     Context context = getApplicationContext();
-        String fileName = getString(R.string.OptSettingsFile);
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                fileName,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        String key = getString(R.string.SoundVideoRecordTime);
-        editor.putString(key, setTextKeyValue);
-*/
         String fileName = getString(R.string.OptSettingsFile);
         int userChoice = SpinnerVidSnd.getSelectedItemPosition();
         SharedPreferences shardPref = getSharedPreferences(fileName,0);

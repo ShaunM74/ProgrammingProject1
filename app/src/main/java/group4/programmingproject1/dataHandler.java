@@ -16,7 +16,7 @@ public class dataHandler extends AppCompatActivity
     //private Context context;
     //private String fileName;
 
-    //get video/sound record time setting value
+    //get video/sound record time setting value as index
     public int getRecordTime(Context context,String fileName,String key)
     {
 
@@ -35,32 +35,73 @@ public class dataHandler extends AppCompatActivity
 
 
     // set video sound record time key value
-    public void setRecordTime(int setTextKeyValue, Context context, Spinner spinner, String key, String fileName)
+    public void setRecordTime(int userChoice,Context context, String fileName)
     {
-        /*
-        context = getApplicationContext();
-        fileName = getString(R.string.OptSettingsFile);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                fileName,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //Locking in Value to no more than 5 seconds no less than 3 defensive programming yo!
+        if ( userChoice <= -1)
+        {
+            userChoice = 0;
+        }
+        else if ( userChoice >= 3 )
+        {
+            userChoice = 2;
+        }
+        else
+        {
+            userChoice = 1;
+        }
 
-        String key = getString(R.string.SoundVideoRecordTime);
-        //editor.putString(key, setTextKeyValue);
 
-        String fileName = getString(R.string.OptSettingsFile);
-        int userChoice = spinner.getSelectedItemPosition();
-        SharedPreferences shardPref = getSharedPreferences(fileName,0);
+        SharedPreferences shardPref = context.getSharedPreferences(fileName,0);
         SharedPreferences.Editor prefEditor = shardPref.edit();
         prefEditor.putInt("SoundVideoRecordTime",userChoice);
         prefEditor.commit();
-        */
+
     }
 
-    public int testtestfuck()
+
+    //get video/sound record time setting value as actual seconds value
+    public int getRecordTimeActualSecondsValue(Context context,String fileName,String key)
     {
 
-        int num = 50;
-        return num;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        int userChoice = sharedPreferences.getInt("SoundVideoRecordTime",-1);
+        if (userChoice != -1)
+        {
+            return userChoice+3;
+        }
+
+        return -1;
+
     }
+
+    // set video sound record time by aactual seconds value
+    public void setRecordTimeActualBySecondsValue(int userChoice,Context context, String fileName)
+    {
+
+        //Locking in Value to no more than 5 seconds no less than 3 defensive programming yo!
+        if ( userChoice <= 3)
+        {
+            userChoice = 0;
+        }
+        else if ( userChoice >= 5 )
+        {
+            userChoice = 2;
+        }
+        else
+        {
+            userChoice = 1;
+        }
+
+
+        SharedPreferences shardPref = context.getSharedPreferences(fileName,0);
+        SharedPreferences.Editor prefEditor = shardPref.edit();
+        prefEditor.putInt("SoundVideoRecordTime",userChoice);
+        prefEditor.commit();
+
+    }
+
 }

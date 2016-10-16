@@ -45,7 +45,7 @@
             <Button
                 android:text="Clear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="377dp"
                 android:id="@+id/clearTextButton" />
         </LinearLayout>
     </ScrollView>
@@ -72,14 +72,14 @@
     </ScrollView>
 
     <TextView
-        android:text="TextView"
+        android:text="dataHandlerTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonScroller"
-        android:layout_alignEnd="@+id/text_scroller"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="54dp"
-        android:id="@+id/testSpinner" />
+        android:id="@+id/testSpinner"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="55dp" />
 
 
 </RelativeLayout>
