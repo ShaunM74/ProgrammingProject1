@@ -23,6 +23,8 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.widget.Toast;
 
+import org.dyndns.ecall.ecalldataapi.EcallRegister;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -151,22 +153,8 @@ public class DevModeActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             String tempString ="";
-            try {
-                URL url = new URL("http://54.70.221.177/testecallRegister.php");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    tempString=readStream(in);
-                } finally {
-                    urlConnection.disconnect();
-                }
-            }
-            catch(Exception e)
-                {
-
-                }
-
-             return tempString;
+            tempString = EcallRegister.registerDevice();
+            return tempString;
         }
 
         private String readStream(InputStream is) throws IOException {
