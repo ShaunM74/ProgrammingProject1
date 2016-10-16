@@ -36,6 +36,9 @@ import java.util.HashSet;
 
 import static android.R.attr.button;
 
+//testing code
+//import group4.programmingproject1.dataHandler;
+
 public class DevModeActivity extends AppCompatActivity {
 
     private Button testRegister;
@@ -47,8 +50,8 @@ public class DevModeActivity extends AppCompatActivity {
     private static final int myPickerResult = 12376;
 
     //test code for spinner data being recovered from datahandler
-    TextView testtext;
-    Spinner SpinnerVidSnd;
+    //TextView testtext;
+    //Spinner SpinnerVidSnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +106,12 @@ public class DevModeActivity extends AppCompatActivity {
         });
 
         //test value
-        dataHandler data = new dataHandler();
-        testtext = (TextView) findViewById(R.id.testSpinner);
-        testtext.setText( String.valueOf(data.getRecordTime()));
+        dataHandler data1 = new dataHandler();
+        TextView testtext = (TextView) findViewById(R.id.testSpinner);
+        testtext.setText( String.valueOf(data1.getRecordTime(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
+
+
+
 
     }
 

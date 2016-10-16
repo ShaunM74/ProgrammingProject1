@@ -2,6 +2,7 @@ package group4.programmingproject1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Spinner;
 
@@ -12,19 +13,15 @@ import android.widget.Spinner;
 public class dataHandler extends AppCompatActivity
 {
 
+    //private Context context;
+    //private String fileName;
 
     //get video/sound record time setting value
-    public int getRecordTime()
+    public int getRecordTime(Context context,String fileName,String key)
     {
-
-        Context context = getApplicationContext();
-        String fileName = getString(R.string.OptSettingsFile);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 fileName, Context.MODE_PRIVATE);
-
-        //String key = getString(R.string.SoundVideoRecordTime);
-        //String existingTextMsg = sharedPreferences.getString(key,null);
 
         int userChoice = sharedPreferences.getInt("SoundVideoRecordTime",-1);
         if (userChoice != -1)
@@ -38,24 +35,32 @@ public class dataHandler extends AppCompatActivity
 
 
     // set video sound record time key value
-    public void setRecordTime(int setTextKeyValue, Spinner spinner)
+    public void setRecordTime(int setTextKeyValue, Context context, Spinner spinner, String key, String fileName)
     {
- /*     Context context = getApplicationContext();
-        String fileName = getString(R.string.OptSettingsFile);
+        /*
+        context = getApplicationContext();
+        fileName = getString(R.string.OptSettingsFile);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 fileName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         String key = getString(R.string.SoundVideoRecordTime);
-        editor.putString(key, setTextKeyValue);
-*/
+        //editor.putString(key, setTextKeyValue);
+
         String fileName = getString(R.string.OptSettingsFile);
         int userChoice = spinner.getSelectedItemPosition();
         SharedPreferences shardPref = getSharedPreferences(fileName,0);
         SharedPreferences.Editor prefEditor = shardPref.edit();
         prefEditor.putInt("SoundVideoRecordTime",userChoice);
         prefEditor.commit();
+        */
+    }
 
+    public int testtestfuck()
+    {
+
+        int num = 50;
+        return num;
     }
 }
