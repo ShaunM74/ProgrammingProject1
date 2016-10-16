@@ -41,6 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/testContactButton" />
+
             <Button
                 android:text="Clear"
                 android:layout_width="match_parent"
@@ -48,14 +49,13 @@
                 android:id="@+id/clearTextButton" />
         </LinearLayout>
     </ScrollView>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/text_scroller"
-        android:layout_below="@+id/buttonScroller"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginEnd="13dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,6 +70,16 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonScroller"
+        android:layout_alignEnd="@+id/text_scroller"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="54dp"
+        android:id="@+id/testSpinner" />
 
 
 </RelativeLayout>

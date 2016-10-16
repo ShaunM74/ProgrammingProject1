@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
@@ -44,6 +45,10 @@ public class DevModeActivity extends AppCompatActivity {
     Context context;
     private static final int CONTACT_PICKER_RESULT = 1001;
     private static final int myPickerResult = 12376;
+
+    //test code for spinner data being recovered from datahandler
+    TextView testtext;
+    Spinner SpinnerVidSnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,10 @@ public class DevModeActivity extends AppCompatActivity {
 
         });
 
+        //test value
+        dataHandler data = new dataHandler();
+        testtext = (TextView) findViewById(R.id.testSpinner);
+        testtext.setText( String.valueOf(data.getRecordTime()));
 
     }
 

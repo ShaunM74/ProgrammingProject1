@@ -73,20 +73,19 @@ public class Settings extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 ((TextView) parent.getChildAt(0)).setTextSize(13);
                 //
-
                 switch(position)
                 {
                     case 0 :
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "3 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(0);
+                        setVidSndRecSettingsKeyValueFile(3);
                         break;
                     case 1 :
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "4 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(1);
+                        setVidSndRecSettingsKeyValueFile(4);
                         break;
                     case 2:
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "5 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(2);
+                        setVidSndRecSettingsKeyValueFile(5);
                         break;
                     default :
                         break;
@@ -488,7 +487,7 @@ public class Settings extends AppCompatActivity {
     }
 
 
-    // set txt message key value
+    // set video sound record time key value
     private void setVidSndRecSettingsKeyValueFile(int setTextKeyValue)
     {
  /*     Context context = getApplicationContext();
