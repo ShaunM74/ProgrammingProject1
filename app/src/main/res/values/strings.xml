@@ -86,6 +86,7 @@
     <string name="pref_title_vibrate">Vibrate</string>
 
     <string name="pref_contact_name">Contact_Name</string>
+    <string name="pref_contact_id">ContactID</string>
     <string name="pref_contact_email">Contact_Email</string>
     <string name="pref_contact_phone_number">Contact_Phone_Number</string>
     <string name="pref_contact_image_uri">Contact_Image_URI</string>

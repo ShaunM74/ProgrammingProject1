@@ -1,5 +1,7 @@
 package org.dyndns.ecall.ecalldataapi;
 
+import android.os.AsyncTask;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +40,35 @@ public class EcallRegister {
 
         return tempString;
     }
+
+
+    class registerDevice extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String tempString ="";
+            tempString = EcallRegister.registerDevice();
+            return tempString;
+        }
+
+
+        @Override
+        protected void onPostExecute(String results) {
+
+        }
+    }
+
+
+
+
+
+
+
 
     private static String readStream(InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();

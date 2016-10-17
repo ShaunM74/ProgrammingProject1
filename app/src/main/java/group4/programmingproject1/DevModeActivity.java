@@ -157,15 +157,6 @@ public class DevModeActivity extends AppCompatActivity {
             return tempString;
         }
 
-        private String readStream(InputStream is) throws IOException {
-            StringBuilder sb = new StringBuilder();
-            BufferedReader r = new BufferedReader(new InputStreamReader(is),1000);
-            for (String line = r.readLine(); line != null; line =r.readLine()){
-                sb.append(line);
-            }
-            is.close();
-            return sb.toString();
-        }
 
         @Override
         protected void onPostExecute(String results) {
