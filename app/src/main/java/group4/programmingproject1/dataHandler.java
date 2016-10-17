@@ -16,8 +16,8 @@ public class dataHandler extends AppCompatActivity
     //private Context context;
     //private String fileName;
 
-    //get video/sound record time setting value as index
-    public int getRecordTime(Context context,String fileName,String key)
+    //get video/sound record time setting value as array index
+    public int getRecordTimeByIndex(Context context,String fileName,String key)
     {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -34,8 +34,8 @@ public class dataHandler extends AppCompatActivity
     }
 
 
-    // set video sound record time key value
-    public void setRecordTime(int userChoice,Context context, String fileName)
+    // set video sound record time by array index
+    public void setRecordTimeByIndex(int userChoice,Context context, String fileName)
     {
 
         //Locking in Value to no more than 5 seconds no less than 3 defensive programming yo!
@@ -62,7 +62,7 @@ public class dataHandler extends AppCompatActivity
 
 
     //get video/sound record time setting value as actual seconds value
-    public int getRecordTimeActualSecondsValue(Context context,String fileName,String key)
+    public int getRecordTimeBySeconds(Context context,String fileName,String key)
     {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -78,8 +78,8 @@ public class dataHandler extends AppCompatActivity
 
     }
 
-    // set video sound record time by aactual seconds value
-    public void setRecordTimeActualBySecondsValue(int userChoice,Context context, String fileName)
+    // set video sound record time by actual seconds value
+    public void setRecordTimeBySeconds(int userChoice,Context context, String fileName)
     {
 
         //Locking in Value to no more than 5 seconds no less than 3 defensive programming yo!
