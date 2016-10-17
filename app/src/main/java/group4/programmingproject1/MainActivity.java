@@ -123,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
+
+
+
+
         //configure button stuff call maybe here****************
         startGPS();
     }

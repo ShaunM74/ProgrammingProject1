@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +26,10 @@ import android.widget.TextView;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -39,7 +46,7 @@ import static android.R.attr.button;
 //testing code
 //import group4.programmingproject1.dataHandler;
 
-public class DevModeActivity extends AppCompatActivity {
+public class DevModeActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private Button testRegister;
     private Button testContact;
@@ -50,8 +57,15 @@ public class DevModeActivity extends AppCompatActivity {
     private static final int myPickerResult = 12376;
 
     //test code for spinner data being recovered from datahandler
-    //TextView testtext;
+    //TextView test text;
     //Spinner SpinnerVidSnd;
+
+    //Google fused location test
+    GoogleApiClient mGoogleApiClient;
+    protected Location mLastLocation;
+    protected TextView mLatitudeText;
+    protected TextView mLongitudeText;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +119,9 @@ public class DevModeActivity extends AppCompatActivity {
 
         });
 
-        //test values  for checking the dataHandler class REMOVE THIS!!
+        //###############################################
+        //test values  for checking the dataHandler class
+        //###############################################
         dataHandler data1 = new dataHandler();
         //this code tests if the get and set video time works
         /*
@@ -117,6 +133,18 @@ public class DevModeActivity extends AppCompatActivity {
         //TextView testtext = (TextView) findViewById(R.id.testSpinner);
         //data1.setRecordTimeActualBySecondsValue(4,getApplicationContext(),getString(R.string.OptSettingsFile));
         //testtext.setText( String.valueOf(data1.getRecordTimeActualSecondsValue(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
+
+        //###############################################
+        // Google Fused Location API Testing
+        //###############################################
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
 
 
@@ -161,6 +189,30 @@ public class DevModeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle)
+    {
+        mLatitudeText = (TextView) findViewById(R.id.latitudedevtext);
+        mLongitudeText= (TextView) findViewById(R.id.longitudedevtext);
+        
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null)
+        {
+            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 
 
     class registerDevice extends AsyncTask<Void, Void, String> {
@@ -206,6 +258,18 @@ public class DevModeActivity extends AppCompatActivity {
             TextBox.append(results.toString());
 
         }
+    }
+    //Google API Fused Location code test
+    protected void onStart()
+    {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop()
+    {
+        mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
 
