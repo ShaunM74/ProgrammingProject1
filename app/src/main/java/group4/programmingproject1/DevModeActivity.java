@@ -27,6 +27,8 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.widget.Toast;
 
+import org.dyndns.ecall.ecalldataapi.EcallRegister;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -225,33 +227,10 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         @Override
         protected String doInBackground(Void... voids) {
             String tempString ="";
-            try {
-                URL url = new URL("http://54.70.221.177/testecallRegister.php");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    tempString=readStream(in);
-                } finally {
-                    urlConnection.disconnect();
-                }
-            }
-            catch(Exception e)
-                {
-
-                }
-
-             return tempString;
+            tempString = EcallRegister.registerDevice();
+            return tempString;
         }
 
-        private String readStream(InputStream is) throws IOException {
-            StringBuilder sb = new StringBuilder();
-            BufferedReader r = new BufferedReader(new InputStreamReader(is),1000);
-            for (String line = r.readLine(); line != null; line =r.readLine()){
-                sb.append(line);
-            }
-            is.close();
-            return sb.toString();
-        }
 
         @Override
         protected void onPostExecute(String results) {

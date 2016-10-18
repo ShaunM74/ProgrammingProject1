@@ -376,7 +376,7 @@ public class Settings extends AppCompatActivity {
                     } catch (Exception e) {
 
                     }
-                    setContactKeyValueFile(data.getStringExtra("name"), data.getStringExtra("email"),
+                    setContactKeyValueFile(data.getStringExtra("contactID"),data.getStringExtra("name"), data.getStringExtra("email"),
                             data.getStringExtra("phone"), image_thumb);
 
                 }
@@ -403,7 +403,6 @@ public class Settings extends AppCompatActivity {
                 fileName, Context.MODE_PRIVATE);
 
         String nameKey = getString(R.string.pref_contact_name);
-
         String existingName = sharedPreferences.getString(nameKey,null);
         String emailKey = getString(R.string.pref_contact_email);
         String existingEmail = sharedPreferences.getString(emailKey,null);
@@ -434,7 +433,7 @@ public class Settings extends AppCompatActivity {
     }
 
     // set txt message key value
-    private void setContactKeyValueFile(String contactName, String contactEmail,
+    private void setContactKeyValueFile(String contactID, String contactName, String contactEmail,
                                         String contactPhone, String contactThumb)
     {
         Context context = getApplicationContext();
@@ -446,6 +445,8 @@ public class Settings extends AppCompatActivity {
 
         String nameKey = getString(R.string.pref_contact_name);
         editor.putString(nameKey, contactName);
+        String idKey = getString(R.string.pref_contact_id);
+        editor.putString(idKey,contactID);
         String emailKey = getString(R.string.pref_contact_email);
         editor.putString(emailKey, contactEmail);
         String phoneKey = getString(R.string.pref_contact_phone_number);

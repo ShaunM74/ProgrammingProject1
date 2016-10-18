@@ -6,9 +6,22 @@ package group4.programmingproject1;
 public class SelectUser {
     String name;
 
+    String contactID;
+
+    public String getID()
+    {
+        return contactID;
+    }
+
+    public void setID(String contactID)
+    {
+        this.contactID =contactID;
+    }
+
     public Bitmap getThumb() {
         return thumb;
     }
+
 
     public void setThumb(Bitmap thumb) {
         this.thumb = thumb;

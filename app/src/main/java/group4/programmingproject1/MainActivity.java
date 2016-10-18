@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
@@ -30,8 +31,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import org.dyndns.ecall.ecalldataapi.EcallRegister;
 import org.w3c.dom.Text;
+
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import static group4.programmingproject1.R.id.textView;
 
@@ -52,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private String Latitude = null;
     private int slowCheck = 10000;
     private int shortCheck = 1000;
+    private Date lastAlertDate =null;
+
 
 
     @Override
@@ -123,12 +132,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-
-
-
-
         //configure button stuff call maybe here****************
         startGPS();
+
+        Intent alertService = new Intent(this,AlertService.class);
+        startService(alertService);
     }
 
 
@@ -191,16 +199,42 @@ public class MainActivity extends AppCompatActivity {
             rect = new Rect(cancelButton.getLeft(), cancelButton.getTop(), cancelButton.getRight(), cancelButton.getBottom());
             if(rect.contains(v.getLeft()+(int)event.getX(),v.getTop()+(int)event.getY()))
             {
-                Toast.makeText(MainActivity.this, "Did not set off alert", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Alarm disarmed", Toast.LENGTH_LONG).show();
             }
             else
             {
-                Toast.makeText(MainActivity.this, "Set off alert", Toast.LENGTH_LONG).show();
-                //****************************************
-                //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
-                //****************************************
-                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.police);
-                mediaPlayer.start();
+
+                 Date alertDate = new java.util.Date();
+
+                String alertID = new SimpleDateFormat("yyyyMMddHHmmss").format(alertDate);
+                if(lastAlertDate != null )
+                {
+                    long temp =(alertDate.getTime()-lastAlertDate.getTime());
+                    if( temp<30000)
+                    {
+
+                        Toast.makeText(MainActivity.this, "Alert was already activated " +(temp/1000)+
+                                " seconds ago", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        //****************************************
+                        //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
+                        //****************************************
+
+                        lastAlertDate = alertDate;
+                        Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+                    }
+
+                }
+                else
+                {
+                    lastAlertDate = alertDate;
+                    Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+                }
+
+
+
             }
             vibrator.cancel();
             //GPS stop
@@ -240,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Handles menu choices.
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        final Context context=this;
         switch (item.getItemId()) {
             case R.id.about: {
                 doAbout();
@@ -261,6 +295,8 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //Shut down gps
                                 locationManager.removeUpdates(locationListener);
+                                Intent alertService = new Intent(context,AlertService.class);
+                                stopService(alertService);
                                 dialog.cancel();
                                 finish();
                             }
@@ -329,5 +365,52 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
+    }
+
+
+
+    // Load data on background
+    class DoAlert extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            return null;
+        }
+
+        protected void onPostExecute(Void aVoid)
+        {
+
+        }
+    }
+
+
+    class registerDevice extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String tempString ="";
+            tempString = EcallRegister.registerDevice();
+            return tempString;
+        }
+
+
+        @Override
+        protected void onPostExecute(String results) {
+            Toast.makeText(MainActivity.this, results.toString(), Toast.LENGTH_LONG).show();
+
+
+        }
     }
 }
