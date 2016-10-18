@@ -100,7 +100,11 @@
     <string name="RecordVid">Record video</string>
     <string name="FrontCam">Front Camera</string>
     <string name="FaceCam">Face Camera</string>
+
     <string name="MapsGPS">Send Location Maps/GPS</string>
+    <string name="GPSLat">GPS LATITUDE</string>
+    <string name="GPSLONG">GPS LONGITUDE</string>
+
     <string name="Contact4Eme">Contact for Emergency</string>
     <!-- Option view Settings file -->
     <string name="OptSettingsFile">com.optional.Settings.Project.txt</string>

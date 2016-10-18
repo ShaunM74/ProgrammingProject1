@@ -132,12 +132,13 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         testtext.setText( String.valueOf(data1.getRecordTime(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
         */
         //this code tests actual data values
-        //TextView testtext = (TextView) findViewById(R.id.testSpinner);
+        TextView testtext = (TextView) findViewById(R.id.testSpinner);
+        TextView testtext2 = (TextView) findViewById(R.id.dataHLongitest);
         //data1.setRecordTimeActualBySecondsValue(4,getApplicationContext(),getString(R.string.OptSettingsFile));
         //testtext.setText( String.valueOf(data1.getRecordTimeActualSecondsValue(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
 
         //###############################################
-        // Google Fused Location API Testing
+        // Google Fused Location API
         //###############################################
         // Create an instance of GoogleAPIClient.
         if (mGoogleApiClient == null) {
@@ -147,6 +148,17 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
                     .addApi(LocationServices.API)
                     .build();
         }
+
+       //data1.saveGPS(getApplicationContext(),getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.OptSettingsFile),String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()));
+        //data1.saveGPS(getApplicationContext(),getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.OptSettingsFile),"Latitudetest","longitudetest");
+        dataHandler.GPSobject gps;
+        gps = data1.getGPS(getApplicationContext(),getString(R.string.GPSLat),getString(R.string.GPSLONG),getString(R.string.OptSettingsFile));
+
+        testtext.setText(gps.getLatitude());
+        testtext2.setText(gps.getLongitude());
+
+
+
 
 
 

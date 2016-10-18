@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 Longitude = String.valueOf(location.getLongitude());
                 Latitude  = String.valueOf(location.getLatitude());
 
+
             }
 
             @Override
@@ -194,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
+            saveGPSNow();
             // Check if event occured within the bounds of the button, if so do button action
             // Otherwise cancel/ignore the event.
             rect = new Rect(cancelButton.getLeft(), cancelButton.getTop(), cancelButton.getRight(), cancelButton.getBottom());
@@ -218,9 +220,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        //****************************************
-                        //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
-                        //****************************************
+
 
                         lastAlertDate = alertDate;
                         Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
@@ -365,6 +365,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
+    }
+    void saveGPSNow()
+    {
+        //****************************************
+        //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
+        dataHandler data1 = new dataHandler();
+        data1.saveGPS(getApplicationContext(),getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.OptSettingsFile),String.valueOf(Latitude),String.valueOf(Longitude));
+        //****************************************
     }
 
 

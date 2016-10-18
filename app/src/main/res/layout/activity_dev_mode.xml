@@ -99,5 +99,13 @@
         android:layout_marginTop="14dp"
         android:id="@+id/longitudedevtext" />
 
+    <TextView
+        android:text="DataHandlerTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/longitudedevtext"
+        android:layout_alignStart="@+id/testSpinner"
+        android:id="@+id/dataHLongitest" />
+
 
 </RelativeLayout>
