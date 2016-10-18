@@ -119,7 +119,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                     //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA1));
                     Log.d("Debug",phoneNumber);
                     String EmailAddr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA1));
-
+                    String contactID= phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID));
 
                     String image_thumb = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
                     try {
@@ -138,6 +138,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                     selectUser.setName(name);
                     selectUser.setPhone(phoneNumber);
                     selectUser.setEmail(EmailAddr);
+                    selectUser.setID(contactID);
                     //selectUser.setCheckedBox(false);
                     selectUsers.add(selectUser);
                 }
@@ -163,6 +164,7 @@ public class ContactPickerActivity extends AppCompatActivity {
 
                     SelectUser data = selectUsers.get(i);
                     Intent returnData = new Intent();
+                    returnData.putExtra("ContactID",data.getID());
                     returnData.putExtra("name",data.getName());
                     returnData.putExtra("email",data.getEmail());
                     returnData.putExtra("phone",data.getPhone());

@@ -41,21 +41,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/testContactButton" />
+
             <Button
                 android:text="Clear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="377dp"
                 android:id="@+id/clearTextButton" />
         </LinearLayout>
     </ScrollView>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/text_scroller"
-        android:layout_below="@+id/buttonScroller"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginEnd="13dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,6 +70,34 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:text="dataHandlerTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/testSpinner"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="55dp" />
+
+    <TextView
+        android:text="Latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/testSpinner"
+        android:layout_alignEnd="@+id/text_scroller"
+        android:layout_marginEnd="70dp"
+        android:id="@+id/latitudedevtext" />
+
+    <TextView
+        android:text="Longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/latitudedevtext"
+        android:layout_alignEnd="@+id/latitudedevtext"
+        android:layout_marginTop="14dp"
+        android:id="@+id/longitudedevtext" />
 
 
 </RelativeLayout>

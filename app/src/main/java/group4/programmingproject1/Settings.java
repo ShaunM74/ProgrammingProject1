@@ -73,20 +73,19 @@ public class Settings extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 ((TextView) parent.getChildAt(0)).setTextSize(13);
                 //
-
                 switch(position)
                 {
                     case 0 :
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "3 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(0);
+                        setVidSndRecSettingsKeyValueFile();
                         break;
                     case 1 :
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "4 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(1);
+                        setVidSndRecSettingsKeyValueFile();
                         break;
                     case 2:
                         //Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + "5 Seconds", Toast.LENGTH_SHORT).show();
-                        setVidSndRecSettingsKeyValueFile(2);
+                        setVidSndRecSettingsKeyValueFile();
                         break;
                     default :
                         break;
@@ -377,7 +376,7 @@ public class Settings extends AppCompatActivity {
                     } catch (Exception e) {
 
                     }
-                    setContactKeyValueFile(data.getStringExtra("name"), data.getStringExtra("email"),
+                    setContactKeyValueFile(data.getStringExtra("contactID"),data.getStringExtra("name"), data.getStringExtra("email"),
                             data.getStringExtra("phone"), image_thumb);
 
                 }
@@ -404,7 +403,6 @@ public class Settings extends AppCompatActivity {
                 fileName, Context.MODE_PRIVATE);
 
         String nameKey = getString(R.string.pref_contact_name);
-
         String existingName = sharedPreferences.getString(nameKey,null);
         String emailKey = getString(R.string.pref_contact_email);
         String existingEmail = sharedPreferences.getString(emailKey,null);
@@ -435,7 +433,7 @@ public class Settings extends AppCompatActivity {
     }
 
     // set txt message key value
-    private void setContactKeyValueFile(String contactName, String contactEmail,
+    private void setContactKeyValueFile(String contactID, String contactName, String contactEmail,
                                         String contactPhone, String contactThumb)
     {
         Context context = getApplicationContext();
@@ -447,6 +445,8 @@ public class Settings extends AppCompatActivity {
 
         String nameKey = getString(R.string.pref_contact_name);
         editor.putString(nameKey, contactName);
+        String idKey = getString(R.string.pref_contact_id);
+        editor.putString(idKey,contactID);
         String emailKey = getString(R.string.pref_contact_email);
         editor.putString(emailKey, contactEmail);
         String phoneKey = getString(R.string.pref_contact_phone_number);
@@ -488,19 +488,10 @@ public class Settings extends AppCompatActivity {
     }
 
 
-    // set txt message key value
-    private void setVidSndRecSettingsKeyValueFile(int setTextKeyValue)
+    // set video sound record time key value
+    // stored values are  0 = 3 sec 1 = 4 sec  2 = 5 sec
+    private void setVidSndRecSettingsKeyValueFile()
     {
- /*     Context context = getApplicationContext();
-        String fileName = getString(R.string.OptSettingsFile);
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                fileName,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        String key = getString(R.string.SoundVideoRecordTime);
-        editor.putString(key, setTextKeyValue);
-*/
         String fileName = getString(R.string.OptSettingsFile);
         int userChoice = SpinnerVidSnd.getSelectedItemPosition();
         SharedPreferences shardPref = getSharedPreferences(fileName,0);
