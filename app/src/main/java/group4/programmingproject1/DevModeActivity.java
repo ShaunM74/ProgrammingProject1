@@ -194,7 +194,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
     {
         mLatitudeText = (TextView) findViewById(R.id.latitudedevtext);
         mLongitudeText= (TextView) findViewById(R.id.longitudedevtext);
-        
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null)
