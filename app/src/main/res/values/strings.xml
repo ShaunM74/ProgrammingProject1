@@ -85,8 +85,14 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
 
-    //Send Option view Settings
-    //English
+    <string name="pref_contact_name">Contact_Name</string>
+    <string name="pref_contact_id">ContactID</string>
+    <string name="pref_contact_email">Contact_Email</string>
+    <string name="pref_contact_phone_number">Contact_Phone_Number</string>
+    <string name="pref_contact_image_uri">Contact_Image_URI</string>
+
+    <!-- Send Option view Settings
+    English  -->
     <string name="SendTxtMsg">Send Text Message</string>
     <string name="SendEmail">Send Email</string>
     <string name="CallEmeNum">Call Emergency Number</string>
@@ -96,9 +102,18 @@
     <string name="FaceCam">Face Camera</string>
     <string name="MapsGPS">Send Location Maps/GPS</string>
     <string name="Contact4Eme">Contact for Emergency</string>
-    //Option view Settings file
+    <!-- Option view Settings file -->
     <string name="OptSettingsFile">com.optional.Settings.Project.txt</string>
-    <string name="SendTextMessage">SendTextMessage</string>
+    <!-- <string name="SendTextMessage">SendTextMessage</string> -->
     <string name="CameraSwitch">CameraSwitch</string>
+    <!-- Spinners -->
+    <string name="SoundVideoRecordTime">vidSndRecTimeSpinner</string>
+
+    <string-array name="Record_Times">
+        <item>3 Sec</item>
+        <item>4 Sec</item>
+        <item>5 Sec</item>
+    </string-array>
+
 
 </resources>
