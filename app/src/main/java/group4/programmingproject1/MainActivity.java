@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -59,7 +60,17 @@ public class MainActivity extends AppCompatActivity {
     private String Latitude = null;
     private int slowCheck = 10000;
     private int shortCheck = 1000;
+    //private Date GPSdate = null;
+
+    // GPS saving handler
+    private int GPSsaveRate = 600000;
+    private Handler gpsHandler;
+
+
+
+
     private Date lastAlertDate =null;
+
 
 
 
@@ -96,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //GPS stuff here
+
+
+
+        //test text on button
         textView = (TextView) findViewById(R.id.gpstesttext);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -138,6 +153,37 @@ public class MainActivity extends AppCompatActivity {
 
         Intent alertService = new Intent(this,AlertService.class);
         startService(alertService);
+
+        //GPS saving
+        gpsHandler = new Handler();
+        startRepeatingGPSTask();
+    }
+
+    Runnable GPSStatusSaver = new Runnable() {
+        @Override
+        public void run()
+        {
+            try
+            {
+                //updateStatus();
+                saveGPSNow();
+                //Toast.makeText(MainActivity.this, "GPS SAVED by Handler", Toast.LENGTH_LONG).show();
+            }
+            finally
+            {
+                gpsHandler.postDelayed(GPSStatusSaver,GPSsaveRate);
+            }
+        }
+    };
+
+
+    private void startRepeatingGPSTask()
+    {
+        GPSStatusSaver.run();
+    }
+    private void stopRepeatingGPSTask()
+    {
+        gpsHandler.removeCallbacks(GPSStatusSaver);
     }
 
 
@@ -295,6 +341,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //Shut down gps
                                 locationManager.removeUpdates(locationListener);
+                                stopRepeatingGPSTask();
                                 Intent alertService = new Intent(context,AlertService.class);
                                 stopService(alertService);
                                 dialog.cancel();
@@ -366,13 +413,16 @@ public class MainActivity extends AppCompatActivity {
         }
         locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
     }
+
+    //FUNCTION TO SEND GPS VARIABLES longitude and latitude
     void saveGPSNow()
     {
-        //****************************************
-        //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
         dataHandler data1 = new dataHandler();
-        data1.saveGPS(getApplicationContext(),getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.OptSettingsFile),String.valueOf(Latitude),String.valueOf(Longitude));
-        //****************************************
+        if ( Latitude != null && Longitude != null )
+        {
+            data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
+        }
+
     }
 
 
