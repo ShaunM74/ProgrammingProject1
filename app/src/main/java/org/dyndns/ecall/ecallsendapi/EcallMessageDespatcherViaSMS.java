@@ -17,6 +17,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
     private String phoneNo=null;
     private String message=null;
 
+
     public EcallMessageDespatcherViaSMS(EcallAlert alert)
     {
         this.InitStructures(alert);

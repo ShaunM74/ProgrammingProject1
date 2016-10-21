@@ -2,14 +2,17 @@ package group4.programmingproject1;
 
 
 //import android.content.ContentResolver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 //import android.database.Cursor;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 //import android.provider.ContactsContract;
 //import android.provider.MediaStore;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

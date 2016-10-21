@@ -95,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
 
+        //Permission for sending SMS request
+        ActivityCompat.requestPermissions(this,new String[]
+                {
+                        Manifest.permission.SEND_SMS
+                },1);
 
         // On touch listeners to report button touches
         // Using touch listeners to capture finger raised events.
@@ -106,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         //GPS stuff here
-
-
 
         //test text on button
         textView = (TextView) findViewById(R.id.gpstesttext);
