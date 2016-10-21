@@ -2,9 +2,11 @@ package group4.programmingproject1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
+//import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Spinner;
+//import android.widget.Spinner;
+
+//import java.util.Date;
 
 /**
  * Created by Yipster on 16/10/2016.
@@ -122,6 +124,25 @@ public class dataHandler extends AppCompatActivity
 
     }
 
+    public void saveGPS(Context context, String latkey,String Longkey,String timekey,String fileName,String Latitude,String Longitude, String time)
+    {
+
+        //Context context = getApplicationContext();
+        //String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //String key = getString(R.string.SendTxtMsg);
+        editor.putString(latkey, Latitude);
+        editor.putString(Longkey,Longitude );
+        editor.putString(timekey,time);
+
+        editor.commit();
+
+    }
+
     public GPSobject getGPS(Context context,String keylat,String keyLong,String fileName)
     {
         //String lat;
@@ -154,15 +175,60 @@ public class dataHandler extends AppCompatActivity
         return gps;
     }
 
+    public GPSobject getGPS(Context context,String keylat,String keyLong,String keytime,String fileName)
+    {
+        //String lat;
+        //String longi;
+
+        //Context context = getApplicationContext();
+        //String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        //String key = getString(R.string.SendEmail);
+        String lat = sharedPreferences.getString(keylat,null);
+        String longi = sharedPreferences.getString(keyLong,null);
+        String time = sharedPreferences.getString(keytime,null);
+        //String lat = "test1";
+        //String longi = "test2";
+
+    /*
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
+                emailBox.setChecked(true);
+            }
+        }
+    */
+
+        GPSobject gps = new GPSobject(lat,longi,time);
+
+        return gps;
+    }
+
+
+
     public class GPSobject
     {
         private String latitude;
         private String longitude;
 
+        private String GPStime;
+
         public GPSobject (String Latitude, String Longitude)
         {
             latitude = Latitude;
             longitude = Longitude;
+            GPStime = null;
+        }
+
+        public GPSobject (String Latitude,String Longitude,String gpsTime)
+        {
+            latitude = Latitude;
+            longitude = Longitude;
+            GPStime = gpsTime;
         }
 
 
@@ -175,6 +241,8 @@ public class dataHandler extends AppCompatActivity
         {
             return this.longitude;
         }
+
+        public String getGPSTime() {return this.GPStime;}
 
     }
 

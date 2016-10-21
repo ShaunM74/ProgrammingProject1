@@ -134,6 +134,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         //this code tests actual data values
         TextView testtext = (TextView) findViewById(R.id.testSpinner);
         TextView testtext2 = (TextView) findViewById(R.id.dataHLongitest);
+        TextView testtext3 = (TextView) findViewById(R.id.GPSTIME);
         //data1.setRecordTimeActualBySecondsValue(4,getApplicationContext(),getString(R.string.OptSettingsFile));
         //testtext.setText( String.valueOf(data1.getRecordTimeActualSecondsValue(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
 
@@ -152,14 +153,11 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
        //data1.saveGPS(getApplicationContext(),getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.OptSettingsFile),String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()));
         //data1.saveGPS(getApplicationContext(),getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.OptSettingsFile),"Latitudetest","longitudetest");
         dataHandler.GPSobject gps;
-        gps = data1.getGPS(getApplicationContext(),getString(R.string.GPSLat),getString(R.string.GPSLONG),getString(R.string.OptSettingsFile));
+        gps = data1.getGPS(getApplicationContext(),getString(R.string.GPSLat),getString(R.string.GPSLONG),getString(R.string.GPStime),getString(R.string.OptSettingsFile));
 
         testtext.setText(gps.getLatitude());
         testtext2.setText(gps.getLongitude());
-
-
-
-
+        testtext3.setText(gps.getGPSTime());
 
 
     }

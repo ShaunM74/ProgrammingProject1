@@ -420,9 +420,24 @@ public class MainActivity extends AppCompatActivity {
         dataHandler data1 = new dataHandler();
         if ( Latitude != null && Longitude != null )
         {
-            data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
+            //data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
+            data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.GPStime), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude),getTime());
         }
 
+    }
+
+    private String getTime()
+    {
+
+        Calendar c = Calendar.getInstance();
+        //SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss a");
+        //SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
+        SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
+
+        String formattedDate = df.format(c.getTime());
+
+
+        return formattedDate;
     }
 
 
