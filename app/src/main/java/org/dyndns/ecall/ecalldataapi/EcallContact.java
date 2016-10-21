@@ -30,6 +30,12 @@ public class EcallContact {
         return ("a@example.com");
     }
 
+    public String getPhone()
+    {
+        return "12345679";
+    }
+
+
         // get / set the field to be used to contact the recipient
         // this is the fieldname in the Payload Data - eg FaxNumber
     public String  getContactAddressField()
