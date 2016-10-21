@@ -376,8 +376,7 @@ public class Settings extends AppCompatActivity {
                     } catch (Exception e) {
 
                     }
-                    setContactKeyValueFile(data.getStringExtra("contactID"),data.getStringExtra("name"), data.getStringExtra("email"),
-                            data.getStringExtra("phone"), image_thumb);
+                    setContactKeyValueFile(data.getStringExtra("contactID"));
 
                 }
             }
@@ -396,45 +395,71 @@ public class Settings extends AppCompatActivity {
     //get values for contact
     private void getContactSettingsKeyValueFile()
     {
+        Cursor contacts;
         Context context = getApplicationContext();
+        ContentResolver cr = getContentResolver();
+        String existingPhone="";
         String fileName = getString(R.string.OptSettingsFile);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 fileName, Context.MODE_PRIVATE);
 
-        String nameKey = getString(R.string.pref_contact_name);
-        String existingName = sharedPreferences.getString(nameKey,null);
-        String emailKey = getString(R.string.pref_contact_email);
-        String existingEmail = sharedPreferences.getString(emailKey,null);
-        String phoneKey = getString(R.string.pref_contact_phone_number);
-        String existingPhone = sharedPreferences.getString(phoneKey,null);
-        String thumbKey = getString(R.string.pref_contact_image_uri);
-        String existingThumb = sharedPreferences.getString(thumbKey,null);
+        String idKey = getString(R.string.pref_contact_id);
+        String existingID = sharedPreferences.getString(idKey,null);
 
-        if(existingName != null) {
-            contactTextBox.setText("Contact selected \n");
-            contactTextBox.append(existingName + "\n");
-            contactTextBox.append(existingEmail + "\n");
-            contactTextBox.append(existingPhone + "\n");
-
-            // Set a default icon if there is no thumbnail
+        if(existingID!=null) {
+            contacts = getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+            contacts.moveToNext();
+            String existingName = null;
+            Log.d("Debug", existingID);
             try {
-                if (existingThumb != null) {
-                    contactImage.setImageURI(Uri.parse(existingThumb));
-                } else {
-                    contactImage.setImageResource(R.drawable.appicon);
-                    Log.e("No Image Thumb", "--------------");
-                }
+                existingName = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             } catch (Exception e) {
-
+                Log.d("Debug", e.getMessage().toString());
             }
 
+            Cursor pCur = cr.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    null,
+                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                    new String[]{existingID}, null);
+            while (pCur.moveToNext()) {
+                int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                    existingPhone = pCur.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+
+
+            }
+            pCur.close();
+
+            String existingEmail = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA1));
+            String existingThumb = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
+
+            if (existingName != null) {
+                contactTextBox.setText("Contact selected \n");
+                contactTextBox.append(existingName + "\n");
+                contactTextBox.append(existingEmail + "\n");
+                contactTextBox.append(existingPhone + "\n");
+
+                // Set a default icon if there is no thumbnail
+                try {
+                    if (existingThumb != null) {
+                        contactImage.setImageURI(Uri.parse(existingThumb));
+                    } else {
+                        contactImage.setImageResource(R.drawable.appicon);
+                        Log.e("No Image Thumb", "--------------");
+                    }
+                } catch (Exception e) {
+
+                }
+
+            }
         }
     }
 
     // set txt message key value
-    private void setContactKeyValueFile(String contactID, String contactName, String contactEmail,
-                                        String contactPhone, String contactThumb)
+    private void setContactKeyValueFile(String contactID)
     {
         Context context = getApplicationContext();
         String fileName = getString(R.string.OptSettingsFile);
@@ -443,24 +468,8 @@ public class Settings extends AppCompatActivity {
                 fileName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        String nameKey = getString(R.string.pref_contact_name);
-        editor.putString(nameKey, contactName);
         String idKey = getString(R.string.pref_contact_id);
         editor.putString(idKey,contactID);
-        String emailKey = getString(R.string.pref_contact_email);
-        editor.putString(emailKey, contactEmail);
-        String phoneKey = getString(R.string.pref_contact_phone_number);
-        editor.putString(phoneKey, contactPhone);
-        // If contact does not have a thumbnail, remove the key.
-        if(contactThumb != null) {
-            String thumbKey = getString(R.string.pref_contact_image_uri);
-            editor.putString(thumbKey, contactThumb);
-        }
-        else
-        {
-            editor.remove(getString(R.string.pref_contact_image_uri));
-        }
-
 
         editor.commit();
 
