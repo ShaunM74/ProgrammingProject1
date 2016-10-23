@@ -2,7 +2,7 @@ package group4.programmingproject1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-//import android.os.Bundle;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 //import android.widget.Spinner;
 import android.support.v4.app.ActivityCompat;
