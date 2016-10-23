@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 //test text
                 //textView.append("\n " + location.getLatitude() + " " + location.getLongitude());
                 //** this is for the test text display over button, comment out to remove
-                textView.setText(location.getLatitude() + " " + location.getLongitude());
+                //textView.setText(location.getLatitude() + " " + location.getLongitude());
                 //textView.setText("Lat:"+Latitude + " " + "Lon:"+Longitude);
                 //**
                 Longitude = String.valueOf(location.getLongitude());
