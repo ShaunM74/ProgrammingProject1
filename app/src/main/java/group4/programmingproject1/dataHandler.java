@@ -5,11 +5,12 @@ import android.content.SharedPreferences;
 //import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 //import android.widget.Spinner;
-
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 //import java.util.Date;
 
 /**
- * Created by Yipster on 16/10/2016.
+ * Created by Shane Drobnick on 16/10/2016.
  */
 
 public class dataHandler extends AppCompatActivity
@@ -124,7 +125,7 @@ public class dataHandler extends AppCompatActivity
 
     }
 
-    public void saveGPS(Context context, String latkey,String Longkey,String timekey,String fileName,String Latitude,String Longitude, String time)
+    static public void saveGPS(Context context, String latkey,String Longkey,String timekey,String fileName,String Latitude,String Longitude, String time)
     {
 
         //Context context = getApplicationContext();
@@ -140,6 +141,22 @@ public class dataHandler extends AppCompatActivity
         editor.putString(timekey,time);
 
         editor.commit();
+
+    }
+
+    public void saveGPS(Context context,String Latitude,String Longitude, String time)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                getString(R.string.OptSettingsFile),Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //String key = getString(R.string.SendTxtMsg);
+        editor.putString(getString(R.string.GPSLat), Latitude);
+        editor.putString(getString(R.string.GPSLONG),Longitude );
+        editor.putString(getString(R.string.GPStime),time);
+
+        editor.commit();
+
 
     }
 
@@ -160,15 +177,6 @@ public class dataHandler extends AppCompatActivity
         //String lat = "test1";
         //String longi = "test2";
 
-    /*
-        if(existingTextMsg != null) {
-            if (existingTextMsg.equals("true"))
-            {
-                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
-                emailBox.setChecked(true);
-            }
-        }
-    */
 
         GPSobject gps = new GPSobject(lat,longi);
 
@@ -177,39 +185,184 @@ public class dataHandler extends AppCompatActivity
 
     public GPSobject getGPS(Context context,String keylat,String keyLong,String keytime,String fileName)
     {
-        //String lat;
-        //String longi;
-
-        //Context context = getApplicationContext();
-        //String fileName = getString(R.string.OptSettingsFile);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 fileName, Context.MODE_PRIVATE);
 
-        //String key = getString(R.string.SendEmail);
+
         String lat = sharedPreferences.getString(keylat,null);
         String longi = sharedPreferences.getString(keyLong,null);
         String time = sharedPreferences.getString(keytime,null);
-        //String lat = "test1";
-        //String longi = "test2";
 
-    /*
-        if(existingTextMsg != null) {
-            if (existingTextMsg.equals("true"))
-            {
-                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
-                emailBox.setChecked(true);
-            }
-        }
-    */
 
         GPSobject gps = new GPSobject(lat,longi,time);
 
         return gps;
     }
 
+   public GPSobject getGPS(Context context)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String lat = sharedPreferences.getString(getString(R.string.GPSLat),null);
+        String longi = sharedPreferences.getString(getString(R.string.GPSLONG),null);
+        String time = sharedPreferences.getString(getString(R.string.GPStime),null);
+
+        GPSobject gps = new GPSobject(lat,longi,time);
+        return gps;
+    }
+    //****************************************
+    //checks for settings - these check if setting is selected true, or not false
+    // for videa camera selection, true is face cam, false is front cam
+    //****************************************
+    static public boolean isTxt(Context context)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.SendTxtMsg);
+        String existingTextMsg = sharedPreferences.getString(key,null);
 
 
+        if(existingTextMsg != null)
+        {
+            if (existingTextMsg.equals("true"))
+           {
+                return true;
+           }
+
+        }
+        return false;
+    }
+
+    static public boolean isCall(Context context)
+    {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.CallEmeNum);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+   static public boolean isVid(Context context)
+    {
+
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.RecordVid);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //if isVid is yes and this can show you whether Front or not
+    //true = front
+    //false = face
+    static public boolean whichCamera(Context context)
+    {
+        //Context context = getApplicationContext();
+        //String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.CameraSwitch);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                //front cam if true
+                return true;
+            }
+        }
+        //face cam
+        return false;
+    }
+
+
+    static public boolean isSnd(Context context)
+    {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.RecordSnd);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+   static public boolean isEmail(Context context)
+    {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.SendEmail);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static public  boolean isGPSMaps(Context context)
+    {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
+
+        String key = context.getString(R.string.MapsGPS);
+        String existingTextMsg = sharedPreferences.getString(key,null);
+
+
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+//OBJECTS
     public class GPSobject
     {
         private String latitude;

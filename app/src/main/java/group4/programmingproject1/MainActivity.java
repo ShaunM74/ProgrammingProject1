@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -96,10 +97,22 @@ public class MainActivity extends AppCompatActivity {
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
 
         //Permission for sending SMS request
-        ActivityCompat.requestPermissions(this,new String[]
-                {
-                        Manifest.permission.SEND_SMS
-                },1);
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.SEND_SMS))
+            {
+
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(this,new String[]
+                        {
+                                Manifest.permission.SEND_SMS
+                        },1);
+            }
+        }
+
 
         // On touch listeners to report button touches
         // Using touch listeners to capture finger raised events.

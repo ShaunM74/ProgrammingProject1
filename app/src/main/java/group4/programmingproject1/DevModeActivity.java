@@ -141,7 +141,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         //###############################################
         // Google Fused Location API
         //###############################################
-        // Create an instance of GoogleAPIClient.
+        // Create an instance of GoogleAPIClient. Not using it outside of test code yet and i think it is slowing down boot time but it is needed for getting street addresses
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -159,6 +160,22 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         testtext2.setText(gps.getLongitude());
         testtext3.setText(gps.getGPSTime());
 
+        //testing settings checks
+        //dataHandler data2 = new dataHandler();
+        //data2.isTxt(getApplicationContext());
+       // String test5 = data1.get
+
+        // this is used for checking the settings call functions
+        /*
+        if ( dataHandler.isGPSMaps(getApplicationContext()) )
+        {
+            Toast.makeText(this, "gps is on", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(this, "gps is off", Toast.LENGTH_SHORT).show();
+        }
+        */
 
     }
 
