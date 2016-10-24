@@ -22,7 +22,7 @@ public class EcallContact {
 
     public String getDisplayName() {
 
-        return null;
+        return displayName;
     }
     public void setDisplayName(String displayName)
     {
@@ -47,7 +47,7 @@ public class EcallContact {
         return this.phoneNumber;
     }
 
-    public void setPhoneNumber(String phone)
+    public void setPhoneNumber(String phoneNumber)
     {
         this.phoneNumber=phoneNumber;
 

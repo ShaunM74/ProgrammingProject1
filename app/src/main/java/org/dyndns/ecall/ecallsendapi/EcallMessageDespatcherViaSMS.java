@@ -20,8 +20,8 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
     public EcallMessageDespatcherViaSMS(EcallAlert alert)
     {
         this.InitStructures(alert);
-        phoneNo = alert.getContact().getPhoneNumber();
-
+        phoneNo = alert.getContact().getPhoneNumber().toString();
+                //.replaceAll("[^\\d]", "");
     }
 
         @Override

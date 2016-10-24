@@ -103,7 +103,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         TextBox = (TextView)findViewById(R.id.returnTextView);
         context=this;
 
-        context = this;
+        context = getApplicationContext();
         alertHandler = new Handler() {
             @Override public void handleMessage(Message msg) {
                 String mString=(String)msg.obj;
@@ -191,10 +191,11 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
     private void doAlert()
     {
         Cursor contacts;
-        final Context context = getApplicationContext();
+        //final Context context = getApplicationContext();
         ContentResolver cr = getContentResolver();
         final EcallContact currentContact;
-        String existingPhone="";
+        EcallContact tempCurrentContact;
+
         String fileName = getString(R.string.OptSettingsFile);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -204,13 +205,14 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         String existingID = sharedPreferences.getString(idKey,null);
 
         if(existingID!=null) {
-            currentContact = new EcallContact(existingID);
+            tempCurrentContact = new EcallContact(existingID);
             contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
+
             contacts.moveToNext();
             String existingName = null;
 
             try {
-                currentContact.setDisplayName(contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                tempCurrentContact.setDisplayName(contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
             } catch (Exception e) {
                 Log.d("Debug", e.getMessage().toString());
             }
@@ -224,13 +226,13 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
             {
                 int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
-                    currentContact.setPhoneNumber(pCur.getString(contacts.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                    tempCurrentContact.setPhoneNumber(pCur.getString(contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[^\\d]", ""));
                 }
             }
             pCur.close();
 
-            currentContact.setEmailAddress(contacts.getString(contacts.getColumnIndex(
+            tempCurrentContact.setEmailAddress(contacts.getString(contacts.getColumnIndex(
                     ContactsContract.CommonDataKinds.Email.DATA1)));
 
 
@@ -239,7 +241,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
             }
             // End of todo
 
-
+            currentContact = tempCurrentContact;
 
   //          Runnable alertRunnable = new Runnable() {
   //              @Override

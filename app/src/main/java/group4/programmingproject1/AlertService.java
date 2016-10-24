@@ -38,19 +38,19 @@ public class AlertService extends Service {
     private final IBinder binder = new AlertServiceBinder();
 
     Handler alertHandler;
-    Context context;
+    Context tempcontext;
 
     public AlertService() {
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        context = this;
+        tempcontext = this;
         alertHandler = new Handler() {
             @Override public void handleMessage(Message msg) {
                 Log.d("DEBUG", "In handler");
                 String mString=(String)msg.obj;
-                Toast.makeText(context, mString, Toast.LENGTH_SHORT).show();
+                Toast.makeText(tempcontext, mString, Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -98,14 +98,15 @@ public class AlertService extends Service {
 
     public void startAlert()
     {
-
+        Context context = getApplicationContext();
         Toast.makeText(context, "Alert Processing Started", Toast.LENGTH_SHORT).show();
 
 // ToDO: Update to use the dataHandler to retrieve the contact details
 
         Cursor contacts;
-        final Context context = getApplicationContext();
+
         ContentResolver cr = getContentResolver();
+        EcallContact tempCurrentContact;
         final EcallContact currentContact;
         String existingPhone="";
         String fileName = getString(R.string.OptSettingsFile);
@@ -117,15 +118,20 @@ public class AlertService extends Service {
         String existingID = sharedPreferences.getString(idKey,null);
 
         if(existingID!=null) {
-            currentContact = new EcallContact(existingID);
+            tempCurrentContact = new EcallContact(existingID);
             contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
             contacts.moveToNext();
             String existingName = null;
 
             try {
-                currentContact.setDisplayName(contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                tempCurrentContact.setDisplayName(""+contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                        Log.d("Debug","Name:"+contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
             } catch (Exception e) {
-                Log.d("Debug", e.getMessage().toString());
+                Log.d("Debug", "ERROR:"+e.getMessage().toString());
+            }
+            if(tempCurrentContact.getDisplayName() == null)
+            {
+                Log.d("Debug",tempCurrentContact.getDisplayName());
             }
 
             Cursor pCur = cr.query(
@@ -133,93 +139,95 @@ public class AlertService extends Service {
                     null,
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                     new String[]{existingID}, null);
-            while (pCur.moveToNext())
-            {
+            while (pCur.moveToNext()) {
                 int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
-                    currentContact.setPhoneNumber(pCur.getString(contacts.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                    tempCurrentContact.setPhoneNumber(""+pCur.getString(contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[^\\d]", ""));
+                    Log.d("Debug","Phone:"+pCur.getString(contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER)).toString().replaceAll("[^\\d]", ""));
                 }
             }
             pCur.close();
 
-            currentContact.setEmailAddress(contacts.getString(contacts.getColumnIndex(
+            tempCurrentContact.setEmailAddress(""+contacts.getString(contacts.getColumnIndex(
                     ContactsContract.CommonDataKinds.Email.DATA1)));
 
-
-            if (existingName != null) {
-
+            currentContact=tempCurrentContact;
+            if (currentContact.getDisplayName() == null)
+            {
+                Log.d("Debug","Display name null");
             }
-        // End of todo
 
 
-            try {
-                //Runnable alertRunnable =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        /////////////////////////////////////////////////////
-                        //create SMS alert
-                        /////////////////////////////////////////////////////
+                // End of todo
 
-                        dataHandler datahandler = new dataHandler();
-                        EcallAlert alertSMS = null;
-                        final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
-                                getString(R.string.GPSLat), getString(R.string.GPSLONG),
-                                getString(R.string.OptSettingsFile));
 
-                        try {
-                            String defaultMessage = "I am in need of assistance!";
-                            JSONObject payLoadObject = new JSONObject();
+                try {
+                    //Runnable alertRunnable =
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            /////////////////////////////////////////////////////
+                            //create SMS alert
+                            /////////////////////////////////////////////////////
+
+                            dataHandler datahandler = new dataHandler();
+                            EcallAlert alertSMS = null;
+                            final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
+                                    getString(R.string.GPSLat), getString(R.string.GPSLONG),
+                                    getString(R.string.OptSettingsFile));
+
                             try {
-                                Date baseDate = new Date();
-                                String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
-                                String time = new SimpleDateFormat("HHmmss").format(baseDate);
-                                payLoadObject.put("Message", defaultMessage);
-                                payLoadObject.put("Latitude", currentGPS.getLatitude());
-                                payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                payLoadObject.put("Date", date);
-                                payLoadObject.put("Time", time);
+                                String defaultMessage = "I am in need of assistance!";
+                                JSONObject payLoadObject = new JSONObject();
+                                try {
+                                    Date baseDate = new Date();
+                                    String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
+                                    String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
+                                    payLoadObject.put("Message", defaultMessage);
+                                    payLoadObject.put("Latitude", currentGPS.getLatitude());
+                                    payLoadObject.put("Longitude", currentGPS.getLongitude());
+                                    payLoadObject.put("Date", date);
+                                    payLoadObject.put("Time", time);
 
 
-                                alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
-                                        payLoadObject.toString());
+                                    alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
+                                            payLoadObject.toString());
 
-                                ///////////////////////////////////////
-                                // Debug for SMS sending service
-                                //////////////////////////////////////////////////
+                                    ///////////////////////////////////////
+                                    // Debug for SMS sending service
+                                    //////////////////////////////////////////////////
 
-                                EcallMessageDespatcher newSMS = new EcallMessageDespatcherViaSMS(alertSMS);
-                                newSMS.prepareMessage();
-                                if (newSMS.despatchMessage()) {
-                                    Log.d("Debug", "SMS Sent");
-                                    Message msg = new Message();
-                                    msg.obj = "SMS sent";
-                                    alertHandler.sendMessage(msg);
+                                    EcallMessageDespatcher newSMS = new EcallMessageDespatcherViaSMS(alertSMS);
+                                    newSMS.prepareMessage();
+                                    if (newSMS.despatchMessage()) {
+                                        Log.d("Debug", "SMS Sent");
+                                        Message msg = new Message();
+                                        msg.obj = "SMS sent";
+                                        alertHandler.sendMessage(msg);
 
-                                } else {
-                                    Log.d("Debug", "SMS Sent");
-                                    Message msg = new Message();
-                                    msg.obj = "SMS failed";
-                                    alertHandler.sendMessage(msg);
+                                    } else {
+                                        Log.d("Debug", "SMS Sent");
+                                        Message msg = new Message();
+                                        msg.obj = "SMS failed";
+                                        alertHandler.sendMessage(msg);
+                                    }
+                                } catch (JSONException e) {
+
                                 }
-                            } catch (JSONException e) {
+                            } catch (EcallDataException e) {
 
                             }
-                        } catch (EcallDataException e) {
-
                         }
-                    }
 
-                }.run();
-            }
-                catch(Exception e)
-                {
+                    }.run();
+                } catch (Exception e) {
                     Log.d("DEBUG", e.getMessage().toString());
                 }
 
+           // }
         }
-
 
         // If there is no contact set, alert cannot run.
 
