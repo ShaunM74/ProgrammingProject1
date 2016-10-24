@@ -45,7 +45,7 @@ public class EcallContact {
 
     public String getPhoneNumber()
     {
-        return "12345679";
+        return this.phoneNumber;
     }
 
     public void setPhoneNumber(String phone)

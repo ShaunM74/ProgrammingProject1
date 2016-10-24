@@ -57,8 +57,7 @@ public class AlertService extends Service {
         LocalBroadcastManager.getInstance(this).registerReceiver(alertBroadcastReceiver,
                 new IntentFilter("startInstAlertAlarm"));
 
-        // We want this service to continue running until it is explicitly
-        // stopped, so return sticky.
+
         return START_STICKY;
     }
 
@@ -153,15 +152,16 @@ public class AlertService extends Service {
             }
         // End of todo
 
-            Log.d("DEBUG", "Before runnable!");
+
             try {
-                Runnable alertRunnable = new Runnable() {
+                //Runnable alertRunnable =
+                new Runnable() {
                     @Override
                     public void run() {
                         /////////////////////////////////////////////////////
                         //create SMS alert
                         /////////////////////////////////////////////////////
-                        Log.d("DEBUG", "After Runnable!");
+
                         dataHandler datahandler = new dataHandler();
                         EcallAlert alertSMS = null;
                         final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
@@ -211,7 +211,7 @@ public class AlertService extends Service {
                         }
                     }
 
-                };
+                }.run();
             }
                 catch(Exception e)
                 {
