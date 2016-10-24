@@ -408,15 +408,17 @@ public class Settings extends AppCompatActivity {
         String existingID = sharedPreferences.getString(idKey,null);
 
         if(existingID!=null) {
-            contacts = getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+            contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
             contacts.moveToNext();
             String existingName = null;
             Log.d("Debug", existingID);
             try {
                 existingName = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                Log.d("Debug", existingName);
             } catch (Exception e) {
                 Log.d("Debug", e.getMessage().toString());
             }
+
 
             Cursor pCur = cr.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -434,6 +436,12 @@ public class Settings extends AppCompatActivity {
             pCur.close();
 
             String existingEmail = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA1));
+            Log.d("Debug", existingEmail);
+
+            String existingEmail1 = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+            Log.d("Debug", existingEmail1);
+
+
             String existingThumb = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
 
             if (existingName != null) {
@@ -787,4 +795,3 @@ public class Settings extends AppCompatActivity {
 
     }
 }
-

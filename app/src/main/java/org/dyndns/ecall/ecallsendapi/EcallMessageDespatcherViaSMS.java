@@ -20,7 +20,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
     public EcallMessageDespatcherViaSMS(EcallAlert alert)
     {
         this.InitStructures(alert);
-
+        phoneNo = alert.getContact().getPhoneNumber();
 
     }
 
@@ -42,12 +42,13 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
     /* get message ready for depatch */
         public  Boolean prepareMessage () {
 
-            phoneNo = getContact().getPhone();
+
             try {
                 JSONObject mainObject = new JSONObject(getAlert().getPayload());
                 message =mainObject.getString("Message") + " Lat:"+mainObject.getString("Latitude")+
                         " Long:"+mainObject.getString("Longitude")+" Date:"+mainObject.getString("Date")+
                         " Time:"+mainObject.getString("Time");
+
 
             }
             catch(Exception e)

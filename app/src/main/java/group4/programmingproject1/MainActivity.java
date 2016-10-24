@@ -2,9 +2,11 @@ package group4.programmingproject1;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,6 +18,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Date lastAlertDate =null;
+    Intent alertServiceIntent;
+    AlertService alertService;
 
 
 
@@ -151,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
         //configure button stuff call maybe here****************
         startGPS();
 
-        Intent alertService = new Intent(this,AlertService.class);
-        startService(alertService);
+        alertServiceIntent = new Intent(MainActivity.this,AlertService.class);
+
 
         //GPS saving
         gpsHandler = new Handler();
@@ -270,6 +275,12 @@ public class MainActivity extends AppCompatActivity {
 
                         lastAlertDate = alertDate;
                         Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+                        boolean tempReturn = bindService(alertServiceIntent, alertServiceConnection, Context.BIND_AUTO_CREATE);
+                        if(tempReturn) {
+                            Toast.makeText(MainActivity.this, "true", Toast.LENGTH_LONG).show();
+                        }
+
+                        unbindService(alertServiceConnection);
                     }
 
                 }
@@ -277,6 +288,10 @@ public class MainActivity extends AppCompatActivity {
                 {
                     lastAlertDate = alertDate;
                     Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+                    startService(alertServiceIntent);
+                    getApplicationContext().bindService(alertServiceIntent, alertServiceConnection,Context.BIND_AUTO_CREATE);
+//                    alertService.startAlert();
+                    getApplicationContext().unbindService(alertServiceConnection);
                 }
 
 
@@ -425,30 +440,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-    // Load data on background
-    class DoAlert extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
+    // Connection to AlertService service
+    private ServiceConnection alertServiceConnection = new ServiceConnection() {
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            Toast.makeText(MainActivity.this, "onServiceConnected called", Toast.LENGTH_SHORT).show();
+            // We've binded to LocalService, cast the IBinder and get LocalService instance
+            AlertService.LocalBinder binder = (AlertService.LocalBinder) service;
+            alertService = binder.getServiceInstance(); //Get instance of your service!
+            alertService.startAlert();
 
-            return null;
         }
 
-        protected void onPostExecute(Void aVoid)
-        {
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+            Toast.makeText(MainActivity.this, "onServiceDisconnected called", Toast.LENGTH_SHORT).show();
 
         }
-    }
-
-
+    };
     class registerDevice extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {
