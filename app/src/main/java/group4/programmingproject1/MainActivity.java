@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -48,6 +49,7 @@ import static group4.programmingproject1.R.id.textView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Context context;
     private ImageButton alertButton = null;
 
     private ImageButton cancelButton = null;
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context=this;
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
@@ -156,7 +158,10 @@ public class MainActivity extends AppCompatActivity {
         //configure button stuff call maybe here****************
         startGPS();
 
-        alertServiceIntent = new Intent(MainActivity.this,AlertService.class);
+
+        // AlertService/////////////////////////////////////////////////////////////
+        alertServiceIntent = new Intent(context,AlertService.class);
+        startService(alertServiceIntent);
 
 
         //GPS saving
@@ -275,12 +280,16 @@ public class MainActivity extends AppCompatActivity {
 
                         lastAlertDate = alertDate;
                         Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
-                        boolean tempReturn = bindService(alertServiceIntent, alertServiceConnection, Context.BIND_AUTO_CREATE);
+/*
+                        boolean tempReturn = bindService(alertServiceIntent, this.alertServiceConnection, Context.BIND_AUTO_CREATE);
                         if(tempReturn) {
                             Toast.makeText(MainActivity.this, "true", Toast.LENGTH_LONG).show();
                         }
 
                         unbindService(alertServiceConnection);
+*/
+                        Intent intent = new Intent("startInstAlertAlarm");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
 
                 }
@@ -288,10 +297,12 @@ public class MainActivity extends AppCompatActivity {
                 {
                     lastAlertDate = alertDate;
                     Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
-                    startService(alertServiceIntent);
-                    getApplicationContext().bindService(alertServiceIntent, alertServiceConnection,Context.BIND_AUTO_CREATE);
+                    Intent intent = new Intent("startInstAlertAlarm");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//                    bindService(alertServiceIntent, this.alertServiceConnection,Context.BIND_AUTO_CREATE);
 //                    alertService.startAlert();
-                    getApplicationContext().unbindService(alertServiceConnection);
+
+
                 }
 
 
@@ -358,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
                                 locationManager.removeUpdates(locationListener);
                                 stopRepeatingGPSTask();
                                 Intent alertService = new Intent(context,AlertService.class);
+                                //unbindService(alertServiceConnection);
                                 stopService(alertService);
                                 dialog.cancel();
                                 finish();
@@ -446,12 +458,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
+            Log.d("DEBUG", "Service connected !");
             Toast.makeText(MainActivity.this, "onServiceConnected called", Toast.LENGTH_SHORT).show();
             // We've binded to LocalService, cast the IBinder and get LocalService instance
-            AlertService.LocalBinder binder = (AlertService.LocalBinder) service;
-            alertService = binder.getServiceInstance(); //Get instance of your service!
+            AlertService.AlertServiceBinder binder = (AlertService.AlertServiceBinder) service;
+            alertService = binder.getService(); //Get instance of your service!
             alertService.startAlert();
-
+            Log.d("DEBUG", "Did startAlert !");
         }
 
         @Override
