@@ -16,8 +16,7 @@ public class EcallContact {
     public EcallContact(String _ID)
     {
         contactID = _ID;
-
-            // retrieve the contact
+        // retrieve the contact
 
     }
 
