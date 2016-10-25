@@ -134,8 +134,9 @@ public class dataHandler extends AppCompatActivity
                 fileName, Context.MODE_PRIVATE);
 
         //String key = getString(R.string.SendEmail);
-        String lat = sharedPreferences.getString(keylat,null);
-        String longi = sharedPreferences.getString(keyLong,null);
+        String lat = ""+sharedPreferences.getString(keylat,null);
+        String longi = ""+sharedPreferences.getString(keyLong,null);
+
         //String lat = "test1";
         //String longi = "test2";
 

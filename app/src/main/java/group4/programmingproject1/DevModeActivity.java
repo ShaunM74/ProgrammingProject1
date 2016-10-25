@@ -220,7 +220,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
             Cursor pCur = cr.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                    ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = ?",
                     new String[]{existingID}, null);
             while (pCur.moveToNext())
             {
@@ -268,7 +268,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
                             payLoadObject.put("Date", date );
                             payLoadObject.put("Time",time );
 
-
+                            Log.d("DEBUG", payLoadObject.toString());
                             alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
                                     payLoadObject.toString());
 

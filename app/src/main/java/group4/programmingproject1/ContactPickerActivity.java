@@ -110,7 +110,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID +" = ?",
                             new String[]{id}, null);
                     while (pCur.moveToNext()) {
                         int phoneType = pCur.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));

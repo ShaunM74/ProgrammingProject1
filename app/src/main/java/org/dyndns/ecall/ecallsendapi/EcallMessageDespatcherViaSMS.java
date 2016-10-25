@@ -45,14 +45,15 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
 
             try {
                 JSONObject mainObject = new JSONObject(getAlert().getPayload());
-                message =mainObject.getString("Message") + " Lat:"+mainObject.getString("Latitude")+
+                Log.d("DEBUG",mainObject.toString());
+                message =""+mainObject.getString("Message") + " Lat:"+mainObject.getString("Latitude")+
                         " Long:"+mainObject.getString("Longitude")+" Date:"+mainObject.getString("Date")+
                         " Time:"+mainObject.getString("Time");
-
-
+                Log.d("DEBUG",message);
             }
             catch(Exception e)
             {
+                Log.d("DEBUG","Message failed");
                 return false;
             }
             return true;

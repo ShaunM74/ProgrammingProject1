@@ -137,7 +137,7 @@ public class AlertService extends Service {
             Cursor pCur = cr.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                    ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = ?",
                     new String[]{existingID}, null);
             while (pCur.moveToNext()) {
                 int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
@@ -191,7 +191,7 @@ public class AlertService extends Service {
                                     payLoadObject.put("Date", date);
                                     payLoadObject.put("Time", time);
 
-
+                                    Log.d("DEBUG", payLoadObject.toString());
                                     alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
                                             payLoadObject.toString());
 
