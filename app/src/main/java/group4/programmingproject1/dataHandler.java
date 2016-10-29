@@ -177,6 +177,15 @@ public class dataHandler extends AppCompatActivity
         //String lat = "test1";
         //String longi = "test2";
 
+    /*
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
+                emailBox.setChecked(true);
+            }
+        }
+    */
 
         GPSobject gps = new GPSobject(lat,longi);
 
@@ -200,7 +209,7 @@ public class dataHandler extends AppCompatActivity
         return gps;
     }
 
-    public GPSobject getGPS(Context context)
+   public GPSobject getGPS(Context context)
     {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
@@ -228,9 +237,9 @@ public class dataHandler extends AppCompatActivity
         if(existingTextMsg != null)
         {
             if (existingTextMsg.equals("true"))
-            {
+           {
                 return true;
-            }
+           }
 
         }
         return false;
@@ -255,7 +264,7 @@ public class dataHandler extends AppCompatActivity
         return false;
     }
 
-    static public boolean isVid(Context context)
+   static public boolean isVid(Context context)
     {
 
 
@@ -322,7 +331,7 @@ public class dataHandler extends AppCompatActivity
         return false;
     }
 
-    static public boolean isEmail(Context context)
+   static public boolean isEmail(Context context)
     {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -362,7 +371,7 @@ public class dataHandler extends AppCompatActivity
     }
 
 
-    //OBJECTS
+//OBJECTS
     public class GPSobject
     {
         private String latitude;
@@ -396,6 +405,8 @@ public class dataHandler extends AppCompatActivity
         }
 
         public String getGPSTime() {return this.GPStime;}
+
+    }
 
     }
 

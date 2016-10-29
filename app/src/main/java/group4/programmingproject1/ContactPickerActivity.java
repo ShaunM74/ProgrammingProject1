@@ -120,8 +120,9 @@ public class ContactPickerActivity extends AppCompatActivity {
                     }
                     pCur.close();
                     //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA1));
-                    Log.d("Debug",phoneNumber);
+
                     String EmailAddr = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA1));
+                    Log.d("Debug",EmailAddr);
                     String contactID= phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID));
 
                     String image_thumb = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));

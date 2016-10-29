@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -102,6 +103,23 @@ public class MainActivity extends AppCompatActivity {
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
 
+        //Permission for sending SMS request
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.SEND_SMS))
+            {
+
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(this,new String[]
+                        {
+                                Manifest.permission.SEND_SMS
+                        },1);
+            }
+        }
+
 
         // On touch listeners to report button touches
         // Using touch listeners to capture finger raised events.
@@ -113,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         //GPS stuff here
-
-
 
         //test text on button
         textView = (TextView) findViewById(R.id.gpstesttext);
@@ -129,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 //textView.append("\n " + location.getLatitude() + " " + location.getLongitude());
                 //** this is for the test text display over button, comment out to remove
                 //textView.setText(location.getLatitude() + " " + location.getLongitude());
-                textView.setText("Lat:"+Latitude + " " + "Lon:"+Longitude);
+                //textView.setText("Lat:"+Latitude + " " + "Lon:"+Longitude);
                 //**
                 Longitude = String.valueOf(location.getLongitude());
                 Latitude  = String.valueOf(location.getLatitude());
@@ -447,9 +465,24 @@ public class MainActivity extends AppCompatActivity {
         dataHandler data1 = new dataHandler();
         if ( Latitude != null && Longitude != null )
         {
-            data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
+            //data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
+            data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.GPStime), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude),getTime());
         }
 
+    }
+
+    private String getTime()
+    {
+
+        Calendar c = Calendar.getInstance();
+        //SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss a");
+        //SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
+        SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
+
+        String formattedDate = df.format(c.getTime());
+
+
+        return formattedDate;
     }
 
     // Connection to AlertService service
