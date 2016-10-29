@@ -233,17 +233,8 @@ public class AlertService extends Service {
 
         else
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
-            builder.setMessage(R.string.no_contact_alert)
-                    .setTitle(R.string.app_name)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            Intent intent = new Intent("noContactError");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
 
         Log.d("DEBUG", "Past runnable!");
