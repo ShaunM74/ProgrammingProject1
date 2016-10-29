@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/testregisterButton" />
             <Button
-                android:text="Test Contact"
+                android:text="Test SMS"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/testContactButton" />
@@ -98,6 +98,14 @@
         android:layout_alignEnd="@+id/latitudedevtext"
         android:layout_marginTop="14dp"
         android:id="@+id/longitudedevtext" />
+
+    <TextView
+        android:text="DataHandlerTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/longitudedevtext"
+        android:layout_alignStart="@+id/testSpinner"
+        android:id="@+id/dataHLongitest" />
 
 
 </RelativeLayout>

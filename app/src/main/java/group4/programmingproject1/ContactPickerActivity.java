@@ -96,7 +96,7 @@ public class ContactPickerActivity extends AppCompatActivity {
             if (phones != null) {
                 Log.e("count", "" + phones.getCount());
                 if (phones.getCount() == 0) {
-//                    Toast.makeText(context, "No contacts in your contact list.", Toast.LENGTH_LONG).show();
+
 
                 }
 
@@ -110,10 +110,13 @@ public class ContactPickerActivity extends AppCompatActivity {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID +" = ?",
                             new String[]{id}, null);
                     while (pCur.moveToNext()) {
-                        phoneNumber = pCur.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        int phoneType = pCur.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                        if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                            phoneNumber = pCur.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        }
                     }
                     pCur.close();
                     //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA1));
@@ -164,7 +167,7 @@ public class ContactPickerActivity extends AppCompatActivity {
 
                     SelectUser data = selectUsers.get(i);
                     Intent returnData = new Intent();
-                    returnData.putExtra("ContactID",data.getID());
+                    returnData.putExtra("contactID",data.getID());
                     returnData.putExtra("name",data.getName());
                     returnData.putExtra("email",data.getEmail());
                     returnData.putExtra("phone",data.getPhone());

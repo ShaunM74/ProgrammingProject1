@@ -32,7 +32,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
 
         // could jump out here if the alert is not sent
 
-        connection = new EcallIOTConnection(securityContext);
+
         // create a new iot connection
 
         return false;

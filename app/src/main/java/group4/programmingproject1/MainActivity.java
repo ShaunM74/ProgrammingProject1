@@ -2,9 +2,11 @@ package group4.programmingproject1;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -15,9 +17,12 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +49,7 @@ import static group4.programmingproject1.R.id.textView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Context context;
     private ImageButton alertButton = null;
 
     private ImageButton cancelButton = null;
@@ -59,7 +65,19 @@ public class MainActivity extends AppCompatActivity {
     private String Latitude = null;
     private int slowCheck = 10000;
     private int shortCheck = 1000;
+    //private Date GPSdate = null;
+
+    // GPS saving handler
+    private int GPSsaveRate = 600000;
+    private Handler gpsHandler;
+
+
+
+
     private Date lastAlertDate =null;
+    Intent alertServiceIntent;
+    AlertService alertService;
+
 
 
 
@@ -68,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context=this;
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
@@ -96,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //GPS stuff here
+
+
+
+        //test text on button
         textView = (TextView) findViewById(R.id.gpstesttext);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -111,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 //**
                 Longitude = String.valueOf(location.getLongitude());
                 Latitude  = String.valueOf(location.getLatitude());
+
 
             }
 
@@ -135,8 +158,42 @@ public class MainActivity extends AppCompatActivity {
         //configure button stuff call maybe here****************
         startGPS();
 
-        Intent alertService = new Intent(this,AlertService.class);
-        startService(alertService);
+
+        // AlertService/////////////////////////////////////////////////////////////
+        alertServiceIntent = new Intent(context,AlertService.class);
+        startService(alertServiceIntent);
+
+
+        //GPS saving
+        gpsHandler = new Handler();
+        startRepeatingGPSTask();
+    }
+
+    Runnable GPSStatusSaver = new Runnable() {
+        @Override
+        public void run()
+        {
+            try
+            {
+                //updateStatus();
+                saveGPSNow();
+                //Toast.makeText(MainActivity.this, "GPS SAVED by Handler", Toast.LENGTH_LONG).show();
+            }
+            finally
+            {
+                gpsHandler.postDelayed(GPSStatusSaver,GPSsaveRate);
+            }
+        }
+    };
+
+
+    private void startRepeatingGPSTask()
+    {
+        GPSStatusSaver.run();
+    }
+    private void stopRepeatingGPSTask()
+    {
+        gpsHandler.removeCallbacks(GPSStatusSaver);
     }
 
 
@@ -194,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
+            saveGPSNow();
             // Check if event occured within the bounds of the button, if so do button action
             // Otherwise cancel/ignore the event.
             rect = new Rect(cancelButton.getLeft(), cancelButton.getTop(), cancelButton.getRight(), cancelButton.getBottom());
@@ -218,12 +276,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        //****************************************
-                        //FUNCTION TO SEND GPS VARIABLES longitude and latitude strings GOES HERE
-                        //****************************************
+
 
                         lastAlertDate = alertDate;
                         Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+/*
+                        boolean tempReturn = bindService(alertServiceIntent, this.alertServiceConnection, Context.BIND_AUTO_CREATE);
+                        if(tempReturn) {
+                            Toast.makeText(MainActivity.this, "true", Toast.LENGTH_LONG).show();
+                        }
+
+                        unbindService(alertServiceConnection);
+*/
+                        Intent intent = new Intent("startInstAlertAlarm");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
 
                 }
@@ -231,6 +297,12 @@ public class MainActivity extends AppCompatActivity {
                 {
                     lastAlertDate = alertDate;
                     Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent("startInstAlertAlarm");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//                    bindService(alertServiceIntent, this.alertServiceConnection,Context.BIND_AUTO_CREATE);
+//                    alertService.startAlert();
+
+
                 }
 
 
@@ -295,7 +367,9 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 //Shut down gps
                                 locationManager.removeUpdates(locationListener);
+                                stopRepeatingGPSTask();
                                 Intent alertService = new Intent(context,AlertService.class);
+                                //unbindService(alertServiceConnection);
                                 stopService(alertService);
                                 dialog.cancel();
                                 finish();
@@ -367,30 +441,39 @@ public class MainActivity extends AppCompatActivity {
         locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
     }
 
-
-
-    // Load data on background
-    class DoAlert extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            return null;
-        }
-
-        protected void onPostExecute(Void aVoid)
+    //FUNCTION TO SEND GPS VARIABLES longitude and latitude
+    void saveGPSNow()
+    {
+        dataHandler data1 = new dataHandler();
+        if ( Latitude != null && Longitude != null )
         {
-
+            data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
         }
+
     }
 
+    // Connection to AlertService service
+    private ServiceConnection alertServiceConnection = new ServiceConnection() {
 
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            Log.d("DEBUG", "Service connected !");
+            Toast.makeText(MainActivity.this, "onServiceConnected called", Toast.LENGTH_SHORT).show();
+            // We've binded to LocalService, cast the IBinder and get LocalService instance
+            AlertService.AlertServiceBinder binder = (AlertService.AlertServiceBinder) service;
+            alertService = binder.getService(); //Get instance of your service!
+            alertService.startAlert();
+            Log.d("DEBUG", "Did startAlert !");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+            Toast.makeText(MainActivity.this, "onServiceDisconnected called", Toast.LENGTH_SHORT).show();
+
+        }
+    };
     class registerDevice extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {
