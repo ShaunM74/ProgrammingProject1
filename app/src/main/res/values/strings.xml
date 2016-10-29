@@ -124,5 +124,14 @@
         <item>5 Sec</item>
     </string-array>
 
+<!-- String related to camera -->
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
+    <string name="description_info">Info</string>
+    <string name="permission_request">This sample needs permission for camera and audio recording.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="intro_message">Intro message for some reason</string>
+    <string name="button">SendTo</string>
+
 
 </resources>

@@ -68,7 +68,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
 
             try {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                //smsManager.sendTextMessage(phoneNo, null, message, null, null);
             }
 
             catch (Exception e) {

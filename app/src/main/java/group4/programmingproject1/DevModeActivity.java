@@ -130,7 +130,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI);
                 //i.setType(ContactsContract.CommonDataKinds.Email.CONTEN‌​T_TYPE);
                 startActivityForResult(i, CONTACT_PICKER_RESULT);*/
-                doAlert();
+                Intent intent = new Intent(context, CameraActivity.class);
+                startActivity(intent);
                 //startActivity(i);
             }
 
