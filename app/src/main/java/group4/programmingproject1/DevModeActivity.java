@@ -1,31 +1,62 @@
 package group4.programmingproject1;
 
-import android.content.ContentResolver;
+//import android.*;
+//import android.app.Activity;
+//import android.app.AlertDialog;
+//import android.app.Dialog;
+//import android.app.DialogFragment;
+//import android.content.ContentResolver;
 import android.content.Context;
+//import android.content.DialogInterface;
 import android.content.Intent;
+//import android.content.pm.PackageManager;
+//import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
+//import android.graphics.Bitmap;
+//import android.graphics.Matrix;
+//import android.graphics.RectF;
+//import android.graphics.SurfaceTexture;
+//import android.hardware.camera2.CameraAccessException;
+//import android.hardware.camera2.CameraCaptureSession;
+//import android.hardware.camera2.CameraCharacteristics;
+//import android.hardware.camera2.CameraDevice;
+//import android.hardware.camera2.CameraManager;
+//import android.hardware.camera2.CameraMetadata;
+//import android.hardware.camera2.CaptureRequest;
+//import android.hardware.camera2.params.StreamConfigurationMap;
 import android.location.Location;
+//import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
+//import android.os.Handler;
+//import android.os.HandlerThread;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
+//import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+//import android.support.v4.app.ActivityCompat;
+//import android.support.v4.app.Fragment;
+//import android.support.v13.app.FragmentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MotionEvent;
+//import android.util.Log;
+//import android.util.Size;
+//import android.util.SparseIntArray;
+//import android.view.LayoutInflater;
+//import android.view.MotionEvent;
+//import android.view.Surface;
+//import android.view.TextureView;
 import android.view.View;
-import android.widget.AdapterView;
+//import android.view.ViewGroup;
+//import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Spinner;
+//import android.widget.ImageButton;
+//import android.widget.Spinner;
 import android.widget.TextView;
-import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.widget.Toast;
+//import android.provider.ContactsContract.Contacts;
+//import android.provider.ContactsContract.CommonDataKinds.Email;
+//import android.widget.Toast;
 
 import org.dyndns.ecall.ecalldataapi.EcallRegister;
 
@@ -33,20 +64,27 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
+//import java.io.BufferedInputStream;
+//import java.io.BufferedReader;
+//import java.io.IOException;
+//import java.io.InputStream;
+//import java.io.InputStreamReader;
+//import java.net.HttpURLConnection;
+//import java.net.URL;
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.Collections;
+//import java.util.Comparator;
+//import java.util.HashSet;
+//import java.util.List;
+//import java.util.concurrent.Semaphore;
+//import java.util.concurrent.TimeUnit;
 
-import static android.R.attr.button;
+//import static android.R.attr.button;
 
 //testing code
 //import group4.programmingproject1.dataHandler;
+
 
 public class DevModeActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -73,7 +111,14 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dev_mode);
-
+        /*
+        if (null == savedInstanceState)
+          {
+              getFragmentManager().beginTransaction()
+                      .replace(R.id.texture, Camera2VideoFragment.newInstance())
+                      .commit();
+          }
+        */
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
@@ -280,3 +325,4 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
 
 
 }
+

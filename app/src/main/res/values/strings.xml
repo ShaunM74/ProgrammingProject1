@@ -120,5 +120,8 @@
         <item>5 Sec</item>
     </string-array>
 
+    <!-- Camera strings -->
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
 
 </resources>

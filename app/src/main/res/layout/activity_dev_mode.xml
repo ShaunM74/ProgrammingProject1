@@ -45,7 +45,7 @@
             <Button
                 android:text="Clear"
                 android:layout_width="match_parent"
-                android:layout_height="318dp"
+                android:layout_height="142dp"
                 android:id="@+id/clearTextButton" />
         </LinearLayout>
     </ScrollView>
@@ -72,16 +72,6 @@
     </ScrollView>
 
     <TextView
-        android:text="dataHandlerTest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/testSpinner"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginBottom="55dp" />
-
-    <TextView
         android:text="Latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,22 +90,46 @@
         android:id="@+id/longitudedevtext" />
 
     <TextView
-        android:text="DataHandlerTest2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/longitudedevtext"
-        android:layout_alignStart="@+id/testSpinner"
-        android:id="@+id/dataHLongitest" />
-
-    <TextView
         android:text="GpsTiime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/GPSTIME"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="8dp"
         android:layout_above="@+id/testSpinner"
-        android:layout_alignEnd="@+id/testSpinner"
-        android:layout_marginEnd="21dp"
-        android:layout_marginBottom="33dp" />
+        android:layout_alignEnd="@+id/testSpinner" />
+
+    <TextureView
+        android:layout_width="wrap_content"
+        android:id="@+id/texture"
+        android:layout_height="200dp"
+        android:layout_above="@+id/GPSTIME"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="17dp" />
+
+    <TextView
+        android:text="DataHandlerTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dataHLongitest"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/testSpinner" />
+
+    <TextView
+        android:text="dataHandlerTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/testSpinner"
+        android:layout_above="@+id/dataHLongitest"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="@string/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/video"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/longitudedevtext" />
 
 
 </RelativeLayout>
