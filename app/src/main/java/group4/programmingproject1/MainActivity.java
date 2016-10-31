@@ -2,10 +2,12 @@ package group4.programmingproject1;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
+                new IntentFilter("noContactError"));
 
         // Assign buttons to variables
 
@@ -298,14 +302,7 @@ public class MainActivity extends AppCompatActivity {
 
                         lastAlertDate = alertDate;
                         Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
-/*
-                        boolean tempReturn = bindService(alertServiceIntent, this.alertServiceConnection, Context.BIND_AUTO_CREATE);
-                        if(tempReturn) {
-                            Toast.makeText(MainActivity.this, "true", Toast.LENGTH_LONG).show();
-                        }
 
-                        unbindService(alertServiceConnection);
-*/
                         Intent intent = new Intent("startInstAlertAlarm");
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
@@ -317,8 +314,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent("startInstAlertAlarm");
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-//                    bindService(alertServiceIntent, this.alertServiceConnection,Context.BIND_AUTO_CREATE);
-//                    alertService.startAlert();
 
 
                 }
@@ -484,6 +479,29 @@ public class MainActivity extends AppCompatActivity {
 
         return formattedDate;
     }
+
+
+
+    private BroadcastReceiver noContactBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+//            String message = intent.getStringExtra("message");
+//            Log.d("receiver", "Got message: " + message);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this,R.style.CustomDialogTheme);
+            builder.setMessage(R.string.no_contact_alert)
+                    .setTitle(R.string.app_name)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+        }
+    };
 
     // Connection to AlertService service
     private ServiceConnection alertServiceConnection = new ServiceConnection() {
