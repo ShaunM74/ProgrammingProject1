@@ -177,6 +177,15 @@ public class dataHandler extends AppCompatActivity
         //String lat = "test1";
         //String longi = "test2";
 
+    /*
+        if(existingTextMsg != null) {
+            if (existingTextMsg.equals("true"))
+            {
+                CheckBox emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
+                emailBox.setChecked(true);
+            }
+        }
+    */
 
         GPSobject gps = new GPSobject(lat,longi);
 
@@ -399,6 +408,6 @@ public class dataHandler extends AppCompatActivity
 
     }
 
+    }
+
 }
-
-

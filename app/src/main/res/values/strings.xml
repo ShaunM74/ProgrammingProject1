@@ -26,6 +26,10 @@
     to use it.</string>
     <string name="youtubeButtonContent">Link to youtube video</string>
 
+<!-- String related to service and alert processing -->
+
+    <string name="no_contact_alert">No contact has been set!\n Please set a contact in setting
+        before activating alarm.</string>
 
     <!-- Strings related to Settings -->
 
@@ -120,8 +124,14 @@
         <item>5 Sec</item>
     </string-array>
 
-    <!-- Camera strings -->
+<!-- String related to camera -->
     <string name="record">Record</string>
     <string name="stop">Stop</string>
+    <string name="description_info">Info</string>
+    <string name="permission_request">This sample needs permission for camera and audio recording.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="intro_message">Intro message for some reason</string>
+    <string name="button">SendTo</string>
+
 
 </resources>

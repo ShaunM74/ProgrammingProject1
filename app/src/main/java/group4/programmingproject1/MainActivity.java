@@ -2,9 +2,11 @@ package group4.programmingproject1;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,10 +18,12 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -46,6 +50,7 @@ import static group4.programmingproject1.R.id.textView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Context context;
     private ImageButton alertButton = null;
 
     private ImageButton cancelButton = null;
@@ -71,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Date lastAlertDate =null;
+    Intent alertServiceIntent;
+    AlertService alertService;
 
 
 
@@ -80,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context=this;
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
@@ -169,8 +176,11 @@ public class MainActivity extends AppCompatActivity {
         //configure button stuff call maybe here****************
         startGPS();
 
-        Intent alertService = new Intent(this,AlertService.class);
-        startService(alertService);
+
+        // AlertService/////////////////////////////////////////////////////////////
+        alertServiceIntent = new Intent(context,AlertService.class);
+        startService(alertServiceIntent);
+
 
         //GPS saving
         gpsHandler = new Handler();
@@ -288,6 +298,16 @@ public class MainActivity extends AppCompatActivity {
 
                         lastAlertDate = alertDate;
                         Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+/*
+                        boolean tempReturn = bindService(alertServiceIntent, this.alertServiceConnection, Context.BIND_AUTO_CREATE);
+                        if(tempReturn) {
+                            Toast.makeText(MainActivity.this, "true", Toast.LENGTH_LONG).show();
+                        }
+
+                        unbindService(alertServiceConnection);
+*/
+                        Intent intent = new Intent("startInstAlertAlarm");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
 
                 }
@@ -295,6 +315,12 @@ public class MainActivity extends AppCompatActivity {
                 {
                     lastAlertDate = alertDate;
                     Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent("startInstAlertAlarm");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//                    bindService(alertServiceIntent, this.alertServiceConnection,Context.BIND_AUTO_CREATE);
+//                    alertService.startAlert();
+
+
                 }
 
 
@@ -361,6 +387,7 @@ public class MainActivity extends AppCompatActivity {
                                 locationManager.removeUpdates(locationListener);
                                 stopRepeatingGPSTask();
                                 Intent alertService = new Intent(context,AlertService.class);
+                                //unbindService(alertServiceConnection);
                                 stopService(alertService);
                                 dialog.cancel();
                                 finish();
@@ -458,30 +485,28 @@ public class MainActivity extends AppCompatActivity {
         return formattedDate;
     }
 
-
-
-    // Load data on background
-    class DoAlert extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
+    // Connection to AlertService service
+    private ServiceConnection alertServiceConnection = new ServiceConnection() {
 
         @Override
-        protected Void doInBackground(Void... voids) {
-
-            return null;
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            Log.d("DEBUG", "Service connected !");
+            Toast.makeText(MainActivity.this, "onServiceConnected called", Toast.LENGTH_SHORT).show();
+            // We've binded to LocalService, cast the IBinder and get LocalService instance
+            AlertService.AlertServiceBinder binder = (AlertService.AlertServiceBinder) service;
+            alertService = binder.getService(); //Get instance of your service!
+            alertService.startAlert();
+            Log.d("DEBUG", "Did startAlert !");
         }
 
-        protected void onPostExecute(Void aVoid)
-        {
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+            Toast.makeText(MainActivity.this, "onServiceDisconnected called", Toast.LENGTH_SHORT).show();
 
         }
-    }
-
-
+    };
     class registerDevice extends AsyncTask<Void, Void, String> {
         @Override
         protected void onPreExecute() {

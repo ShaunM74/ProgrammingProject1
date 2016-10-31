@@ -6,35 +6,52 @@ package org.dyndns.ecall.ecalldataapi;
 
 public class EcallContact {
 
-    private String contactSystem; // source of the data - at present the Contact ID on android
     private String contactID;
+    private String displayName;
+    private String emailAddress;
+    private String phoneNumber;
+
 
         // create ecall contact from the contact ID
-    public EcallContact(String _ID) throws EcallDataException
+    public EcallContact(String _ID)
     {
         contactID = _ID;
-
-            // retrieve the contact
+        // retrieve the contact
 
     }
 
     public String getDisplayName() {
 
-        return null;
+        return displayName;
+    }
+    public void setDisplayName(String displayName)
+    {
+        this.displayName = displayName;
     }
 
     public String getEmailAddress() {
         // at present retrieve the email from the contact
 
         // code to get the email
-        return ("a@example.com");
+        return emailAddress;
     }
 
-    public String getPhone()
+    public void setEmailAddress(String email)
     {
-        return "12345679";
+        this.emailAddress=emailAddress;
+
     }
 
+    public String getPhoneNumber()
+    {
+        return this.phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber)
+    {
+        this.phoneNumber=phoneNumber;
+
+    }
 
         // get / set the field to be used to contact the recipient
         // this is the fieldname in the Payload Data - eg FaxNumber

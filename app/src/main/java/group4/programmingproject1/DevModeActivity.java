@@ -1,90 +1,66 @@
 package group4.programmingproject1;
 
-//import android.*;
-//import android.app.Activity;
-//import android.app.AlertDialog;
-//import android.app.Dialog;
-//import android.app.DialogFragment;
-//import android.content.ContentResolver;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
-//import android.content.DialogInterface;
+import android.content.DialogInterface;
 import android.content.Intent;
-//import android.content.pm.PackageManager;
-//import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-//import android.graphics.Bitmap;
-//import android.graphics.Matrix;
-//import android.graphics.RectF;
-//import android.graphics.SurfaceTexture;
-//import android.hardware.camera2.CameraAccessException;
-//import android.hardware.camera2.CameraCaptureSession;
-//import android.hardware.camera2.CameraCharacteristics;
-//import android.hardware.camera2.CameraDevice;
-//import android.hardware.camera2.CameraManager;
-//import android.hardware.camera2.CameraMetadata;
-//import android.hardware.camera2.CaptureRequest;
-//import android.hardware.camera2.params.StreamConfigurationMap;
+import android.graphics.Bitmap;
 import android.location.Location;
-//import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
-//import android.os.Handler;
-//import android.os.HandlerThread;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
-//import android.provider.MediaStore;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-//import android.support.v4.app.ActivityCompat;
-//import android.support.v4.app.Fragment;
-//import android.support.v13.app.FragmentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-//import android.util.Log;
-//import android.util.Size;
-//import android.util.SparseIntArray;
-//import android.view.LayoutInflater;
-//import android.view.MotionEvent;
-//import android.view.Surface;
-//import android.view.TextureView;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.AdapterView;
+import android.widget.AdapterView;
 import android.widget.Button;
-//import android.widget.ImageButton;
-//import android.widget.Spinner;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
-//import android.provider.ContactsContract.Contacts;
-//import android.provider.ContactsContract.CommonDataKinds.Email;
-//import android.widget.Toast;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.widget.Toast;
 
+import org.dyndns.ecall.ecalldataapi.EcallAlert;
+import org.dyndns.ecall.ecalldataapi.EcallContact;
+import org.dyndns.ecall.ecalldataapi.EcallDataException;
 import org.dyndns.ecall.ecalldataapi.EcallRegister;
+import org.dyndns.ecall.ecallsendapi.EcallMessageDespatcher;
+import org.dyndns.ecall.ecallsendapi.EcallMessageDespatcherViaSMS;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-//import java.io.BufferedInputStream;
-//import java.io.BufferedReader;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.net.HttpURLConnection;
-//import java.net.URL;
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.Collections;
-//import java.util.Comparator;
-//import java.util.HashSet;
-//import java.util.List;
-//import java.util.concurrent.Semaphore;
-//import java.util.concurrent.TimeUnit;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 
-//import static android.R.attr.button;
+import static android.R.attr.button;
 
 //testing code
 //import group4.programmingproject1.dataHandler;
-
 
 public class DevModeActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -95,6 +71,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
     Context context;
     private static final int CONTACT_PICKER_RESULT = 1001;
     private static final int myPickerResult = 12376;
+
+    private Handler alertHandler;
 
     //test code for spinner data being recovered from datahandler
     //TextView test text;
@@ -111,14 +89,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dev_mode);
-        /*
-        if (null == savedInstanceState)
-          {
-              getFragmentManager().beginTransaction()
-                      .replace(R.id.texture, Camera2VideoFragment.newInstance())
-                      .commit();
-          }
-        */
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
         // Try to set icon, if not found, leave blank
@@ -131,6 +102,15 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         clearTextButton = (Button)findViewById(R.id.clearTextButton);
         TextBox = (TextView)findViewById(R.id.returnTextView);
         context=this;
+
+        context = getApplicationContext();
+        alertHandler = new Handler() {
+            @Override public void handleMessage(Message msg) {
+                String mString=(String)msg.obj;
+                Toast.makeText(context, mString, Toast.LENGTH_SHORT).show();
+            }
+        };
+
 
         // On touch listeners to report button touches
         // Using touch listeners to capture finger raised events.
@@ -150,8 +130,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI);
                 //i.setType(ContactsContract.CommonDataKinds.Email.CONTEN‌​T_TYPE);
                 startActivityForResult(i, CONTACT_PICKER_RESULT);*/
-                Intent i = new Intent(context, ContactPickerActivity.class);
-                startActivityForResult(i,myPickerResult);
+                Intent intent = new Intent(context, CameraActivity.class);
+                startActivity(intent);
                 //startActivity(i);
             }
 
@@ -224,6 +204,149 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
 
     }
 
+    private void doAlert()
+    {
+        Cursor contacts;
+        //final Context context = getApplicationContext();
+        ContentResolver cr = getContentResolver();
+        final EcallContact currentContact;
+        EcallContact tempCurrentContact;
+
+        String fileName = getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+        String idKey = getString(R.string.pref_contact_id);
+        String existingID = sharedPreferences.getString(idKey,null);
+
+        if(existingID!=null) {
+            tempCurrentContact = new EcallContact(existingID);
+            contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
+
+            contacts.moveToNext();
+            String existingName = null;
+
+            try {
+                tempCurrentContact.setDisplayName(contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+            } catch (Exception e) {
+                Log.d("Debug", e.getMessage().toString());
+            }
+
+            Cursor pCur = cr.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    null,
+                    ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = ?",
+                    new String[]{existingID}, null);
+            while (pCur.moveToNext())
+            {
+                int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                    tempCurrentContact.setPhoneNumber(pCur.getString(contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[^\\d]", ""));
+                }
+            }
+            pCur.close();
+
+            tempCurrentContact.setEmailAddress(contacts.getString(contacts.getColumnIndex(
+                    ContactsContract.CommonDataKinds.Email.DATA1)));
+
+
+            if (existingName != null) {
+
+            }
+            // End of todo
+
+            currentContact = tempCurrentContact;
+
+  //          Runnable alertRunnable = new Runnable() {
+  //              @Override
+  //              public void run() {
+                    /////////////////////////////////////////////////////
+                    //create SMS alert
+                    /////////////////////////////////////////////////////
+                    dataHandler datahandler=new dataHandler();
+                    EcallAlert alertSMS= null;
+                    final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
+                            getString(R.string.GPSLat),getString(R.string.GPSLONG),
+                            getString(R.string.OptSettingsFile));
+
+                    try {
+                        String defaultMessage = "I am in need of assistance!";
+                        JSONObject payLoadObject = new JSONObject();
+                        try {
+                            Date baseDate = new Date();
+                            String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
+                            String time = new SimpleDateFormat("HHmmss").format(baseDate);
+                            payLoadObject.put("Message", defaultMessage);
+                            payLoadObject.put("Latitude", currentGPS.getLatitude());
+                            payLoadObject.put("Longitude", currentGPS.getLongitude());
+                            payLoadObject.put("Date", date );
+                            payLoadObject.put("Time",time );
+
+                            Log.d("DEBUG", payLoadObject.toString());
+                            alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
+                                    payLoadObject.toString());
+
+                            ///////////////////////////////////////
+                            // Debug for SMS sending service
+                            //////////////////////////////////////////////////
+
+                            EcallMessageDespatcher newSMS = new EcallMessageDespatcherViaSMS(alertSMS);
+                            newSMS.prepareMessage();
+                            if(newSMS.despatchMessage())
+                            {
+                                Message msg=new Message();
+                                msg.obj="SMS sent";
+                                //alertHandler.sendMessage(msg);
+                                Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
+
+                            }
+                            else
+                            {
+                                Message msg=new Message();
+                                msg.obj="SMS failed";
+                                //alertHandler.sendMessage(msg);
+                                Toast.makeText(context, "SMS failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+
+                        }
+                    }
+                    catch(EcallDataException e)
+                    {
+
+                    }
+                //}
+
+           // };
+
+        }
+
+
+        // If there is no contact set, alert cannot run.
+
+        else
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.CustomDialogTheme);
+            builder.setMessage(R.string.no_contact_alert)
+                    .setTitle(R.string.app_name)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
+
+
+
+}
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -325,4 +448,3 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
 
 
 }
-

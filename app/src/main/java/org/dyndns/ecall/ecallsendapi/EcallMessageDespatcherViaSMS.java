@@ -21,8 +21,8 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
     public EcallMessageDespatcherViaSMS(EcallAlert alert)
     {
         this.InitStructures(alert);
-
-
+        phoneNo = alert.getContact().getPhoneNumber().toString();
+                //.replaceAll("[^\\d]", "");
     }
 
         @Override
@@ -43,16 +43,18 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
     /* get message ready for depatch */
         public  Boolean prepareMessage () {
 
-            phoneNo = getContact().getPhone();
+
             try {
                 JSONObject mainObject = new JSONObject(getAlert().getPayload());
-                message =mainObject.getString("Message") + " Lat:"+mainObject.getString("Latitude")+
+                Log.d("DEBUG",mainObject.toString());
+                message =""+mainObject.getString("Message") + " Lat:"+mainObject.getString("Latitude")+
                         " Long:"+mainObject.getString("Longitude")+" Date:"+mainObject.getString("Date")+
                         " Time:"+mainObject.getString("Time");
-
+                Log.d("DEBUG",message);
             }
             catch(Exception e)
             {
+                Log.d("DEBUG","Message failed");
                 return false;
             }
             return true;
@@ -67,7 +69,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
 
             try {
                 SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                //smsManager.sendTextMessage(phoneNo, null, message, null, null);
             }
 
             catch (Exception e) {
