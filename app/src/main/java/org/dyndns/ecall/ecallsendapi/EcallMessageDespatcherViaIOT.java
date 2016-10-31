@@ -70,13 +70,14 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
                 fini = true;
                 Log.d("DEBUG","Connecting service "+s +":"+count);
             }
-
+            Log.d("DEBUG","Connecting service "+s +":"+count);
             if (!fini) {
 
                 try {
-                    Log.d("DEBUG","Waiting");
-                    wait(5000);
+                    Thread.sleep(1000);
+
                 } catch (Exception e) {
+                    Log.d("DEBUG","Didnt wait:"+e.getMessage().toString());
                 }
 
             }

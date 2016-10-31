@@ -91,7 +91,7 @@ public class EcallSendProcessor {
                         iotDespatcher = new EcallMessageDespatcherViaIOT(alert);
                         // note we may have to fiddle here to make sure the despatcher doesnt
                         // get disposed of before completion
-                        Log.d("DEBUG","InIOT");
+
                         iotDespatcher.setSecurityContext(securityContext);
                         iotDespatcher.sendMessage();
                         alert.setStatus(EcallAlert.alertStatusEnum.UPLOADED);
@@ -100,6 +100,13 @@ public class EcallSendProcessor {
                 }
                 if(alert.isUploaded()) {
                     pendingAlerts.dropAlert(alert);  // check this doesn't stuff up the iterator.
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
                 }
                 pendingAlerts.saveAlerts() ;   //update the saved data so that app can restore if required
                 // if this creates a performance issue, move outside the

@@ -181,13 +181,27 @@ public class AlertService extends Service {
 
                             try {
                                 String defaultMessage = "I am in need of assistance!";
+                                String accountId = "test@testdata.com";
+                                String deviceID = "test01-testDevice01";
+
                                 JSONObject payLoadObject = new JSONObject();
                                 try {
                                     Date baseDate = new Date();
                                     String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
                                     String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
-                                    payLoadObject.put("alertID",thisAlertID);
-                                    payLoadObject.put("Message", defaultMessage);
+
+                                    //payLoadObject.put("AlertID", "A" + getCurrentDateTimeAsString());
+                                    //payLoadObject.put("AccountID", accountId);
+                                    payLoadObject.put("DeviceID", deviceID);
+                                    payLoadObject.put("MessageText", "this is an alert message");
+                                    payLoadObject.put("Location", "[8888,9999]");
+                                    //payLoadObject.put("ÄttachmentName", filename);
+                                    //payLoadObject.put("AttachmentLocation", "/data/user/0/org.dyndns.ecall.ecallandroidapicoreapplication/files/"+filename);
+
+                                    payLoadObject.put("AlertID",thisAlertID);
+                                    payLoadObject.put("MessageText", defaultMessage);
+                                    payLoadObject.put("AccountID", accountId);
+                                    payLoadObject.put("DeviceID", deviceID);
                                     payLoadObject.put("Latitude", currentGPS.getLatitude());
                                     payLoadObject.put("Longitude", currentGPS.getLongitude());
                                     payLoadObject.put("Date", date);
