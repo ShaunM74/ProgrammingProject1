@@ -49,7 +49,7 @@ public class AlertService extends Service {
         tempcontext = this;
         alertHandler = new Handler() {
             @Override public void handleMessage(Message msg) {
-                Log.d("DEBUG", "In handler");
+
                 String mString=(String)msg.obj;
                 Toast.makeText(tempcontext, mString, Toast.LENGTH_SHORT).show();
             }
@@ -59,6 +59,7 @@ public class AlertService extends Service {
                 new IntentFilter("startInstAlertAlarm"));
 
         ecallSendProcessor = new EcallSendProcessor();
+        ecallSendProcessor.setSecurityContext(tempcontext);
         return START_STICKY;
     }
 
@@ -243,7 +244,9 @@ public class AlertService extends Service {
 
            if(dataHandler.isVid(context))
            {
-
+               Intent intent = new Intent(context, CameraActivity.class);
+               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               startActivity(intent);
            }
 
 
