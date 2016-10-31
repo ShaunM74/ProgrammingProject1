@@ -107,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
 
+        RegisterDevice registerDevice = new RegisterDevice();
+        registerDevice.execute();
+
         //Permission for sending SMS request
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED)
@@ -301,9 +304,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                         lastAlertDate = alertDate;
-                        Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
 
                         Intent intent = new Intent("startInstAlertAlarm");
+                        intent.putExtra("alertID",alertID);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     }
 
@@ -311,8 +314,9 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     lastAlertDate = alertDate;
-                    Toast.makeText(MainActivity.this, "Alert Activated", Toast.LENGTH_LONG).show();
+
                     Intent intent = new Intent("startInstAlertAlarm");
+                    intent.putExtra("alertID",alertID);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 
@@ -503,47 +507,26 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    // Connection to AlertService service
-    private ServiceConnection alertServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            Log.d("DEBUG", "Service connected !");
-            Toast.makeText(MainActivity.this, "onServiceConnected called", Toast.LENGTH_SHORT).show();
-            // We've binded to LocalService, cast the IBinder and get LocalService instance
-            AlertService.AlertServiceBinder binder = (AlertService.AlertServiceBinder) service;
-            alertService = binder.getService(); //Get instance of your service!
-            alertService.startAlert();
-            Log.d("DEBUG", "Did startAlert !");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-
-            Toast.makeText(MainActivity.this, "onServiceDisconnected called", Toast.LENGTH_SHORT).show();
-
-        }
-    };
-    class registerDevice extends AsyncTask<Void, Void, String> {
+    class RegisterDevice extends AsyncTask<Void, Void, String> {
+        Context appContext;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            appContext = context;
         }
 
         @Override
         protected String doInBackground(Void... voids) {
             String tempString ="";
-            tempString = EcallRegister.registerDevice();
+            tempString = EcallRegister.registerDevice(appContext);
             return tempString;
         }
 
 
         @Override
         protected void onPostExecute(String results) {
-            Toast.makeText(MainActivity.this, results.toString(), Toast.LENGTH_LONG).show();
-
+            //Toast.makeText(MainActivity.this, results.toString(), Toast.LENGTH_LONG).show();
+            Log.d("Debug",results.toString());
 
         }
     }

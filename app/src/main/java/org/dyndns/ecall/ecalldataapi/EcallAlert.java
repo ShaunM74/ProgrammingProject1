@@ -30,6 +30,7 @@ public class EcallAlert {
     {
         initialiseSettings();
         this.contact = contact;
+        this.setAlertMethod(method);
         this.setPayload(payload);
     }
 

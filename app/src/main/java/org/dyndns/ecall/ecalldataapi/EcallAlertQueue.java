@@ -32,13 +32,15 @@ public class EcallAlertQueue {
     }
 
     public void queueAlert(EcallAlert item){
-
+        alertQueue.add(item);
         saveAlerts();
     }
     public EcallAlert firstAlert(){
-        return null;
+        return alertQueue.get(0);
+        //return null;
     }
     public void dropAlert(EcallAlert item){
+        alertQueue.remove(0);
         saveAlerts();
     }
 

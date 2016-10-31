@@ -1,6 +1,7 @@
 package org.dyndns.ecall.ecallsendapi;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.dyndns.ecall.ecalldataapi.EcallAlert;
 
@@ -17,9 +18,16 @@ public class EcallSendProcessor {
     private Context securityContext ;
 
 
-    public EcallSendProcessor(EcallAlertQueue queue)
+    public EcallSendProcessor()
     {
         pendingAlerts = new EcallAlertQueue();
+    }
+
+    public void addAlert(EcallAlert alert)
+    {
+        Log.d("DEBUG","Adding alerts" + pendingAlerts.getQueueCount());
+        pendingAlerts.queueAlert(alert);
+        Log.d("DEBUG","Adding alerts" + pendingAlerts.getQueueCount());
     }
 
     public void setSecurityContext(Context context) {
@@ -55,8 +63,9 @@ public class EcallSendProcessor {
 
             // send the alert data using appropriate method
 
-
-            if(alert.isSent()) {
+            Log.d("DEBUG","Processing alerts" + alert.getAlertMethod());
+            if(!alert.isSent()) {
+                Log.d("DEBUG","Processing alerts" + pendingAlerts.firstAlert().getPayload());
                 despatcher = createMessageDespatcher(alert);
                 despatcher.sendMessage() ;
                 while(!despatcher.deliveryComplete()) {

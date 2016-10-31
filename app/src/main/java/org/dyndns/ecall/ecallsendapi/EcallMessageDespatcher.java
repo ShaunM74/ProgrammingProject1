@@ -13,6 +13,7 @@ public abstract class EcallMessageDespatcher {
     private EcallAlert alert ;
 
 
+
     protected void InitStructures(EcallAlert alert ) {
         this.alert = alert;
     }
@@ -32,6 +33,7 @@ public abstract class EcallMessageDespatcher {
     public void sendMessage() throws EcallSendException
     {
         try {
+            Log.d("DEBUG","Doing depatching");
             this.connectToService();
             this.prepareMessage();
             this.despatchMessage();

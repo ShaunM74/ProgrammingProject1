@@ -1,8 +1,12 @@
 package org.dyndns.ecall.ecallsendapi;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.dyndns.ecall.ecalldataapi.EcallAlert;
+
+import group4.programmingproject1.R;
+import group4.programmingproject1.dataHandler;
 
 /**
  * Created by bajaques on 4/10/2016.
@@ -13,6 +17,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     String messagePayload ;
     String despatchResult ;
     Context securityContext ;
+    boolean deliveryCompleteFlag=false;
 
     public EcallMessageDespatcherViaIOT(EcallAlert alert )
     {
@@ -30,6 +35,20 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     public Boolean connectToService ()
     {
 
+        //EcallIOTConnection conn = new EcallIOTConnection(getBaseContext(), this);
+        try {
+            connection.setCertificatePrivateKey(dataHandler.getCertID(securityContext),
+                    dataHandler.getCertPEM(securityContext),
+                    dataHandler.getPubKey(securityContext),
+                    dataHandler.getPrivKey(securityContext), "ECall");
+        } catch (Exception e) {
+
+            if (!e.getCause().getLocalizedMessage().contains("key store already has a key entry with alias")) {
+                throw e;
+            }
+        }
+
+
         // could jump out here if the alert is not sent
 
 
@@ -42,6 +61,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     /* get message ready for depatch */
     public  Boolean prepareMessage () {
         messagePayload = this.getAlert().getPayload();
+
         return true;
     }
 
@@ -50,6 +70,9 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     public  Boolean despatchMessage ()
     {
         connection.publishData(messagePayload);
+        Log.d("DEBUG","Depatched message");
+        connection.close();
+        deliveryCompleteFlag=true;
         return false;
     }
 
@@ -57,7 +80,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     @Override
     /* get depatch result */
     public  Boolean deliveryComplete () {
-        return false;
+        return deliveryComplete();
     }
 
     @Override
