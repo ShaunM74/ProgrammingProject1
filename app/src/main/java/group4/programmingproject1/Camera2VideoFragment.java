@@ -341,9 +341,9 @@ public class Camera2VideoFragment extends Fragment
             case R.id.video: {
                 //case R.id.button2: {
                 if (mIsRecordingVideo) {
-                    stopRecordingVideo();
+                    //stopRecordingVideo();
                 } else {
-                    startRecordingVideo();
+                    //startRecordingVideo();
                     //stopRecordingVideo();
                 }
                 break;
