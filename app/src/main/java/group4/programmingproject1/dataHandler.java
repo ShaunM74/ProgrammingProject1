@@ -140,6 +140,31 @@ public class dataHandler extends AppCompatActivity {
 
     }
 
+   static  public void saveAddress(Context context, String address)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+        editor.putString(context.getString(R.string.GPSAddress), address);
+
+        editor.commit();
+
+
+    }
+
+   static public String getaddress(Context context)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), context.MODE_PRIVATE);
+
+        String address = sharedPreferences.getString(context.getString(R.string.GPSAddress), null);
+
+
+        return address;
+    }
+
     public GPSobject getGPS(Context context, String keylat, String keyLong, String fileName) {
         //String lat;
         //String longi;
@@ -332,6 +357,7 @@ public class dataHandler extends AppCompatActivity {
 
         return false;
     }
+
 
 
     //OBJECTS

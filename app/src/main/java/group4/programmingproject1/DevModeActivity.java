@@ -160,6 +160,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         TextView testtext = (TextView) findViewById(R.id.testSpinner);
         TextView testtext2 = (TextView) findViewById(R.id.dataHLongitest);
         TextView testtext3 = (TextView) findViewById(R.id.GPSTIME);
+        //gps address display
+        TextView testtext4 = (TextView) findViewById(R.id.textView6);
         //data1.setRecordTimeActualBySecondsValue(4,getApplicationContext(),getString(R.string.OptSettingsFile));
         //testtext.setText( String.valueOf(data1.getRecordTimeActualSecondsValue(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
 
@@ -184,6 +186,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         testtext.setText(gps.getLatitude());
         testtext2.setText(gps.getLongitude());
         testtext3.setText(gps.getGPSTime());
+        testtext4.setText(data1.getaddress(context));
+
 
         //testing settings checks
         //dataHandler data2 = new dataHandler();
