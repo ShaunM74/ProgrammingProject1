@@ -1,7 +1,6 @@
 package org.dyndns.ecall.ecallsendapi;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.dyndns.ecall.ecalldataapi.EcallAlert;
 import org.dyndns.ecall.ecalldataapi.EcallRegistration;
@@ -23,6 +22,11 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     JSONObject alertCommitJSON;
     JSONObject baseBlockJSON;
 
+        // connection and send state
+    Boolean isConnected = false;
+    Boolean isSent = false;
+    String deliveryMessage;
+
 
     public JSONObject getAlertJSON() {
         return alertJSON;
@@ -43,8 +47,11 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     /* connect to destination service */
     public Boolean connectToService ()
     {
+        isConnected = false;
+        isSent = false;
+        deliveryMessage="Unsent";
         EcallRegistration reg = new EcallRegistration(securityContext);
-        reg.setCertificatePrivateKey();
+
         connection = new EcallIOTConnection(securityContext);
         connection.startConnection(reg.getCertID(), "ECALL");
 
@@ -52,32 +59,22 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
         String s = "x";
         int count = 0;
 
-        try {
-            connection.startConnectionStatusHandler(reg.getCertID(), "ECALL");
-        }
-        catch (Exception e)
-        {
-            Log.d("DEBUG","Service "+e.toString());
-        }
+        connection.startConnectionStatusHandler(reg.getCertID(), "ECALL");
         while (!fini) {
             s = connection.getStatus();
             fini = false;
             if (s.equalsIgnoreCase("Connected")) {
+                isConnected = true;
                 fini = true;
-                Log.d("DEBUG","Connected service");
             }
-            if (count++ > 60) {
+            if (count++ > 60)
                 fini = true;
-                Log.d("DEBUG","Connecting service "+s +":"+count);
-            }
-            Log.d("DEBUG","Connecting service "+s +":"+count);
+
             if (!fini) {
 
                 try {
-                    Thread.sleep(1000);
-
+                    wait(5000);
                 } catch (Exception e) {
-                    Log.d("DEBUG","Didnt wait:"+e.getMessage().toString());
                 }
 
             }
@@ -92,8 +89,9 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     @Override
     /* get message ready for depatch */
     public  Boolean prepareMessage () {
+        isSent = false;
         try {
-            alertJSON = new JSONObject(this.getAlert().getPayload());
+             alertJSON = new JSONObject(this.getAlert().getPayload());
         }
         catch(Exception e)
         {
@@ -107,7 +105,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
         catch(Exception e)
         {
             String s = e.getMessage();
-
+            deliveryMessage="Field issue - Base fields";
         }
 
         try {
@@ -120,7 +118,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
         {
 
         }
-        Log.d("DEBUG","Preparing message");
+
         return true;
     }
 
@@ -130,39 +128,46 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     {
 
 
-        // Publish the alert itself
+            // Publish the alert itself
         String s = alertJSON.toString();
         connection.publishData("EcallNewAlerts", s);
-        Log.d("DEBUG","Despatching"+s);
-        // Commit the alert
+
+            // Commit the alert
         connection.publishData("EcallNewAlertsCommit", alertCommitJSON.toString());
 
-        Log.d("DEBUG","Commiting");
-        // Check for an attachment
+
+            // Check for an attachment
         String fileloc;
         try {
             fileloc = alertJSON.getString("AttachmentLocation");
-            Log.d("DEBUG","Attaching");
         }
         catch (JSONException e) {
             // no attachment so exit with success
-            Log.d("DEBUG","No Attachment");
+            deliveryMessage="Publish Completed";
+            isSent = true;
             return true;
         }
 
-        // Send the attachment
+            // Send the attachment
         int blockCount = 0;
+        long fileSize =0 ;
         try {
 
-            // Send the attachment 1 block at a time
+                // Send the attachment 1 block at a time
             EcallIOTEncoder f = new EcallIOTEncoder(fileloc, 60000);
+            fileSize = f.fileSize;
             while (!f.atEof()) {
                 JSONObject blockJSON = new JSONObject(baseBlockJSON.toString());
+
                 String encodedBuffer = f.getNextEncodedSection();
-                // add the specific block data
+                int blockLength = f.getLatestBlockLength();
+
+                    // add the specific block data
                 blockJSON.put("CRC", "XXX");
                 blockJSON.put("BlockData", encodedBuffer);
-                blockJSON.put("BlockNumber", blockCount+1); // add 1 to blockcount, increment if success
+                blockJSON.put("BlockNumber", blockCount+1); // preemtive add 1 to blockcount, increment if success
+                blockJSON.put("BlockLength", blockLength); // preemtive add 1 to blockcount, increment if success
+
                 connection.publishData("EcallNewAttachments", blockJSON.toString());
                 blockCount++;
             }
@@ -171,10 +176,15 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
             try {
                 JSONObject finiJSON = new JSONObject(baseBlockJSON.toString());
                 finiJSON.put("BlockCount", blockCount);
+                finiJSON.put("FileSize", fileSize);
                 connection.publishData("EcallNewAttachmentCommit", finiJSON.toString());
+                deliveryMessage="PublishAttachment Completed";
+                isSent = true;
             } catch (JSONException e) {
+                deliveryMessage="PublishAttachment Error";
                 return false;
             }
+            isSent = true;
 
         } catch (JSONException e) {
             return false;
@@ -188,19 +198,19 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
     @Override
     /* get depatch result */
     public  Boolean deliveryComplete () {
-        return false;
+        return this.isSent;
     }
 
     @Override
     /* get depatch result */
     public  String getDespatchResult () {
-        return null;
+        return deliveryMessage;
     }
 
     @Override
     /* get depatch result */
     public  Boolean deliverySuccessful () {
-        return false;
+        return isSent;
     }
 
     @Override
@@ -212,5 +222,9 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
 
     public void setSecurityContext(Context context) {
         this.securityContext = context;
+    }
+
+    public  Boolean getIsConnected () {
+        return this.isConnected;
     }
 }

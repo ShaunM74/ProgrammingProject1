@@ -195,7 +195,7 @@ public class AlertService extends Service {
                                     payLoadObject.put("DeviceID", deviceID);
                                     payLoadObject.put("MessageText", "this is an alert message");
                                     payLoadObject.put("Location", "[8888,9999]");
-                                    //payLoadObject.put("ÄttachmentName", filename);
+                                    //payLoadObject.put("AttachmentName", filename);
                                     //payLoadObject.put("AttachmentLocation", "/data/user/0/org.dyndns.ecall.ecallandroidapicoreapplication/files/"+filename);
 
                                     payLoadObject.put("AlertID",thisAlertID);

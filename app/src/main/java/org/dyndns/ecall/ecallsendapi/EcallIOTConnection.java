@@ -65,7 +65,7 @@ public class EcallIOTConnection
     // instantiation using the super class (Activity) to pass context
     public EcallIOTConnection(Context caller)
     {
-        // this.activity = activity;
+       // this.activity = activity;
         context = caller;
     }
 
@@ -81,7 +81,7 @@ public class EcallIOTConnection
         String keystoreName = keystore;
         String keystorePassword = "";
 
-        // save the certifictae
+                // save the certifictae
         AWSIotKeystoreHelper.saveCertificateAndPrivateKey(id,certpem,
                 privkey,
                 keystorePath, keystoreName, keystorePassword);
@@ -119,7 +119,7 @@ public class EcallIOTConnection
         context = newContext;
     }
     public void startConnectionStatusHandler(String certid,String keystore) {
-        //  final Activity activity1 = (Activity) context;
+      //  final Activity activity1 = (Activity) context;
 
         // get the certificate
         String keystorePath = this.context.getFilesDir().getPath();
@@ -194,11 +194,11 @@ public class EcallIOTConnection
         this.Status = newstatus;
     }
     public void testStatusUpdate()
-    {
-        Status=Status;
-        int n=mqttManager.getMaxAutoReconnectAttempts();
-        n++;
-    };
+        {
+            Status=Status;
+            int n=mqttManager.getMaxAutoReconnectAttempts();
+            n++;
+        };
 
     public String getStatus()
     {

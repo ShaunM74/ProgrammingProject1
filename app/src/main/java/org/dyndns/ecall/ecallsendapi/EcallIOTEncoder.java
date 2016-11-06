@@ -25,6 +25,7 @@ public class EcallIOTEncoder {
     long  fileSize = 0;
     Boolean eof = true;
     int blockNumber = 0;
+    int latestBlockLength = 0;
 
     public EcallIOTEncoder(String fileName, int buffLen) {
 
@@ -53,13 +54,17 @@ public class EcallIOTEncoder {
 
     public Boolean atEof() {
         return eof  && blockNumber > 0;
-    }
+    }// Block no check on;y for debug
 
     public int getBlockNumber()
     {
         return blockNumber;
     }
-
+    public int getLatestBlockLength() {  return latestBlockLength;    }
+    public long getFileSize()
+    {
+        return fileSize;
+    }
     public String getNextEncodedSection() {
 
         // adjust buffer length if at end of file;
@@ -70,21 +75,25 @@ public class EcallIOTEncoder {
         byte[] readBuffer = new byte[bufferLength];
 
         // read buflen char
-        if (fileSize == 0) {
-            bufferLength=10;
-            readBuffer = "1234567890".getBytes();
-        } else {
-            try {
-                inputStream.read(readBuffer, (int) filePos, bufferLength);  // Potential issue here 2gb
+        latestBlockLength = 0;
+       try {
+                int n = inputStream.read(readBuffer, 0, bufferLength);  // Potential issue here 2gb
+                if(n>=0) {
+                    filePos += n;
+                    blockNumber++;
+                    latestBlockLength = n;
+                }
+                else {
+                    throw new java.io.IOException("Read less than Expected");
+                }
             } catch (java.io.IOException e) {
                 this.eof = true;
             }
-        }
-        blockNumber++;
-        filePos += bufferLength;
+
+
 
         // encode and return
-        return Base64.encode(readBuffer,0,bufferLength,0).toString();
+        return Base64.encodeToString(readBuffer,0,bufferLength,0);
 
 
     }
