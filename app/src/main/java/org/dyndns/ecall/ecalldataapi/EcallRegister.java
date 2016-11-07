@@ -32,14 +32,14 @@ public class EcallRegister {
     public static String registerDevice(Context context)
     {
         String tempString ="";
-        String accountID= dataHandler.getAccount(context);
-        String deviceID = dataHandler.getDeviceID(context);
+        String accountID= dataHandler.getAccountID(context);
+        String deviceID = dataHandler.getDeviceKey(context);
         String data=null;
         try {
              data = URLEncoder.encode("accountKey", "UTF-8")
                     + "=" + URLEncoder.encode(accountID, "UTF-8");
 
-            data += "&" + URLEncoder.encode("deviceId", "UTF-8") + "="
+            data += "&" + URLEncoder.encode("deviceKey", "UTF-8") + "="
                     + URLEncoder.encode(deviceID, "UTF-8");
         }
         catch(UnsupportedEncodingException e)
@@ -47,7 +47,7 @@ public class EcallRegister {
 
         }
         try {
-            URL url = new URL("http://54.70.221.177/ecallRegister.php");
+            URL url = new URL("http://ecall.dyndns.org/EcallAPIRegister.php");
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
