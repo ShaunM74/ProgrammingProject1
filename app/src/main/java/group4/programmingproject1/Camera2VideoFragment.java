@@ -813,9 +813,6 @@ public class Camera2VideoFragment extends Fragment
                 {
                     //tracker++;
                     Thread.sleep(1000);
-                    Log.d("Debug",""+i+" seconds");
-
-
                 }catch (InterruptedException e)
                 {
                     e.printStackTrace();
@@ -828,7 +825,6 @@ public class Camera2VideoFragment extends Fragment
         protected void onPostExecute(String doneTask)
         {
             //uptimer(tracker);
-            Log.d("Debug","Stopping recorder post async");
             stopRecordingVideo();
         }
 

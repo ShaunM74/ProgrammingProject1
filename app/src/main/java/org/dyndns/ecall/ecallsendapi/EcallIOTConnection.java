@@ -12,8 +12,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.util.Log;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+
 
 import com.amazonaws.mobileconnectors.iot.AWSIotMqttClientStatusCallback;
 import com.amazonaws.mobileconnectors.iot.AWSIotMqttManager;
@@ -41,11 +40,10 @@ public class EcallIOTConnection
      */
 
     // State Variables
-    private boolean CognitoCredentialsEstablished = false;
-    private boolean ConnectionStatusHandlerStarted = false;
+
     private String Status="Initialising" ;
     private Context context ;
-    private Activity activity;
+    //private Activity activity;
     private String certificate;
 
 
@@ -53,46 +51,27 @@ public class EcallIOTConnection
     //"a1chund80153hz.iot.us-west-2.amazonaws.com";
 
     private String CUSTOMER_SPECIFIC_ENDPOINT =   "a1chund80153hz.iot.us-west-2.amazonaws.com";
-    //private String CUSTOMER_SPECIFIC_ENDPOINT =   "665849750025.iot.us-west-2.amazonaws.com";
     private Regions MY_REGION = Regions.US_WEST_2;
 
-    // Cognito pool ID. For this app, pool needs to be unauthenticated pool with
-    // AWS IoT permissions.
-    private String COGNITO_POOL_ID = "us-west-2:669ac520-1850-46b4-8e87-497f4a43f734";
-    private String ecallMQTTTopic ="uploads/test01-testDevice01" ;
 
 
     // connection variables
     AWSIotMqttManager mqttManager;
     String clientId;
 
-    AWSCredentials awsCredentials;
-    CognitoCachingCredentialsProvider credentialsProvider;
     KeyStore clientKeyStore = null;
 
 
     // instantiation using the super class (Activity) to pass context
-    public EcallIOTConnection(Context caller, Activity activity)
+    public EcallIOTConnection(Context caller)
     {
-        this.activity = activity;
+       // this.activity = activity;
         context = caller;
     }
-
-    // wrapper for context
-
 
     //setters to set connection info - certificates etc
     public void setEndpoint (String endpoint) {
         CUSTOMER_SPECIFIC_ENDPOINT=endpoint;
-    }
-    public void setPoolID (String poolID) {
-        COGNITO_POOL_ID=poolID;
-    }
-    public void setTopic(String topic){
-        ecallMQTTTopic = topic;
-    }
-    public void setCertificate(String cert){
-
     }
     public void setCertificatePrivateKey(String id, String certpem,String certpubkey, String privkey, String keystore )
     {
@@ -111,21 +90,6 @@ public class EcallIOTConnection
     }
 
 
-    public void establishCognitoConnection() {
-
-
-      //  credentialsProvider = new CognitoCachingCredentialsProvider(
-     //           (Context) this.context , // context
-     //           COGNITO_POOL_ID, // Identity Pool ID
-      //          MY_REGION // Region
-     //   );
-        credentialsProvider = new CognitoCachingCredentialsProvider(
-                    (Context) this.context ,
-                "us-west-2:669ac520-1850-46b4-8e87-497f4a43f734", // Identity Pool ID
-                Regions.US_WEST_2 // Region
-        );
-
-    }
     public void establishMQQTConection (String id, String keystore)
     {
         clientId= UUID.randomUUID().toString();
@@ -142,17 +106,9 @@ public class EcallIOTConnection
         // MQTT client IDs are required to be unique per AWS IoT account.
         // This UUID is "practically unique" but does not _guarantee_
         // uniqueness.
-        //clientId = ;
-
-        // Initialize the AWS Cognito credentials provider
-        establishCognitoConnection ();
 
         // MQTT Client
         establishMQQTConection (id,keystore);
-
-        // The following block uses IAM user credentials for authentication with AWS IoT.
-        //awsCredentials = new BasicAWSCredentials("ACCESS_KEY_CHANGE_ME", "SECRET_KEY_CHANGE_ME");
-        //btnConnect.setEnabled(true);
 
     }
     public String getConnectionStatus() {
@@ -160,7 +116,6 @@ public class EcallIOTConnection
     }
     public void setContext(Context newContext)
     {
-
         context = newContext;
     }
     public void startConnectionStatusHandler(String certid,String keystore) {
@@ -182,8 +137,11 @@ public class EcallIOTConnection
                 public void onStatusChanged(final AWSIotMqttClientStatus status,
                                             final Throwable throwable) {
                     Log.d(LOG_TAG, "Status = " + String.valueOf(status));
+                    if (status == AWSIotMqttClientStatus.Connected) {
+                        setStatus("Connected");
+                    }
 
-                    activity.runOnUiThread(new Runnable() {
+                    new Runnable() {
                         @Override
                         public void run() {
                             if (status == AWSIotMqttClientStatus.Connecting) {
@@ -207,7 +165,7 @@ public class EcallIOTConnection
 
                             }
                         }
-                    });
+                    };
                 }
             });
         } catch (final Exception e) {
@@ -218,18 +176,19 @@ public class EcallIOTConnection
 
 
 
-    public void publishData(String data){
+    public void publishData(String topic,String data){
 
-        final String topic = ecallMQTTTopic ;
+
         final String msg = data;
 
         try {
-            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS0);
+            mqttManager.publishString(msg, topic, AWSIotMqttQos.QOS1);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Publish error.", e);
         }
 
     };
+
     public void setStatus(String newstatus)
     {
         this.Status = newstatus;
@@ -250,4 +209,6 @@ public class EcallIOTConnection
     {
         mqttManager.disconnect();
     };
+
+
 }

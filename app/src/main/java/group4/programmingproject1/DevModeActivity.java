@@ -426,7 +426,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         @Override
         protected String doInBackground(Void... voids) {
             String tempString ="";
-            tempString = EcallRegister.registerDevice();
+            //tempString = EcallRegister.registerDevice();
             return tempString;
         }
 

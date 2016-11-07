@@ -17,7 +17,7 @@ public class EcallAlert {
 
 
     public enum alertMethodEnum { EMAIL , SMS }
-    public enum alertStatusEnum { UNSENT , PENDING , SENDING , FAILED, SENT, UPLOADED }
+    public enum alertStatusEnum { UNSENT , PENDING , CONNECTING, SENDING , FAILED, SENT, UPLOADED }
 
 
     private void initialiseSettings() {
@@ -30,6 +30,7 @@ public class EcallAlert {
     {
         initialiseSettings();
         this.contact = contact;
+        this.setAlertMethod(method);
         this.setPayload(payload);
     }
 
