@@ -460,6 +460,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
+        saveGPSNow();
     }
 
     //FUNCTION TO SEND GPS VARIABLES longitude and latitude
@@ -483,6 +484,7 @@ public class MainActivity extends AppCompatActivity {
         Geocoder geocoder;
 
         geocoder = new Geocoder(this,Locale.getDefault());
+        String AllOurPowersCombined = null;
 
         try
         {
@@ -492,13 +494,21 @@ public class MainActivity extends AppCompatActivity {
         {
             e.printStackTrace();
         }
+        catch (NullPointerException n)
+        {
+            n.printStackTrace();
+        }
 
-        String address = addresses.get(0).getAddressLine(0);
-        String city = addresses.get(0).getLocality();
-        String state = addresses.get(0).getAdminArea();
-        String country = addresses.get(0).getCountryName();
+        if (addresses != null) {
+            String address = addresses.get(0).getAddressLine(0);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
 
-        String AllOurPowersCombined = address+" "+city+" at "+getTime();
+            AllOurPowersCombined = address+" "+city+" at "+getTime();
+        }
+
+
         if (AllOurPowersCombined != null)
         {
             dataHandler.saveAddress(context,AllOurPowersCombined);
