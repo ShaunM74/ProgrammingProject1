@@ -5,7 +5,9 @@ import java.io.IOException;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
@@ -32,18 +34,20 @@ public class SoundRecordActivity extends AppCompatActivity {
     //private MediaPlayer myPlayer;
     private String outputFile;
 
-   // private TextView text;
+    private TextView text;
     private int playTime = 5;
-    //private int playTime = dataHandler.getRecordTimeBySeconds(getApplicationContext());
+    //Context context;
+    //dataHandler data1 = new dataHandler();
+    //private int playTime = data1.getRecordTimeBySeconds(context);
 
     public static final int RECORD_AUDIO = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sound_rec);
 
-       // text = (TextView) findViewById(R.id.text1);
+        text = (TextView) findViewById(R.id.text1);
         // store it to sd card
         //outputFile = Environment.getExternalStorageDirectory().
         //       getAbsolutePath() + "/SNDTEST.3gpp";
@@ -93,6 +97,7 @@ public class SoundRecordActivity extends AppCompatActivity {
         try {
             myRecorder.prepare();
             myRecorder.start();
+            lockScreenRotation();
             new postTask().execute("soundrec");
         } catch (IllegalStateException e) {
             // start:it is called before prepare()
@@ -103,19 +108,20 @@ public class SoundRecordActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //text.setText("Recording Sound");
+        text.setText("Recording Sound");
 
         Toast.makeText(getApplicationContext(), "Start recording...",
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void stop(){
+    public void stop()
+    {
         try {
             myRecorder.stop();
             myRecorder.release();
             myRecorder  = null;
 
-            //text.setText("Recording Stopped");
+            text.setText("Recording Stopped");
 
             Toast.makeText(getApplicationContext(), "Stop recording...",
                     Toast.LENGTH_SHORT).show();
@@ -125,6 +131,30 @@ public class SoundRecordActivity extends AppCompatActivity {
         } catch (RuntimeException e) {
             // no valid audio/video data has been received
             e.printStackTrace();
+        }
+    }
+
+    // Sets requested orientation to be unspecified, which allows rotation
+
+    private void unlockScreenRotation()
+    {
+        this.setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
+
+    private void lockScreenRotation()
+    {
+        // Stop the screen orientation changing during an event
+        switch (this.getResources().getConfiguration().orientation)
+        {
+            case Configuration.ORIENTATION_PORTRAIT:
+                this.setRequestedOrientation(
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                this.setRequestedOrientation(
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                break;
         }
     }
 
@@ -156,6 +186,8 @@ public class SoundRecordActivity extends AppCompatActivity {
             //uptimer(tracker);
             Log.d("Debug","Stopping recorder post async");
             stop();
+            unlockScreenRotation();
+            finish();
         }
 
         @Override

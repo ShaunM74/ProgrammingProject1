@@ -82,7 +82,7 @@ public class dataHandler extends AppCompatActivity
 
     }
 
-    public static int getRecordTimeBySeconds(Context context)
+    public int getRecordTimeBySeconds(Context context)
     {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(

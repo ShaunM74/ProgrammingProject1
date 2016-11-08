@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private Handler gpsHandler;
 
 
-
+    //sound rec
+    public static final int RECORD_AUDIO = 0;
 
     private Date lastAlertDate =null;
     Intent alertServiceIntent;
@@ -129,6 +130,18 @@ public class MainActivity extends AppCompatActivity {
                                 Manifest.permission.SEND_SMS
                         },1);
             }
+        }
+
+        //Permission for mic recording
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    this.RECORD_AUDIO);
+
+        }
+        else
+        {
+           // Toast.makeText(MainActivity.this, "rec perm given", Toast.LENGTH_LONG).show();
         }
 
 
