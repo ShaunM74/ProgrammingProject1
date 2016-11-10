@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.FileNotFoundException;
 import android.util.Base64;
+import android.util.Log;
 
 /**
  * Created by bajaques on 30/10/2016.
@@ -40,6 +41,7 @@ public class EcallIOTEncoder {
             } catch (FileNotFoundException e) {
                 if(!fileName.contains("TestMovie.mp4")) {
                     e.printStackTrace();
+                    Log.d("DEBUG","Error in filename "+fileName);
                 }
             }
 

@@ -40,6 +40,7 @@ public class AlertService extends Service {
     Handler alertHandler;
     Context tempcontext;
     EcallSendProcessor ecallSendProcessor;
+    String alertID="";
 
     public AlertService() {
     }
@@ -54,9 +55,12 @@ public class AlertService extends Service {
                 Toast.makeText(tempcontext, mString, Toast.LENGTH_SHORT).show();
             }
         };
-
+        IntentFilter filter = new IntentFilter(getString(R.string.start_instalert_alarm));
+        filter.addAction(getString(R.string.recording_finished));
         LocalBroadcastManager.getInstance(this).registerReceiver(alertBroadcastReceiver,
-                new IntentFilter("startInstAlertAlarm"));
+                new IntentFilter(filter));
+
+        //LocalBroadcastManager.getInstance(this).registerReceiver()
 
         ecallSendProcessor = new EcallSendProcessor();
         ecallSendProcessor.setSecurityContext(tempcontext);
@@ -88,17 +92,41 @@ public class AlertService extends Service {
         }
     }
 
+
+
     private BroadcastReceiver alertBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String alertID = intent.getStringExtra("alertID");
+            if(getString(R.string.start_instalert_alarm).equals(intent.getAction())) {
+                // Get extra data included in the Intent
+                alertID = intent.getStringExtra("alertID");
 //            Log.d("receiver", "Got message: " + message);
-            startAlert(alertID);
+
+                if(dataHandler.isVid(context))
+                {
+                    Intent camIntent = new Intent(getApplicationContext(), CameraActivity.class);
+                    camIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    camIntent.putExtra("ALERT_ID", alertID);
+                    startActivity(camIntent);
+                }
+                else
+                {
+                    startAlert(alertID,"","");
+                }
+
+                //startAlert(alertID);
+            }
+            if(getString(R.string.recording_finished).equals(intent.getAction()))
+            {
+                String fileName = intent.getStringExtra("fileName");
+                String fileLocation = intent.getStringExtra("fileLocation");
+                Log.d("receiver", "Got message: " + fileLocation+fileName+"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                startAlert(alertID, fileName, fileLocation);
+            }
         }
     };
 
-    public void startAlert(String alertID)
+    public void startAlert(String alertID, final String attachmentFileName,final String attachmentFileLocation)
     {
         Context context = getApplicationContext();
         Toast.makeText(context, "Alert Processing Started", Toast.LENGTH_SHORT).show();
@@ -125,7 +153,6 @@ public class AlertService extends Service {
             contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
             contacts.moveToNext();
             String existingName = null;
-
             try {
                 tempCurrentContact.setDisplayName("" + contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
                 Log.d("Debug", "Name:" + contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
@@ -136,6 +163,7 @@ public class AlertService extends Service {
                 Log.d("Debug", tempCurrentContact.getDisplayName());
             }
 
+            // Get mobile phone number of contact
             Cursor pCur = cr.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
@@ -146,8 +174,6 @@ public class AlertService extends Service {
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
                     tempCurrentContact.setPhoneNumber("" + pCur.getString(contacts.getColumnIndex(
                             ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[^\\d]", ""));
-                    Log.d("Debug", "Phone:" + pCur.getString(contacts.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.NUMBER)).toString().replaceAll("[^\\d]", ""));
                 }
             }
             pCur.close();
@@ -163,9 +189,11 @@ public class AlertService extends Service {
 
             // End of todo
 
+
+
+
             if(dataHandler.isTxt(context)) {
                 try {
-                    //Runnable alertRunnable =
                     new Runnable() {
                         @Override
                         public void run() {
@@ -181,8 +209,10 @@ public class AlertService extends Service {
 
                             try {
                                 String defaultMessage = "I am in need of assistance!";
-                                String accountId = "test@testdata.com";
-                                String deviceID = "test01-testDevice01";
+                                String accountId = dataHandler.getAccountID(getApplicationContext());
+                                        //"test@testdata.com";
+                                String deviceID = dataHandler.getAccountID(getApplicationContext());
+                                        //"test01-testDevice01";
 
                                 JSONObject payLoadObject = new JSONObject();
                                 try {
@@ -190,58 +220,35 @@ public class AlertService extends Service {
                                     String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
                                     String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
 
-                                    //payLoadObject.put("AlertID", "A" + getCurrentDateTimeAsString());
-                                    //payLoadObject.put("AccountID", accountId);
+
                                     payLoadObject.put("DeviceID", deviceID);
                                     payLoadObject.put("MessageText", "this is an alert message");
-                                    payLoadObject.put("Location", "[8888,9999]");
-                                    //payLoadObject.put("AttachmentName", filename);
-                                    //payLoadObject.put("AttachmentLocation", "/data/user/0/org.dyndns.ecall.ecallandroidapicoreapplication/files/"+filename);
+
 
                                     payLoadObject.put("AlertID",thisAlertID);
                                     payLoadObject.put("MessageText", defaultMessage);
                                     payLoadObject.put("AccountID", accountId);
                                     payLoadObject.put("DeviceID", deviceID);
-                                    payLoadObject.put("Latitude", currentGPS.getLatitude());
-                                    payLoadObject.put("Longitude", currentGPS.getLongitude());
+                                    Log.d("DEBUG",""+dataHandler.isGPSMaps(getApplicationContext()));
+                                    if(dataHandler.isGPSMaps(getApplicationContext())==true)
+                                    {
+                                        payLoadObject.put("Latitude", currentGPS.getLatitude());
+                                        payLoadObject.put("Longitude", currentGPS.getLongitude());
+                                        payLoadObject.put("Location", "["+currentGPS.getLatitude()+
+                                                ","+currentGPS.getLongitude()+"]");
+                                    }
+                                    payLoadObject.put("AttachmentName",attachmentFileName);
+                                    payLoadObject.put("AttachmentLocation",attachmentFileLocation);
                                     payLoadObject.put("Date", date);
                                     payLoadObject.put("Time", time);
                                     payLoadObject.put("Website",getString(R.string.website_URL));
-                                            //"http://54.70.221.177/");
-                                            //R.string.website_URL);
 
                                     Log.d("DEBUG", payLoadObject.toString());
                                     alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
                                             payLoadObject.toString());
                                     Log.d("DEBUG","TYPE:"+alertSMS.getAlertMethod());
                                     ecallSendProcessor.addAlert(alertSMS);
-                                    try {
-                                        ecallSendProcessor.processPendingAlerts();
-                                    }
-                                    catch (EcallSendException e)
-                                    {
-                                        Log.d("DEBUG","Failed processing");
-                                        e.printStackTrace();
-                                    }
-                                    ///////////////////////////////////////
-                                    // Debug for SMS sending service
-                                    //////////////////////////////////////////////////
-/*
-                                    EcallMessageDespatcher newSMS = new EcallMessageDespatcherViaSMS(alertSMS);
-                                    newSMS.prepareMessage();
-                                    if (newSMS.despatchMessage()) {
-                                        Log.d("Debug", "SMS Sent");
-                                        Message msg = new Message();
-                                        msg.obj = "SMS sent";
-                                        alertHandler.sendMessage(msg);
 
-                                    } else {
-                                        Log.d("Debug", "SMS Sent");
-                                        Message msg = new Message();
-                                        msg.obj = "SMS failed";
-                                        alertHandler.sendMessage(msg);
-                                    }
-                                    */
                                 } catch (JSONException e) {
 
                                 }
@@ -256,14 +263,23 @@ public class AlertService extends Service {
                 }
             }
 
-           if(dataHandler.isVid(context))
-           {
-               Intent intent = new Intent(context, CameraActivity.class);
-               intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               startActivity(intent);
-           }
+            try {
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            ecallSendProcessor.processPendingAlerts();
+                        } catch (EcallSendException e) {
+                            Log.d("DEBUG", "Failed processing");
+                            e.printStackTrace();
+                        }
+                    }
+                }.run();
+            }
+            catch(Exception e)
+            {
 
-
+            }
         }
 
         // If there is no contact set, alert cannot run.

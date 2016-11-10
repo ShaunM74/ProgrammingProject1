@@ -9,6 +9,8 @@ import com.amazonaws.mobileconnectors.iot.AWSIotKeystoreHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import group4.programmingproject1.dataHandler;
+
 /**
  * Created by bajaques on 31/10/2016.
  */
@@ -110,6 +112,10 @@ public class EcallRegistration {
             certPEM=json.getString("CertificatePEM");
             certPubKey = json.getString("CertificatePublicKey");
             certPrivKey = json.getString("CertificatePrivateKey");
+            String deviceID = json.getString("DeviceID");
+
+            dataHandler.setCertID(context,certID);
+            dataHandler.setDeviceID(context,deviceID);
 
         }
         catch(JSONException e){};

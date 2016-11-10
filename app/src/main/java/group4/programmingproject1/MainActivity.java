@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.dyndns.ecall.ecalldataapi.EcallRegister;
+import org.dyndns.ecall.ecalldataapi.EcallRegistration;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -105,16 +106,21 @@ public class MainActivity extends AppCompatActivity {
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
-                new IntentFilter("noContactError"));
+                new IntentFilter(getString(R.string.no_contact_error)));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
+                new IntentFilter(getString(R.string.record_video)));
 
         // Assign buttons to variables
 
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
-
-        RegisterDevice registerDevice = new RegisterDevice();
-        registerDevice.execute();
-
+        Log.d("Debug",""+dataHandler.getCertID(this));
+        if(dataHandler.getCertID(this)==null)
+        {
+            RegisterDevice registerDevice = new RegisterDevice();
+            registerDevice.execute();
+        }
         //Permission for sending SMS request
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED)
@@ -555,9 +561,6 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver noContactBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-//            String message = intent.getStringExtra("message");
-//            Log.d("receiver", "Got message: " + message);
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this,R.style.CustomDialogTheme);
             builder.setMessage(R.string.no_contact_alert)
                     .setTitle(R.string.app_name)
@@ -591,9 +594,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String results) {
-            //Toast.makeText(MainActivity.this, results.toString(), Toast.LENGTH_LONG).show();
-            Log.d("Debug",results.toString());
-
+            EcallRegistration ecallRegistration = new EcallRegistration(context,results);
+            ecallRegistration.setCertificatePrivateKey();
         }
     }
 }

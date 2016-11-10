@@ -1,6 +1,7 @@
 package org.dyndns.ecall.ecallsendapi;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.dyndns.ecall.ecalldataapi.EcallAlert;
 import org.dyndns.ecall.ecalldataapi.EcallRegistration;
@@ -73,7 +74,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
             if (!fini) {
 
                 try {
-                    wait(5000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                 }
 
@@ -140,6 +141,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
         String fileloc;
         try {
             fileloc = alertJSON.getString("AttachmentLocation");
+            fileloc += alertJSON.getString("AttachmentName");
         }
         catch (JSONException e) {
             // no attachment so exit with success
@@ -169,6 +171,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
                 blockJSON.put("BlockLength", blockLength); // preemtive add 1 to blockcount, increment if success
 
                 connection.publishData("EcallNewAttachments", blockJSON.toString());
+                Log.d("DEBUG","Sending block "+blockCount);
                 blockCount++;
             }
 

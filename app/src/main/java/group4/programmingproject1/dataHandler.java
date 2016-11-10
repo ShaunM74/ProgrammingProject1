@@ -12,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 //import java.util.Date;
 
 /**
@@ -448,25 +451,60 @@ public class dataHandler extends AppCompatActivity
 
     }
 
-    public static String getAccount(Context context) {
+    public static String getAccountID(Context context) {
         AccountManager accountManager = AccountManager.get(context);
         Account[] accounts = accountManager.getAccountsByType("com.google");
-        Log.d("Debug", "Account:" + accounts[0].name.toString());
-        return accounts[0].toString();
+
+        return accounts[0].name;
     }
 
-    public static String getDeviceID(Context context) {
+    public static String getDeviceKey(Context context) {
         String androidID = Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
-        Log.d("Debug", "Account:" + androidID);
         return androidID;
     }
 
+    public static String getDeviceID(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
+        String key = context.getString(R.string.device_id_key);
+        String deviceID= sharedPreferences.getString(key,null);
+        return deviceID;
+    }
+    public static void setDeviceID(Context context, String newDeviceID)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = context.getString(R.string.device_id_key);
+        editor.putString(key, newDeviceID);
+        editor.commit();
+    }
+
+
+    public static void setCertID(Context context, String newCertID)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        String key = context.getString(R.string.cert_id_key);
+        editor.putString(key, newCertID);
+        editor.commit();
+    }
     public static String getCertID(Context context)
     {
+        /* TEST DATA
         String certID = "f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
+        */
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
+        String key = context.getString(R.string.cert_id_key);
+        String certID= sharedPreferences.getString(key,null);
         return certID;
     }
+    /*
     public static String getCertPEM(Context context)
     {
         String certPEM = "-----BEGIN CERTIFICATE-----\n" +
@@ -535,6 +573,7 @@ public class dataHandler extends AppCompatActivity
                 "-----END RSA PRIVATE KEY-----";
         return certPrivKey;
     }
+    */
 }
 
 
