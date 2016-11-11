@@ -130,12 +130,18 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI);
                 //i.setType(ContactsContract.CommonDataKinds.Email.CONTEN‌​T_TYPE);
                 startActivityForResult(i, CONTACT_PICKER_RESULT);*/
-                Intent intent = new Intent(context, CameraActivity.class);
+
+                //undo this to return to video testing
+                //Intent intent = new Intent(context, CameraActivity.class);
+
+                Intent intent = new Intent (context,SoundRecordActivity.class);
                 startActivity(intent);
                 //startActivity(i);
             }
 
         });
+
+
 
         testRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +166,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         TextView testtext = (TextView) findViewById(R.id.testSpinner);
         TextView testtext2 = (TextView) findViewById(R.id.dataHLongitest);
         TextView testtext3 = (TextView) findViewById(R.id.GPSTIME);
+        //gps address display
+        TextView testtext4 = (TextView) findViewById(R.id.textView6);
         //data1.setRecordTimeActualBySecondsValue(4,getApplicationContext(),getString(R.string.OptSettingsFile));
         //testtext.setText( String.valueOf(data1.getRecordTimeActualSecondsValue(getApplicationContext(),getString(R.string.OptSettingsFile),getString(R.string.SoundVideoRecordTime))));
 
@@ -184,6 +192,8 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
         testtext.setText(gps.getLatitude());
         testtext2.setText(gps.getLongitude());
         testtext3.setText(gps.getGPSTime());
+        testtext4.setText(data1.getaddress(context));
+
 
         //testing settings checks
         //dataHandler data2 = new dataHandler();

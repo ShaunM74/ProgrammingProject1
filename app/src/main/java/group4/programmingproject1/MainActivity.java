@@ -13,6 +13,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -43,10 +45,12 @@ import org.dyndns.ecall.ecalldataapi.EcallRegister;
 import org.dyndns.ecall.ecalldataapi.EcallRegistration;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static group4.programmingproject1.R.id.textView;
@@ -76,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private Handler gpsHandler;
 
 
-
+    //sound rec
+    public static final int RECORD_AUDIO = 0;
 
     private Date lastAlertDate =null;
     Intent alertServiceIntent;
@@ -131,6 +136,18 @@ public class MainActivity extends AppCompatActivity {
                                 Manifest.permission.SEND_SMS
                         },1);
             }
+        }
+
+        //Permission for mic recording
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    this.RECORD_AUDIO);
+
+        }
+        else
+        {
+           // Toast.makeText(MainActivity.this, "rec perm given", Toast.LENGTH_LONG).show();
         }
 
 
@@ -462,18 +479,65 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         locationManager.requestLocationUpdates("gps", shortCheck, 0, locationListener);
+        saveGPSNow();
     }
 
     //FUNCTION TO SEND GPS VARIABLES longitude and latitude
-    void saveGPSNow()
+    private void saveGPSNow()
     {
         dataHandler data1 = new dataHandler();
         if ( Latitude != null && Longitude != null )
         {
             //data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude));
             data1.saveGPS(getApplicationContext(), getString(R.string.GPSLat), getString(R.string.GPSLONG),getString(R.string.GPStime), getString(R.string.OptSettingsFile), String.valueOf(Latitude), String.valueOf(Longitude),getTime());
+            getAddress();
         }
 
+    }
+
+    private String getAddress()
+    {
+
+
+        List<Address> addresses = null;
+        Geocoder geocoder;
+
+        geocoder = new Geocoder(this,Locale.getDefault());
+        String AllOurPowersCombined = null;
+
+        try
+        {
+            addresses = geocoder.getFromLocation(Double.parseDouble(Latitude),Double.parseDouble(Longitude),1);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        catch (NullPointerException n)
+        {
+            n.printStackTrace();
+        }
+
+        if (addresses != null) {
+            String address = addresses.get(0).getAddressLine(0);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+
+            AllOurPowersCombined = address+" "+city+" at "+getTime();
+        }
+
+
+        if (AllOurPowersCombined != null)
+        {
+            dataHandler.saveAddress(context,AllOurPowersCombined);
+            return AllOurPowersCombined;
+
+        }
+        else
+        {
+            return "Address Unknown";
+        }
     }
 
     private String getTime()
@@ -489,6 +553,7 @@ public class MainActivity extends AppCompatActivity {
 
         return formattedDate;
     }
+
 
 
 

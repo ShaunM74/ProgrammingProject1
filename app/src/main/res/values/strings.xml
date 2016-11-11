@@ -120,6 +120,7 @@
     <string name="GPSLat">GPS LATITUDE</string>
     <string name="GPSLONG">GPS LONGITUDE</string>
     <string name="GPStime">GPS TIME</string>
+    <string name="GPSAddress">address</string>
 
     <string name="Contact4Eme">Contact for Emergency</string>
     <!-- Option view Settings file -->
