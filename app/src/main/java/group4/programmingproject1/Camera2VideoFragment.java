@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -45,6 +46,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -75,7 +77,11 @@ public class Camera2VideoFragment extends Fragment
 
     //need to change this so it gets the actual time on creation?
     //for how long recording goes for timer
-    private int howLongRecord = 10;
+    private int howLongRecord = 3;
+
+    private String fileName="";
+    private String fileLocation="";
+
 
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
@@ -302,6 +308,8 @@ public class Camera2VideoFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        howLongRecord = getArguments().getInt("RECORD_LENGTH");
+
         return inflater.inflate(R.layout.fragment_camera2_video, container, false);
     }
 
@@ -337,13 +345,14 @@ public class Camera2VideoFragment extends Fragment
 
     @Override
     public void onClick(View view) {
+        /*
         switch (view.getId()) {
             case R.id.video: {
                 //case R.id.button2: {
                 if (mIsRecordingVideo) {
-                    stopRecordingVideo();
+                    //stopRecordingVideo();
                 } else {
-                    startRecordingVideo();
+                    //startRecordingVideo();
                     //stopRecordingVideo();
                 }
                 break;
@@ -358,7 +367,7 @@ public class Camera2VideoFragment extends Fragment
                 }
                 break;
             }
-        }
+        }*/
     }
 
     /**
@@ -641,10 +650,13 @@ public class Camera2VideoFragment extends Fragment
     }
 
     private String getVideoFilePath(Context context) {
-        Log.d("Debug","Output:"+ context.getExternalFilesDir(null).getAbsolutePath() + "/" +
-                                System.currentTimeMillis() + "SRM.mp4");
-        return context.getExternalFilesDir(null).getAbsolutePath() + "/"
-                + System.currentTimeMillis() + "SRM.mp4";
+
+
+        String alertID= getArguments().getString("ALERT_ID");
+
+        fileLocation = context.getExternalFilesDir(null).getAbsolutePath()+"/";
+        fileName = alertID+".mp4";
+        return fileLocation+fileName;
     }
 
     public void startRecordingVideo() {
@@ -730,8 +742,8 @@ public class Camera2VideoFragment extends Fragment
                     Toast.LENGTH_LONG).show();
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
         }
-        mNextVideoAbsolutePath = null;
-        startPreview();
+//        mNextVideoAbsolutePath = null;
+//        startPreview();
     }
 
     /**
@@ -813,9 +825,6 @@ public class Camera2VideoFragment extends Fragment
                 {
                     //tracker++;
                     Thread.sleep(1000);
-                    Log.d("Debug",""+i+" seconds");
-
-
                 }catch (InterruptedException e)
                 {
                     e.printStackTrace();
@@ -828,8 +837,21 @@ public class Camera2VideoFragment extends Fragment
         protected void onPostExecute(String doneTask)
         {
             //uptimer(tracker);
-            Log.d("Debug","Stopping recorder post async");
+
             stopRecordingVideo();
+
+            Intent intent = new Intent("recordingFinished");
+            intent.putExtra("fileName",fileName);
+            intent.putExtra("fileLocation",fileLocation);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+            mCameraOpenCloseLock.release();
+            mCameraDevice = null;
+
+            Activity activity = getActivity();
+            if (null != activity) {
+                activity.finish();
+            }
+
         }
 
         @Override
@@ -840,5 +862,8 @@ public class Camera2VideoFragment extends Fragment
 
 
     }
+
+
+
 
 }
