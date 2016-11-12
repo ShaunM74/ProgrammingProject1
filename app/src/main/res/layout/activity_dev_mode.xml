@@ -36,9 +36,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/testregisterButton" />
+
             <Button
                 android:text="Test SMS"
-                android:layout_width="match_parent"
+                android:layout_width="163dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/testContactButton" />
 
@@ -137,6 +138,15 @@
         android:layout_alignBaseline="@+id/testSpinner"
         android:layout_alignBottom="@+id/testSpinner"
         android:layout_alignEnd="@+id/text_scroller" />
+
+    <Button
+        android:text="call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView6"
+        android:layout_alignEnd="@+id/testSpinner"
+        android:layout_marginTop="9dp"
+        android:id="@+id/testcall" />
 
 
 </RelativeLayout>

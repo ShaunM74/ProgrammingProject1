@@ -67,6 +67,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
     private Button testRegister;
     private Button testContact;
     private Button clearTextButton;
+    private Button testCall;
     private TextView TextBox;
     Context context;
     private static final int CONTACT_PICKER_RESULT = 1001;
@@ -99,6 +100,7 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
 
         testRegister = (Button)findViewById(R.id.testregisterButton);
         testContact = (Button)findViewById(R.id.testContactButton);
+        testCall = (Button) findViewById(R.id.testcall);
         clearTextButton = (Button)findViewById(R.id.clearTextButton);
         TextBox = (TextView)findViewById(R.id.returnTextView);
         context=this;
@@ -139,6 +141,16 @@ public class DevModeActivity extends AppCompatActivity implements GoogleApiClien
                 //startActivity(i);
             }
 
+        });
+
+        testCall.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intentCall = new Intent (context,PhoneActivity.class);
+                startActivity(intentCall);
+            }
         });
 
 
