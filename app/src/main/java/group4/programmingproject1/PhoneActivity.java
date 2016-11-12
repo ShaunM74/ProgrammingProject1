@@ -23,7 +23,7 @@ public class PhoneActivity extends AppCompatActivity
 
     Button call;
     //number needs to be retrieved from contact settings here , edit to test
-    private String number;
+    private String number = "0467640471";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +42,8 @@ public class PhoneActivity extends AppCompatActivity
         {
             startActivity(intent);
         }
+
+        finish();
 
     }
 }
