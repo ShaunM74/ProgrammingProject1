@@ -67,8 +67,9 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import group4.programmingproject1.dataHandler;
 /**
- * Created by Yipster on 25/10/2016.
+ * Created by Shane Drobnick on 25/10/2016.
  */
 
 public class Camera2VideoFragment extends Fragment
@@ -77,7 +78,8 @@ public class Camera2VideoFragment extends Fragment
 
     //need to change this so it gets the actual time on creation?
     //for how long recording goes for timer
-    private int howLongRecord = 3;
+    private int howLongRecord = 5;
+
 
     private String fileName="";
     private String fileLocation="";

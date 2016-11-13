@@ -85,7 +85,7 @@ public class dataHandler extends AppCompatActivity
 
     }
 
-    public int getRecordTimeBySeconds(Context context)
+    public static int getRecordTimeBySeconds(Context context)
     {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -97,7 +97,7 @@ public class dataHandler extends AppCompatActivity
             return userChoice+3;
         }
 
-        return -1;
+        return 5;
     }
 
     // set video sound record time by actual seconds value
