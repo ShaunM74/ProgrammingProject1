@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import group4.programmingproject1.dataHandler;
 /**
  * Created by Shane Drobnick on 3/11/2016.
  */
@@ -37,8 +38,9 @@ public class SoundRecordActivity extends AppCompatActivity {
     private TextView text;
     private int playTime = 5;
     //Context context;
-    //dataHandler data1 = new dataHandler();
-    //private int playTime = data1.getRecordTimeBySeconds(context);
+
+
+
 
     public static final int RECORD_AUDIO = 0;
 
@@ -46,6 +48,8 @@ public class SoundRecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_rec);
+
+        playTime = dataHandler.getRecordTimeBySeconds(getApplicationContext());
 
         text = (TextView) findViewById(R.id.text1);
         // store it to sd card
