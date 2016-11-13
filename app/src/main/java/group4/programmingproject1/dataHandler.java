@@ -41,7 +41,7 @@ public class dataHandler extends AppCompatActivity
             return userChoice;
         }
 
-        return -1;
+        return 2;
 
     }
 
@@ -84,7 +84,7 @@ public class dataHandler extends AppCompatActivity
             return userChoice+3;
         }
 
-        return -1;
+        return 5;
 
     }
 

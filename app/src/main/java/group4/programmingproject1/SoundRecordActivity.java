@@ -112,7 +112,7 @@ public class SoundRecordActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void stop()
+    private void stop()
     {
         try {
             myRecorder.stop();
