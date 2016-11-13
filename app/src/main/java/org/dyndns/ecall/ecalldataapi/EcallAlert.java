@@ -16,7 +16,7 @@ public class EcallAlert {
     private String jsonPayload ;
 
 
-    public enum alertMethodEnum { EMAIL , SMS }
+    public enum alertMethodEnum { EMAIL , SMS , DUMMY}
     public enum alertStatusEnum { UNSENT , PENDING , CONNECTING, SENDING , FAILED, SENT, UPLOADED }
 
 

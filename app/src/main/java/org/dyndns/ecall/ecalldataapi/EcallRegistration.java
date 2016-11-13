@@ -21,14 +21,10 @@ public class EcallRegistration {
     private Context context ;
    // private Activity activity;
     // Default Data for debug
-    String certARN;
-    //= "arn:aws:iot:us-west-2:665849750025:cert/f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
+    String certARN= "arn:aws:iot:us-west-2:665849750025:cert/f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
 
-    String certID;
-    //= "f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
-    String certPEM;
-    /*
-    = "-----BEGIN CERTIFICATE-----\n" +
+    String certID= "f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
+    String certPEM = "-----BEGIN CERTIFICATE-----\n" +
             "MIIDWjCCAkKgAwIBAgIVAJb+S4+EQ3Bo5qnOQDRmH7FPHtrpMA0GCSqGSIb3DQEB\n" +
             "CwUAME0xSzBJBgNVBAsMQkFtYXpvbiBXZWIgU2VydmljZXMgTz1BbWF6b24uY29t\n" +
             "IEluYy4gTD1TZWF0dGxlIFNUPVdhc2hpbmd0b24gQz1VUzAeFw0xNjEwMjQwNTU1\n" +
@@ -48,10 +44,8 @@ public class EcallRegistration {
             "HHRGmS4EWDQdRw7gNl79zh6nXrybonwEB2TY/JfvflkTkvGbWXUOj6sPIpblQM7y\n" +
             "TvBD/BrlFy0wJtWwKLshdTC1VH4xG7wLVrtEq8Bnm4WBAXpVrhfkIuuFN6aIKA==\n" +
             "-----END CERTIFICATE-----\n";
-*/
-    String certPubKey;
-    /*
-    = "-----BEGIN PUBLIC KEY-----\n" +
+
+    String certPubKey= "-----BEGIN PUBLIC KEY-----\n" +
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlNJdqGP6MzzT3XlIiGrW\n" +
             "zY4wnGKZsdtmLzo9XvYDd/uS8kwLy/BeNTx7klcgBsmQtTV1OeIK3OTZf1Zm/3m4\n" +
             "zqBdoexMeGy5ms2BpX5J75fOZTBx/5IEWMsgXOrTm2Z0BEU0Vj6TmLtOa24+EVky\n" +
@@ -60,10 +54,8 @@ public class EcallRegistration {
             "W40+RxXVc4tLjmZjBzka8fHCHHTLM3qYOpfOZDggGLmGHXFXAU/GNZd0ridWlfMF\n" +
             "OQIDAQAB\n" +
             "-----END PUBLIC KEY-----\n";
-*/
-    String certPrivKey;
-    /*
-    = "-----BEGIN RSA PRIVATE KEY-----\n" +
+
+    String certPrivKey    = "-----BEGIN RSA PRIVATE KEY-----\n" +
             "MIIEpAIBAAKCAQEAlNJdqGP6MzzT3XlIiGrWzY4wnGKZsdtmLzo9XvYDd/uS8kwL\n" +
             "y/BeNTx7klcgBsmQtTV1OeIK3OTZf1Zm/3m4zqBdoexMeGy5ms2BpX5J75fOZTBx\n" +
             "/5IEWMsgXOrTm2Z0BEU0Vj6TmLtOa24+EVkyQiELiUy5F0NU+drxMSRSXTV6MEPR\n" +
@@ -90,7 +82,7 @@ public class EcallRegistration {
             "wbl0qW9x2NFSMe/dX+EeZv73C7Tic9CsAh0f18YnBVcxSSmfnGBk1NTaSiPkD/hO\n" +
             "Ny/HBxnHR63WvYuS5isqm7XTawim1IVlUn1gph6YuPnkWffRB2pW/A==\n" +
             "-----END RSA PRIVATE KEY-----";
-*/
+
     // instantiation using the super class (Activity) to pass context
     public EcallRegistration(Context caller)
     {
@@ -115,13 +107,13 @@ public class EcallRegistration {
         JSONObject json;
         try {
             json = new JSONObject(registrationResponse);
-            certARN=json.getString("CertificateARN");
-            certID=json.getString("CertificateOD");
-            certARN=json.getString("CertificateARN");
-            certPEM=json.getString("CertificatePEM");
-            certPubKey = json.getString("CertificatePublicKey");
-            certPrivKey = json.getString("CertificatePrivateKey");
-            String deviceID = json.getString("DeviceID");
+           // certARN=json.getString("certificateARN");
+            //certID=json.getString("certificateID");
+
+            //certPEM=json.getString("certificatePEM");
+            //certPubKey = json.getString("certificatePublicKey");
+            //certPrivKey = json.getString("certificatePrivateKey");
+            String deviceID = json.getString("deviceID");
 
             dataHandler.setCertID(context,certID);
             dataHandler.setDeviceID(context,deviceID);

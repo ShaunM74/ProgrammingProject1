@@ -143,6 +143,7 @@ public class Camera2VideoFragment extends Fragment
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
                                               int width, int height) {
+            Log.d("DEBUG","In available");
             openCamera(width, height);
         }
 
@@ -166,11 +167,21 @@ public class Camera2VideoFragment extends Fragment
             }
             else
             {
-                startRecordingVideo();
-                if(!hasCaptured)
+
+                    startRecordingVideo();
+               if(!hasCaptured)
                 {
+                    try {
+                        Thread.sleep(3000);
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
+                    //startRecordingVideo();
                     new postTask().execute("errm");
-                    hasCaptured=true;
+                    hasCaptured = true;
+
                 }
 
             }
@@ -221,6 +232,7 @@ public class Camera2VideoFragment extends Fragment
         @Override
         public void onOpened(CameraDevice cameraDevice) {
             mCameraDevice = cameraDevice;
+            Log.d("DEBUG","In on opened");
             startPreview();
             mCameraOpenCloseLock.release();
             if (null != mTextureView) {
@@ -265,7 +277,8 @@ public class Camera2VideoFragment extends Fragment
      */
     private static Size chooseVideoSize(Size[] choices) {
         for (Size size : choices) {
-            if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1080) {
+            if (size.getHeight() == 480 && size.getWidth() == 640) {
+                Log.d("DEBUG","Returning size:"+size.toString());
                 return size;
             }
         }
@@ -290,8 +303,7 @@ public class Camera2VideoFragment extends Fragment
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
-            if (option.getHeight() == option.getWidth() * h / w &&
-                    option.getWidth() >= width && option.getHeight() >= height) {
+            if (option.getWidth() >= width && option.getHeight() >= height) {
                 bigEnough.add(option);
             }
         }
@@ -320,7 +332,14 @@ public class Camera2VideoFragment extends Fragment
         //mButtonVideo = (Button) view.findViewById(R.id.button2);
         mButtonVideo.setOnClickListener(this);
         //view.findViewById(R.id.info).setOnClickListener(this);
-        startRecordingVideo();
+
+        if(!hasCaptured)
+        {
+           // startRecordingVideo();
+           // new postTask().execute("errm");
+           // hasCaptured = true;
+        }
+
         //startRecordingVideo();
 
     }
@@ -628,8 +647,10 @@ public class Camera2VideoFragment extends Fragment
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
-        mMediaRecorder.setVideoEncodingBitRate(10000000);
-        mMediaRecorder.setVideoFrameRate(30);
+        //mMediaRecorder.setVideoEncodingBitRate(10000000);
+        mMediaRecorder.setVideoEncodingBitRate(1500000);
+        //mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoFrameRate(15);
 
         //length limiter  O.O
         //mMediaRecorder.setMaxDuration(5000);
@@ -660,9 +681,19 @@ public class Camera2VideoFragment extends Fragment
     }
 
     public void startRecordingVideo() {
-        if (null == mCameraDevice || !mTextureView.isAvailable() || null == mPreviewSize) {
+        if (null == mCameraDevice ) {
+            Log.d("DEBUG","Something null1");
             return;
         }
+        if (!mTextureView.isAvailable()) {
+            Log.d("DEBUG","Something null2");
+            return;
+        }
+        if ( null == mPreviewSize) {
+            Log.d("DEBUG","Something null3");
+            return;
+        }
+
         try {
             closePreviewSession();
             setUpMediaRecorder();
@@ -684,7 +715,7 @@ public class Camera2VideoFragment extends Fragment
 
             // Start a capture session
             // Once the session starts, we can update the UI and start recording
-
+            Log.d("DEBUG","before capture session");
             mCameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
 
                 @Override
@@ -695,11 +726,12 @@ public class Camera2VideoFragment extends Fragment
                         @Override
                         public void run() {
                             // UI
-                            mButtonVideo.setText(R.string.stop);
+                            //mButtonVideo.setText(R.string.stop);
                             mIsRecordingVideo = true;
 
                             // Start recording
                             mMediaRecorder.start();
+                            Log.d("DEBUG","Mediarecorder started");
                         }
                     });
                 }
@@ -713,8 +745,10 @@ public class Camera2VideoFragment extends Fragment
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
+            Log.d("DEBUG","CameraAccessExcepton"+e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            Log.d("DEBUG","IOExcepton"+e.getMessage());
             e.printStackTrace();
         }
 
@@ -816,7 +850,12 @@ public class Camera2VideoFragment extends Fragment
 
     private class postTask extends AsyncTask<String,Integer,String>
     {
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
 
+        }
         @Override
         protected String doInBackground(String... params)
         {
@@ -837,8 +876,9 @@ public class Camera2VideoFragment extends Fragment
         protected void onPostExecute(String doneTask)
         {
             //uptimer(tracker);
-
-            stopRecordingVideo();
+           // if (mIsRecordingVideo) {
+               stopRecordingVideo();
+            //}
 
             Intent intent = new Intent("recordingFinished");
             intent.putExtra("fileName",fileName);
@@ -854,11 +894,7 @@ public class Camera2VideoFragment extends Fragment
 
         }
 
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-        }
+
 
 
     }
