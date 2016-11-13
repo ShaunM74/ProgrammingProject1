@@ -49,7 +49,8 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
                 message =""+mainObject.getString("MessageText");
                 try {
                     message += " Lat:" + mainObject.getString("Latitude") +
-                            " Long:" + mainObject.getString("Longitude");
+                            " Long:" + mainObject.getString("Longitude")+". "+
+                            mainObject.getString("Location");
                 }
                 catch (Exception e)
                 {
@@ -78,11 +79,12 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
             try {
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                Log.d("DEBUG","SMS sent");
                 this.deliveryCompleteFlag=true;
             }
 
             catch (Exception e) {
-
+                Log.d("DEBUG",e.getMessage());
                 e.printStackTrace();
                 return false;
             }

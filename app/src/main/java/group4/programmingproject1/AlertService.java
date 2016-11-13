@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -99,7 +100,8 @@ public class AlertService extends Service {
         public void onReceive(Context context, Intent intent) {
             if(getString(R.string.start_instalert_alarm).equals(intent.getAction())) {
                 alertID = intent.getStringExtra("alertID");
-
+                Context appContext = getApplicationContext();
+                Toast.makeText(appContext, "Alert Processing Started", Toast.LENGTH_SHORT).show();
 
                 if(dataHandler.isVid(context))
                 {
@@ -122,7 +124,7 @@ public class AlertService extends Service {
                     startActivity(soundIntent);
 
                 }
-                else
+                else if(!dataHandler.isSnd(context) && !dataHandler.isVid(context))
                 {
                     Log.d("DEBUG","No uploads");
                     // No recording required
@@ -143,7 +145,7 @@ public class AlertService extends Service {
     public void startAlert(String alertID, final String attachmentFileName,final String attachmentFileLocation)
     {
         Context context = getApplicationContext();
-        Toast.makeText(context, "Alert Processing Started", Toast.LENGTH_SHORT).show();
+        Log.d("DEBUG","Starting alert:"+alertID +":"+ attachmentFileName + attachmentFileLocation);
         final String thisAlertID=alertID;
         final EcallContact currentContact;
         final String defaultMessage = getString(R.string.default_message);
@@ -318,6 +320,7 @@ public class AlertService extends Service {
                             }
                         }
                     }.run();
+
                 } catch (Exception e) {
 
                 }
@@ -337,4 +340,5 @@ public class AlertService extends Service {
         Log.d("DEBUG", "Past runnable!");
 
     }
+
 }

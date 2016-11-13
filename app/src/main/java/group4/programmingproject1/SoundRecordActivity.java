@@ -79,10 +79,12 @@ public class SoundRecordActivity extends AppCompatActivity {
         //hijacking for automation
         if(!recorded)
         {
+            recorded=true;
             Log.d("DEBUG","Starting recording");
             start();
+
         }
-        recorded=true;
+
     }
 
     private String getSoundFilePath(Context context) {
@@ -118,6 +120,7 @@ public class SoundRecordActivity extends AppCompatActivity {
     {
         try {
             myRecorder.stop();
+            myRecorder.reset();
             myRecorder.release();
             myRecorder  = null;
 
@@ -187,7 +190,8 @@ public class SoundRecordActivity extends AppCompatActivity {
             Log.d("Debug","Stopping recorder post async");
             stop();
             unlockScreenRotation();
-            Intent intent = new Intent("recordingFinished");
+
+            Intent intent = new Intent(getString(R.string.recording_finished));
             intent.putExtra("fileName",fileName);
             intent.putExtra("fileLocation",fileLocation);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
