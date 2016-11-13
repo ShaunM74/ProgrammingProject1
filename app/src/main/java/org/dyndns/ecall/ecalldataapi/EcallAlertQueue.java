@@ -1,5 +1,7 @@
 package org.dyndns.ecall.ecalldataapi;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +35,7 @@ public class EcallAlertQueue {
 
     public void queueAlert(EcallAlert item){
         alertQueue.add(item);
+        Log.d("DEBUG","Added:"+item.toString()+":"+alertQueue.size());
         saveAlerts();
     }
     public EcallAlert firstAlert(){

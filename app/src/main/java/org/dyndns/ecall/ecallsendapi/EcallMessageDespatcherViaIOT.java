@@ -52,9 +52,10 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
         isSent = false;
         deliveryMessage="Unsent";
         EcallRegistration reg = new EcallRegistration(securityContext);
-
+        Log.d("DEBUG","B4 Connect");
         connection = new EcallIOTConnection(securityContext);
         connection.startConnection(reg.getCertID(), "ECALL");
+        Log.d("DEBUG","After Connect");
 
         boolean fini = false;
         String s = "x";
@@ -65,6 +66,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
             s = connection.getStatus();
             fini = false;
             if (s.equalsIgnoreCase("Connected")) {
+                Log.d("DEBUG","Connected:"+s);
                 isConnected = true;
                 fini = true;
             }
@@ -72,7 +74,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
                 fini = true;
 
             if (!fini) {
-
+                Log.d("DEBUG",""+count);
                 try {
                     Thread.sleep(1000);
                 } catch (Exception e) {

@@ -203,7 +203,10 @@ public class dataHandler extends AppCompatActivity
 
         String address = sharedPreferences.getString(context.getString(R.string.GPSAddress), null);
 
-
+        if (address==null)
+        {
+            return "Unknown address";
+        }
         return address;
     }
 
@@ -491,7 +494,7 @@ public class dataHandler extends AppCompatActivity
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
+        Log.d("DEBUG","CertID saving as:"+newCertID);
         String key = context.getString(R.string.cert_id_key);
         editor.putString(key, newCertID);
         editor.commit();

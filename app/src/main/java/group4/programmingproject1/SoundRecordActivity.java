@@ -39,10 +39,7 @@ public class SoundRecordActivity extends AppCompatActivity {
     private TextView text;
     private int playTime = 5;
     Context context;
-
-
-
-
+    private boolean recorded=false;
     public static final int RECORD_AUDIO = 0;
     private String alertID;
 
@@ -80,7 +77,12 @@ public class SoundRecordActivity extends AppCompatActivity {
 
 
         //hijacking for automation
-        start();
+        if(!recorded)
+        {
+            Log.d("DEBUG","Starting recording");
+            start();
+        }
+        recorded=true;
     }
 
     private String getSoundFilePath(Context context) {

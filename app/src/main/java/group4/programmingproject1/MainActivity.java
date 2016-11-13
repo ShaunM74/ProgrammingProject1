@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
-        Log.d("Debug",""+dataHandler.getCertID(this));
+        Log.d("Debug","CertID:"+dataHandler.getCertID(this));
         if(dataHandler.getCertID(this)==null)
         {
             RegisterDevice registerDevice = new RegisterDevice();
