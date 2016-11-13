@@ -33,15 +33,12 @@ import android.widget.Toast;
 public class SoundRecordActivity extends AppCompatActivity {
 
     private MediaRecorder myRecorder;
-    //private MediaPlayer myPlayer;
     private String outputFile;
     private String fileName;
     private String fileLocation;
     private TextView text;
     private int playTime = 5;
     Context context;
-    //dataHandler data1 = new dataHandler();
-    //private int playTime = data1.getRecordTimeBySeconds(context);
 
     public static final int RECORD_AUDIO = 0;
     private String alertID;
@@ -53,14 +50,9 @@ public class SoundRecordActivity extends AppCompatActivity {
         Intent intent=getIntent();
         alertID = intent.getStringExtra("ALERT_ID");
         text = (TextView) findViewById(R.id.text1);
-        // store it to sd card
-        //outputFile = Environment.getExternalStorageDirectory().
-        //       getAbsolutePath() + "/SNDTEST.3gpp";
-
-        //alternative from codestack and our video file save
-        outputFile = Environment.getExternalStorageDirectory() + File.separator
-                + Environment.DIRECTORY_DCIM + File.separator + "FILE_NAME";
-
+        dataHandler datahandler = new dataHandler();
+        playTime =datahandler.getRecordTimeBySeconds(getApplicationContext(),
+                        getString(R.string.OptSettingsFile),"SoundVideoRecordTime");
 
         outputFile = getSoundFilePath(getApplicationContext());
 
@@ -78,20 +70,17 @@ public class SoundRecordActivity extends AppCompatActivity {
         myRecorder = new MediaRecorder();
         myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 
-
-        //myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         myRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        //myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+
         myRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         myRecorder.setOutputFile(outputFile);
-        //myRecorder.setMaxDuration(playTime);
+
 
         //hijacking for automation
         start();
     }
 
     private String getSoundFilePath(Context context) {
-
         fileLocation = context.getExternalFilesDir(null).getAbsolutePath() + "/";
         fileName = alertID + ".mp3";
         Log.d("Debug","Output:"+ fileLocation + fileName);
