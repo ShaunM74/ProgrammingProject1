@@ -322,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
+                // Start of Alert processing, checking alert not fired within 30 seconds
 
                  Date alertDate = new java.util.Date();
 
@@ -340,7 +341,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                         lastAlertDate = alertDate;
-
                         Intent intent = new Intent("startInstAlertAlarm");
                         intent.putExtra("alertID",alertID);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -350,15 +350,11 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     lastAlertDate = alertDate;
-
                     Intent intent = new Intent("startInstAlertAlarm");
                     intent.putExtra("alertID",alertID);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-
                 }
-
-
 
             }
             vibrator.cancel();
@@ -557,8 +553,6 @@ public class MainActivity extends AppCompatActivity {
     {
 
         Calendar c = Calendar.getInstance();
-        //SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss a");
-        //SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
         SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
 
         String formattedDate = df.format(c.getTime());

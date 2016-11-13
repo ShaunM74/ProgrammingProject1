@@ -159,7 +159,7 @@ public class AlertService extends Service {
         String existingID = sharedPreferences.getString(idKey,null);
 
         if(existingID!=null) {
-            currentContact = dataHandler.getContact(context, existingID);
+            currentContact = dataHandler.getContact(context);
             if (currentContact != null) {
 
 
@@ -233,7 +233,10 @@ public class AlertService extends Service {
                         Log.d("DEBUG", e.getMessage().toString());
                     }
                 }
+                if(dataHandler.isVid(context)||dataHandler.isSnd(context))
+                {
 
+                }
                 try {
                     new Runnable() {
                         @Override

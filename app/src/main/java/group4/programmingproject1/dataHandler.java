@@ -508,7 +508,7 @@ public class dataHandler extends AppCompatActivity
         return certID;
     }
 
-    public static EcallContact getContact(Context context, String existingID) {
+    public static EcallContact getContact(Context context) {
         Cursor contacts;
 
         ContentResolver cr = context.getContentResolver();
@@ -521,6 +521,8 @@ public class dataHandler extends AppCompatActivity
                 fileName, Context.MODE_PRIVATE);
 
 
+        String idKey = context.getString(R.string.pref_contact_id);
+        String existingID = sharedPreferences.getString(idKey,null);
 
         if (existingID != null)
 
