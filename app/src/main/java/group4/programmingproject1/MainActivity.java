@@ -18,7 +18,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
+//import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -139,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Permission for mic recording
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
                     this.RECORD_AUDIO);
@@ -149,6 +151,17 @@ public class MainActivity extends AppCompatActivity {
         {
            // Toast.makeText(MainActivity.this, "rec perm given", Toast.LENGTH_LONG).show();
         }
+
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE},1);
+        }
+        else
+        {
+            // Toast.makeText(MainActivity.this, "call perm given", Toast.LENGTH_LONG).show();
+        }
+
 
 
         // On touch listeners to report button touches
