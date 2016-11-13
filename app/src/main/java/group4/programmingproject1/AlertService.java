@@ -109,6 +109,18 @@ public class AlertService extends Service {
                     camIntent.putExtra("ALERT_ID", alertID);
                     startActivity(camIntent);
                 }
+                else if(dataHandler.isSnd(context))
+                {
+                    Intent camIntent = new Intent(getApplicationContext(), CameraActivity.class);
+                    camIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    camIntent.putExtra("ALERT_ID", alertID);
+                    dataHandler datahandler = new dataHandler();
+                    camIntent.putExtra("RECORD_LENGTH",
+                            datahandler.getRecordTimeBySeconds(getApplicationContext(),
+                            getString(R.string.OptSettingsFile),"SoundVideoRecordTime"));
+                    startActivity(camIntent);
+
+                }
                 else
                 {
                     startAlert(alertID,"","");
@@ -120,7 +132,7 @@ public class AlertService extends Service {
             {
                 String fileName = intent.getStringExtra("fileName");
                 String fileLocation = intent.getStringExtra("fileLocation");
-                Log.d("receiver", "Got message: " + fileLocation+fileName+"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                Log.d("receiver", "Got message: " + fileLocation+fileName);
                 startAlert(alertID, fileName, fileLocation);
             }
         }

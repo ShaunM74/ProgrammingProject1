@@ -89,6 +89,7 @@ public class EcallRegistration {
         context = caller;
 
         // load the certid from the settings
+        dataHandler.getCertID(context);
 
     }
 

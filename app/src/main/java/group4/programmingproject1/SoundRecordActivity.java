@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -33,20 +35,23 @@ public class SoundRecordActivity extends AppCompatActivity {
     private MediaRecorder myRecorder;
     //private MediaPlayer myPlayer;
     private String outputFile;
-
+    private String fileName;
+    private String fileLocation;
     private TextView text;
     private int playTime = 5;
-    //Context context;
+    Context context;
     //dataHandler data1 = new dataHandler();
     //private int playTime = data1.getRecordTimeBySeconds(context);
 
     public static final int RECORD_AUDIO = 0;
+    private String alertID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_rec);
-
+        Intent intent=getIntent();
+        alertID = intent.getStringExtra("ALERT_ID");
         text = (TextView) findViewById(R.id.text1);
         // store it to sd card
         //outputFile = Environment.getExternalStorageDirectory().
@@ -86,10 +91,11 @@ public class SoundRecordActivity extends AppCompatActivity {
     }
 
     private String getSoundFilePath(Context context) {
-        Log.d("Debug","Output:"+ context.getExternalFilesDir(null).getAbsolutePath() + "/" +
-                System.currentTimeMillis() + "SRM.mp3");
-        return context.getExternalFilesDir(null).getAbsolutePath() + "/"
-                + System.currentTimeMillis() + "SRM.mp3";
+
+        fileLocation = context.getExternalFilesDir(null).getAbsolutePath() + "/";
+        fileName = alertID + ".mp3";
+        Log.d("Debug","Output:"+ fileLocation + fileName);
+        return fileLocation+fileName;
     }
     // hijacking start
     private void start()
@@ -187,6 +193,11 @@ public class SoundRecordActivity extends AppCompatActivity {
             Log.d("Debug","Stopping recorder post async");
             stop();
             unlockScreenRotation();
+            Intent intent = new Intent("recordingFinished");
+            intent.putExtra("fileName",fileName);
+            intent.putExtra("fileLocation",fileLocation);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
             finish();
         }
 
