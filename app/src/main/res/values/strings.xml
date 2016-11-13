@@ -5,6 +5,7 @@
     <string name="cancelButtonContent">Cancel Alert</string>
     <string name="title_activity_settings">Settings</string>
     <string name="website_URL">http://54.70.221.177</string>
+    <string name="default_message">I am in need of assistance!</string>
 
     <!-- Broadcast strings -->
     <string name="start_instalert_alarm">startInstAlertAlarm</string>
