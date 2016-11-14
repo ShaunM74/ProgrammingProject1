@@ -117,7 +117,6 @@ public class AlertService extends Service {
                     if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                     {
                         lastCall=new Date();
-                        Log.d("DEBUG","Doing video");
                         Intent camIntent = new Intent(getApplicationContext(), CameraActivity.class);
                         camIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         camIntent.putExtra("ALERT_ID", alertID);
@@ -133,10 +132,6 @@ public class AlertService extends Service {
                 {
                     if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                     {
-                        if(lastCall!=null)
-                        {
-                            Log.d("DEBUG",""+(tempDate.getTime() - lastCall.getTime()));
-                        }
                         lastCall=new Date();
                         Log.d("DEBUG", "Doing sound");
                         Intent soundIntent = new Intent(getApplicationContext(), SoundRecordActivity.class);
@@ -173,11 +168,6 @@ public class AlertService extends Service {
 
             if(getString(R.string.recording_finished).equals(intent.getAction()))
             {
-                if(lastCall!=null)
-                {
-                    Log.d("DEBUG",""+(tempDate.getTime() - lastCall.getTime()));
-                }
-
                 if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                 {
                     lastCall=new Date();
@@ -365,7 +355,6 @@ public class AlertService extends Service {
                             public void run() {
                                 try {
                                     ecallSendProcessor.processPendingAlerts();
-                                    Log.d("DEBUG", "Processing");
                                 } catch (Exception e) {
                                     //EcallSendException e) {
                                     Log.d("DEBUG", "Failed processing");

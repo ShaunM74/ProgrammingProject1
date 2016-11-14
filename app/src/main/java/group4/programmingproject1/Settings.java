@@ -330,13 +330,13 @@ public class Settings extends AppCompatActivity {
                 if (isChecked)
                 {
                     Toast.makeText(Settings.this,"Face Camera Selected",Toast.LENGTH_SHORT).show();
-                    setCameraKeyValue = "true";
+                    setCameraKeyValue = "false";
                     setCameraSwitchSettingsKeyValueFile(setCameraKeyValue);
                 }
                 else
                 {
                     Toast.makeText(Settings.this,"Front Camera Selected",Toast.LENGTH_SHORT).show();
-                    setCameraKeyValue = "false";
+                    setCameraKeyValue = "true";
                     setCameraSwitchSettingsKeyValueFile(setCameraKeyValue);
                 }
             }
