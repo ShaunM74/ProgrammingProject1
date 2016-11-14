@@ -24,7 +24,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 /**
- * Created by Yipster on 25/10/2016.
+ * Created by Shane Drobnick on 25/10/2016.
  */
 
 public class CameraActivity extends Activity {
