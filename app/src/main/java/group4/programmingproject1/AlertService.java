@@ -46,7 +46,7 @@ public class AlertService extends Service {
     Context tempcontext;
     EcallSendProcessor ecallSendProcessor;
     String alertID="";
-
+    Date lastCall;
     public AlertService() {
     }
 
@@ -102,30 +102,49 @@ public class AlertService extends Service {
     private BroadcastReceiver alertBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("DEBUG","In receiver");
+            Date tempDate = new Date();
+
             if(getString(R.string.start_instalert_alarm).equals(intent.getAction())) {
+                Log.d("DEBUG","In instalarm");
                 alertID = intent.getStringExtra("alertID");
                 Context appContext = getApplicationContext();
                 Toast.makeText(appContext, "Alert Processing Started", Toast.LENGTH_SHORT).show();
 
                 if(dataHandler.isVid(context))
                 {
+                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())<100)
+                    {
+                        lastCall=new Date();
                     Log.d("DEBUG","Doing video");
                     Intent camIntent = new Intent(getApplicationContext(), CameraActivity.class);
                     camIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     camIntent.putExtra("ALERT_ID", alertID);
                     startActivity(camIntent);
+                    }
+                    {
+                        Log.d("DEBUG","Ignored second call");
+                    }
+
                 }
                 else if(dataHandler.isSnd(context))
                 {
-                    Log.d("DEBUG","Doing sound");
-                    Intent soundIntent = new Intent(getApplicationContext(), SoundRecordActivity.class);
-                    soundIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    soundIntent.putExtra("ALERT_ID", alertID);
-                    dataHandler datahandler = new dataHandler();
-                    soundIntent.putExtra("RECORD_LENGTH",
-                            datahandler.getRecordTimeBySeconds(getApplicationContext(),
-                            getString(R.string.OptSettingsFile),"SoundVideoRecordTime"));
-                    startActivity(soundIntent);
+                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())<100)
+                    {
+                        lastCall=new Date();
+                        Log.d("DEBUG", "Doing sound");
+                        Intent soundIntent = new Intent(getApplicationContext(), SoundRecordActivity.class);
+                        soundIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        soundIntent.putExtra("ALERT_ID", alertID);
+                        dataHandler datahandler = new dataHandler();
+                        soundIntent.putExtra("RECORD_LENGTH",
+                                datahandler.getRecordTimeBySeconds(getApplicationContext(),
+                                        getString(R.string.OptSettingsFile), "SoundVideoRecordTime"));
+                        startActivity(soundIntent);
+                    }
+                    {
+                        Log.d("DEBUG","Ignored second call");
+                    }
 
                 }
                 else if(!dataHandler.isSnd(context) && !dataHandler.isVid(context))
@@ -134,8 +153,8 @@ public class AlertService extends Service {
                     // No recording required
                     startAlert(alertID,"","");
                 }
-
             }
+
             if(getString(R.string.recording_finished).equals(intent.getAction()))
             {
                 String fileName = intent.getStringExtra("fileName");

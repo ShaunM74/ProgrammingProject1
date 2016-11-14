@@ -195,7 +195,13 @@ public class SoundRecordActivity extends AppCompatActivity {
             intent.putExtra("fileName",fileName);
             intent.putExtra("fileLocation",fileLocation);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
+            try {
+                Thread.sleep(100);
+            }
+            catch(Exception e)
+            {
+                Log.d("DEBUG","Sleep in recorder failed");
+            }
             finish();
         }
 
