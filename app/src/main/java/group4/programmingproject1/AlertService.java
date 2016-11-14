@@ -46,7 +46,8 @@ public class AlertService extends Service {
     Context tempcontext;
     EcallSendProcessor ecallSendProcessor;
     String alertID="";
-    Date lastCall;
+    static Date lastCall;
+    static String lastAlert="";
     public AlertService() {
     }
 
@@ -113,15 +114,16 @@ public class AlertService extends Service {
 
                 if(dataHandler.isVid(context))
                 {
-                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())<100)
+                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                     {
                         lastCall=new Date();
-                    Log.d("DEBUG","Doing video");
-                    Intent camIntent = new Intent(getApplicationContext(), CameraActivity.class);
-                    camIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    camIntent.putExtra("ALERT_ID", alertID);
-                    startActivity(camIntent);
+                        Log.d("DEBUG","Doing video");
+                        Intent camIntent = new Intent(getApplicationContext(), CameraActivity.class);
+                        camIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        camIntent.putExtra("ALERT_ID", alertID);
+                        startActivity(camIntent);
                     }
+                    else
                     {
                         Log.d("DEBUG","Ignored second call");
                     }
@@ -129,8 +131,12 @@ public class AlertService extends Service {
                 }
                 else if(dataHandler.isSnd(context))
                 {
-                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())<100)
+                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                     {
+                        if(lastCall!=null)
+                        {
+                            Log.d("DEBUG",""+(tempDate.getTime() - lastCall.getTime()));
+                        }
                         lastCall=new Date();
                         Log.d("DEBUG", "Doing sound");
                         Intent soundIntent = new Intent(getApplicationContext(), SoundRecordActivity.class);
@@ -142,6 +148,7 @@ public class AlertService extends Service {
                                         getString(R.string.OptSettingsFile), "SoundVideoRecordTime"));
                         startActivity(soundIntent);
                     }
+                    else
                     {
                         Log.d("DEBUG","Ignored second call");
                     }
@@ -149,226 +156,244 @@ public class AlertService extends Service {
                 }
                 else if(!dataHandler.isSnd(context) && !dataHandler.isVid(context))
                 {
-                    Log.d("DEBUG","No uploads");
-                    // No recording required
-                    startAlert(alertID,"","");
+                    if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100) {
+
+                        lastCall = new Date();
+
+                        Log.d("DEBUG", "No uploads");
+                        // No recording required
+                        startAlert(alertID, "", "");
+                    }
+                    else
+                    {
+                        Log.d("DEBUG","Ignored second call");
+                    }
                 }
             }
 
             if(getString(R.string.recording_finished).equals(intent.getAction()))
             {
-                String fileName = intent.getStringExtra("fileName");
-                String fileLocation = intent.getStringExtra("fileLocation");
-                Log.d("receiver", "Got message: " + fileLocation+fileName);
-                startAlert(alertID, fileName, fileLocation);
+                if(lastCall!=null)
+                {
+                    Log.d("DEBUG",""+(tempDate.getTime() - lastCall.getTime()));
+                }
+
+                if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
+                {
+                    lastCall=new Date();
+                    String fileName = intent.getStringExtra("fileName");
+                    String fileLocation = intent.getStringExtra("fileLocation");
+                    Log.d("receiver", "Got message: " + fileLocation+fileName);
+                    startAlert(alertID, fileName, fileLocation);
+                }
+                else
+                {
+                    Log.d("DEBUG","Ignored second call");
+                }
+
             }
         }
     };
 
     public void startAlert(String alertID, final String attachmentFileName,final String attachmentFileLocation)
     {
-        Context context = getApplicationContext();
-        Log.d("DEBUG","Starting alert:"+alertID +":"+ attachmentFileName + attachmentFileLocation);
-        final String thisAlertID=alertID;
-        final EcallContact currentContact;
-        final String defaultMessage = getString(R.string.default_message);
+        if(lastAlert.equals("") || !alertID.equals(lastAlert)) {
+            lastAlert = alertID;
+            Context context = getApplicationContext();
+            Log.d("DEBUG", "Starting alert:" + alertID + ":" + attachmentFileName + attachmentFileLocation);
+            final String thisAlertID = alertID;
+            final EcallContact currentContact;
+            final String defaultMessage = getString(R.string.default_message);
 
-        Cursor contacts;
+            Cursor contacts;
 
-        ContentResolver cr = getContentResolver();
-        String existingPhone="";
-        String fileName = getString(R.string.OptSettingsFile);
+            ContentResolver cr = getContentResolver();
+            String existingPhone = "";
+            String fileName = getString(R.string.OptSettingsFile);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                fileName, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(
+                    fileName, Context.MODE_PRIVATE);
 
-        String idKey = getString(R.string.pref_contact_id);
-        String existingID = sharedPreferences.getString(idKey,null);
+            String idKey = getString(R.string.pref_contact_id);
+            String existingID = sharedPreferences.getString(idKey, null);
 
-        if(existingID!=null) {
-            currentContact = dataHandler.getContact(context);
-            if (currentContact != null) {
+            if (existingID != null) {
+                currentContact = dataHandler.getContact(context);
+                if (currentContact != null) {
 
 
-                // Process SMS alert
-                if (dataHandler.isTxt(context)) {
-                    try {
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                /////////////////////////////////////////////////////
-                                //create SMS alert
-                                /////////////////////////////////////////////////////
+                    // Process SMS alert
+                    if (dataHandler.isTxt(context)) {
+                        try {
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    /////////////////////////////////////////////////////
+                                    //create SMS alert
+                                    /////////////////////////////////////////////////////
 
-                                dataHandler datahandler = new dataHandler();
-                                EcallAlert alertSMS;
-                                final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
-                                        getString(R.string.GPSLat), getString(R.string.GPSLONG),
-                                        getString(R.string.OptSettingsFile));
+                                    dataHandler datahandler = new dataHandler();
+                                    EcallAlert alertSMS;
+                                    final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
+                                            getString(R.string.GPSLat), getString(R.string.GPSLONG),
+                                            getString(R.string.OptSettingsFile));
 
-                                try {
-
-                                    String accountId = dataHandler.getAccountID(getApplicationContext());
-                                    //"test@testdata.com";
-                                    String deviceID = dataHandler.getDeviceID(getApplicationContext());
-                                    //"test01-testDevice01";
-
-                                    JSONObject payLoadObject = new JSONObject();
                                     try {
-                                        Date baseDate = new Date();
-                                        String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
-                                        String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
+
+                                        String accountId = dataHandler.getAccountID(getApplicationContext());
+                                        //"test@testdata.com";
+                                        String deviceID = dataHandler.getDeviceID(getApplicationContext());
+                                        //"test01-testDevice01";
+
+                                        JSONObject payLoadObject = new JSONObject();
+                                        try {
+                                            Date baseDate = new Date();
+                                            String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
+                                            String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
 
 
-                                        payLoadObject.put("DeviceID", deviceID);
-                                        payLoadObject.put("ContactEmail",currentContact.getEmailAddress());
-                                        payLoadObject.put("AlertID", thisAlertID);
-                                        payLoadObject.put("MessageText", defaultMessage);
-                                        payLoadObject.put("AccountID", accountId);
-                                        payLoadObject.put("DeviceID", deviceID);
-                                        Log.d("DEBUG", "" + dataHandler.isGPSMaps(getApplicationContext()));
-                                        if (dataHandler.isGPSMaps(getApplicationContext())) {
-                                            payLoadObject.put("Latitude", currentGPS.getLatitude());
-                                            payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                            payLoadObject.put("Location", "["+dataHandler.getaddress(getApplicationContext())+"]");
+                                            payLoadObject.put("DeviceID", deviceID);
+                                            payLoadObject.put("ContactEmail", currentContact.getEmailAddress());
+                                            payLoadObject.put("AlertID", thisAlertID);
+                                            payLoadObject.put("MessageText", defaultMessage);
+                                            payLoadObject.put("AccountID", accountId);
+                                            payLoadObject.put("DeviceID", deviceID);
+                                            Log.d("DEBUG", "" + dataHandler.isGPSMaps(getApplicationContext()));
+                                            if (dataHandler.isGPSMaps(getApplicationContext())) {
+                                                payLoadObject.put("Latitude", currentGPS.getLatitude());
+                                                payLoadObject.put("Longitude", currentGPS.getLongitude());
+                                                payLoadObject.put("Location", "[" + dataHandler.getaddress(getApplicationContext()) + "]");
+                                            }
+                                            payLoadObject.put("Date", date);
+                                            payLoadObject.put("Time", time);
+                                            payLoadObject.put("Website", getString(R.string.website_URL));
+
+                                            Log.d("DEBUG", payLoadObject.toString());
+                                            alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
+                                                    payLoadObject.toString());
+                                            Log.d("DEBUG", "TYPE:" + alertSMS.getAlertMethod());
+                                            ecallSendProcessor.addAlert(alertSMS);
+                                            Log.d("DEBUG", "AddedSMS");
+
+                                        } catch (JSONException e) {
+
                                         }
-                                        payLoadObject.put("Date", date);
-                                        payLoadObject.put("Time", time);
-                                        payLoadObject.put("Website", getString(R.string.website_URL));
-
-                                        Log.d("DEBUG", payLoadObject.toString());
-                                        alertSMS = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.SMS,
-                                                payLoadObject.toString());
-                                        Log.d("DEBUG", "TYPE:" + alertSMS.getAlertMethod());
-                                        ecallSendProcessor.addAlert(alertSMS);
-                                        Log.d("DEBUG","AddedSMS");
-
-                                    } catch (JSONException e) {
+                                    } catch (EcallDataException e) {
 
                                     }
-                                } catch (EcallDataException e) {
-
                                 }
-                            }
 
-                        }.run();
-                    } catch (Exception e) {
-                        Log.d("DEBUG", e.getMessage());
-                    }
-                }
-
-                //Process sound/video recording
-                if(dataHandler.isVid(context)||dataHandler.isSnd(context))
-                {
-                    try {
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                /////////////////////////////////////////////////////
-                                //create SMS alert
-                                /////////////////////////////////////////////////////
-
-                                dataHandler datahandler = new dataHandler();
-                                EcallAlert alertUpload;
-                                final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
-                                        getString(R.string.GPSLat), getString(R.string.GPSLONG),
-                                        getString(R.string.OptSettingsFile));
-
-                                try {
-
-                                    String accountId = dataHandler.getAccountID(getApplicationContext());
-                                    //"test@testdata.com";
-                                    String deviceID = dataHandler.getDeviceID(getApplicationContext());
-                                    //"test01-testDevice01";
-
-                                    JSONObject payLoadObject = new JSONObject();
-                                    try {
-                                        Date baseDate = new Date();
-                                        String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
-                                        String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
-
-
-                                        payLoadObject.put("DeviceID", deviceID);
-                                        payLoadObject.put("AlertID", thisAlertID);
-                                        payLoadObject.put("MessageText", defaultMessage);
-                                        payLoadObject.put("ContactEmail",currentContact.getEmailAddress());
-                                        payLoadObject.put("AccountID", accountId);
-                                        payLoadObject.put("DeviceID", deviceID);
-
-                                        if (dataHandler.isGPSMaps(getApplicationContext())) {
-                                            Log.d("DEBUG","Adding co-ords");
-                                            payLoadObject.put("Latitude", currentGPS.getLatitude());
-                                            payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                            payLoadObject.put("Location", "["+dataHandler.getaddress(getApplicationContext())+"]");
-                                        }
-                                        payLoadObject.put("AttachmentName", attachmentFileName);
-                                        payLoadObject.put("AttachmentLocation", attachmentFileLocation);
-                                        payLoadObject.put("Date", date);
-                                        payLoadObject.put("Time", time);
-
-
-                                        Log.d("DEBUG", payLoadObject.toString());
-                                        alertUpload = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.DUMMY,
-                                                payLoadObject.toString());
-
-                                        ecallSendProcessor.addAlert(alertUpload);
-                                        Log.d("DEBUG","Added video or sound");
-
-                                    } catch (JSONException e) {
-
-                                    }
-                                } catch (EcallDataException e) {
-
-                                }
-                            }
-
-                        }.run();
-                    } catch (Exception e) {
-                        Log.d("DEBUG", e.getMessage());
-                    }
-
-                }
-                try {
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                ecallSendProcessor.processPendingAlerts();
-                                Log.d("DEBUG","Processing");
-                            } catch (Exception e){
-                                    //EcallSendException e) {
-                                Log.d("DEBUG", "Failed processing");
-                                e.printStackTrace();
-                            }
+                            }.run();
+                        } catch (Exception e) {
+                            Log.d("DEBUG", e.getMessage());
                         }
-                    }.run();
+                    }
 
-                } catch (Exception e) {
+                    //Process sound/video recording
+                    if (dataHandler.isVid(context) || dataHandler.isSnd(context)) {
+                        try {
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    /////////////////////////////////////////////////////
+                                    //create SMS alert
+                                    /////////////////////////////////////////////////////
 
+                                    dataHandler datahandler = new dataHandler();
+                                    EcallAlert alertUpload;
+                                    final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
+                                            getString(R.string.GPSLat), getString(R.string.GPSLONG),
+                                            getString(R.string.OptSettingsFile));
+
+                                    try {
+
+                                        String accountId = dataHandler.getAccountID(getApplicationContext());
+                                        //"test@testdata.com";
+                                        String deviceID = dataHandler.getDeviceID(getApplicationContext());
+                                        //"test01-testDevice01";
+
+                                        JSONObject payLoadObject = new JSONObject();
+                                        try {
+                                            Date baseDate = new Date();
+                                            String date = new SimpleDateFormat("yyyy/MM/dd").format(baseDate);
+                                            String time = new SimpleDateFormat("HH:mm:ss").format(baseDate);
+
+
+                                            payLoadObject.put("DeviceID", deviceID);
+                                            payLoadObject.put("AlertID", thisAlertID);
+                                            payLoadObject.put("MessageText", defaultMessage);
+                                            payLoadObject.put("ContactEmail", currentContact.getEmailAddress());
+                                            payLoadObject.put("AccountID", accountId);
+                                            payLoadObject.put("DeviceID", deviceID);
+
+                                            if (dataHandler.isGPSMaps(getApplicationContext())) {
+                                                Log.d("DEBUG", "Adding co-ords");
+                                                payLoadObject.put("Latitude", currentGPS.getLatitude());
+                                                payLoadObject.put("Longitude", currentGPS.getLongitude());
+                                                payLoadObject.put("Location", "[" + dataHandler.getaddress(getApplicationContext()) + "]");
+                                            }
+                                            payLoadObject.put("AttachmentName", attachmentFileName);
+                                            payLoadObject.put("AttachmentLocation", attachmentFileLocation);
+                                            payLoadObject.put("Date", date);
+                                            payLoadObject.put("Time", time);
+
+
+                                            Log.d("DEBUG", payLoadObject.toString());
+                                            alertUpload = new EcallAlert(currentContact, EcallAlert.alertMethodEnum.DUMMY,
+                                                    payLoadObject.toString());
+
+                                            ecallSendProcessor.addAlert(alertUpload);
+                                            Log.d("DEBUG", "Added video or sound");
+
+                                        } catch (JSONException e) {
+
+                                        }
+                                    } catch (EcallDataException e) {
+
+                                    }
+                                }
+
+                            }.run();
+                        } catch (Exception e) {
+                            Log.d("DEBUG", e.getMessage());
+                        }
+
+                    }
+                    try {
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    ecallSendProcessor.processPendingAlerts();
+                                    Log.d("DEBUG", "Processing");
+                                } catch (Exception e) {
+                                    //EcallSendException e) {
+                                    Log.d("DEBUG", "Failed processing");
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.run();
+
+                    } catch (Exception e) {
+
+                    }
+
+                    if (dataHandler.isCall(context)) {
+                        Intent phoneIntent = new Intent(getApplicationContext(), PhoneActivity.class);
+                        phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(phoneIntent);
+
+                    }
+                } else {
+                    Intent intent = new Intent("noContactError");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 }
-
-                if(dataHandler.isCall(context))
-                {
-                    Intent phoneIntent = new Intent(getApplicationContext(), PhoneActivity.class);
-                    phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(phoneIntent);
-
-                }
-            }
-            else
-            {
+            } else {
                 Intent intent = new Intent("noContactError");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             }
-        }
-        else
-        {
-            Intent intent = new Intent("noContactError");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        }
 
-        Log.d("DEBUG", "Past runnable!");
-
+            Log.d("DEBUG", "Past runnable!");
+        }
     }
-
 }
