@@ -52,7 +52,7 @@ public class EcallMessageDespatcherViaIOT extends EcallMessageDespatcher {
         isSent = false;
         deliveryMessage="Unsent";
         EcallRegistration reg = new EcallRegistration(securityContext);
-        Log.d("DEBUG","B4 Connect");
+        Log.d("DEBUG","B4 Connect"+reg.getCertID());
         connection = new EcallIOTConnection(securityContext);
         connection.startConnection(reg.getCertID(), "ECALL");
         Log.d("DEBUG","After Connect");

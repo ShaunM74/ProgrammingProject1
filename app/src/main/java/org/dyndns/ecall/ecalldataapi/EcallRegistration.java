@@ -9,6 +9,8 @@ import com.amazonaws.mobileconnectors.iot.AWSIotKeystoreHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.KeyStore;
+
 import group4.programmingproject1.dataHandler;
 
 /**
@@ -89,7 +91,7 @@ public class EcallRegistration {
         context = caller;
 
         // load the certid from the settings
-        dataHandler.getCertID(context);
+        certID = dataHandler.getCertID(context);
 
     }
 
@@ -114,7 +116,7 @@ public class EcallRegistration {
             certPubKey = json.getString("certificatePublicKey");
             certPrivKey = json.getString("certificatePrivateKey");
             String deviceID = json.getString("deviceID");
-
+            Log.d("DEBUG",certARN+":"+certID+":"+certPEM+":"+certPubKey+":"+certPrivKey);
             dataHandler.setCertID(context,certID);
             dataHandler.setDeviceID(context,deviceID);
 
@@ -138,11 +140,13 @@ public class EcallRegistration {
             AWSIotKeystoreHelper.saveCertificateAndPrivateKey(certID,certPEM,
                     certPrivKey,
                     keystorePath, keystoreName, keystorePassword);
+
         }
         catch (Exception e)
         {
-            Log.d("DEBUG",e.getMessage().toString());
+            Log.d("DEBUG","Keystore saving failed:"+e.getMessage());
         }
+
 
 
 

@@ -109,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
                 new IntentFilter(getString(R.string.no_contact_error)));
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
-                new IntentFilter(getString(R.string.record_video)));
 
         // Assign buttons to variables
 
@@ -173,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 return onAlertTouch(v,event);
             }
         });
-
-
 
         //GPS stuff here
 
@@ -256,8 +252,20 @@ public class MainActivity extends AppCompatActivity {
     {
         gpsHandler.removeCallbacks(GPSStatusSaver);
     }
+/*
+    @Override
+    protected void onPause()
+    {
+        context.unregisterReceiver(noContactBroadcastReceiver);
+        super.onPause();
+    }
 
+    @Override
+    protect void onResume()
+    {
 
+    }
+*/
     //Gets current screen orientation and sets it as requested screen orientation
 
     private void lockScreenRotation()
@@ -311,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
-
+            Log.d("DEBUG","In action up");
             saveGPSNow();
             // Check if event occured within the bounds of the button, if so do button action
             // Otherwise cancel/ignore the event.
@@ -339,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
                     else
                     {
 
+                        Log.d("DEBUG","Doing another alert");
 
                         lastAlertDate = alertDate;
                         Intent intent = new Intent("startInstAlertAlarm");
@@ -349,6 +358,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    Log.d("DEBUG","Doing first alert");
                     lastAlertDate = alertDate;
                     Intent intent = new Intent("startInstAlertAlarm");
                     intent.putExtra("alertID",alertID);
