@@ -107,7 +107,7 @@ public class Settings extends AppCompatActivity {
 
         //getting setting checkbox values for display if checked or not
         getTextMessageSettingsKeyValueFile();
-        getEmailSettingsKeyValueFile();
+        //getEmailSettingsKeyValueFile();
         getCallSettingsKeyValueFile();
         getSoundSettingsKeyValueFile();
         getVideoSettingsKeyValueFile();
@@ -163,8 +163,8 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        /*
         emailBox = (CheckBox)findViewById(R.id.Checkbox_Email);
-
         //EmailMsg CheckBox
 
         emailBox.setOnClickListener(new View.OnClickListener()
@@ -194,7 +194,7 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-
+        */
 
         soundBox = (CheckBox)findViewById(R.id.Checkbox_RecSound);
         videoBox = (CheckBox)findViewById(R.id.Checkbox_RecVideo);
@@ -432,6 +432,7 @@ public class Settings extends AppCompatActivity {
                 int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
                     existingPhone = pCur.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    break;
                 }
 
 
@@ -560,6 +561,7 @@ public class Settings extends AppCompatActivity {
 
 
     }
+    /*
     //get email message value
     private void getEmailSettingsKeyValueFile()
     {
@@ -581,7 +583,7 @@ public class Settings extends AppCompatActivity {
             }
         }
     }
-
+    */
     // set gmail message key value
     private void setEmailSettingsKeyValueFile(String setTextKeyValue)
     {

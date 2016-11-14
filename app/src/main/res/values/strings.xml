@@ -4,6 +4,15 @@
     <string name="alertButtonContent">Alert</string>
     <string name="cancelButtonContent">Cancel Alert</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="website_URL">https://alertapp-slater10.c9users.io/</string>
+    <string name="default_message">I am in need of assistance!</string>
+
+    <!-- Broadcast strings -->
+    <string name="start_instalert_alarm">startInstAlertAlarm</string>
+    <string name="no_contact_error">noContactError</string>
+    <string name="record_video">recordVideo</string>
+    <string name="record_sound">recordSound</string>
+    <string name="recording_finished">recordingFinished</string>
 
     <!-- String for about -->
     <string name="aboutText">  Instalert! is a helper app created by\n
@@ -16,6 +25,7 @@
         \n
         Credit to https://icons8.com/ for icons used in this app.
 </string>
+
 
     <!-- STRINGS FOR HELP ACTIVITY -->
     <string name="helpText">InstAlert! is a helper app for sending quick alerts to a trusted
@@ -94,6 +104,8 @@
     <string name="pref_contact_email">Contact_Email</string>
     <string name="pref_contact_phone_number">Contact_Phone_Number</string>
     <string name="pref_contact_image_uri">Contact_Image_URI</string>
+    <string name="cert_id_key">certID</string>
+    <string name="device_id_key">deviceID</string>
 
     <!-- Send Option view Settings
     English  -->
@@ -109,6 +121,7 @@
     <string name="GPSLat">GPS LATITUDE</string>
     <string name="GPSLONG">GPS LONGITUDE</string>
     <string name="GPStime">GPS TIME</string>
+    <string name="GPSAddress">address</string>
 
     <string name="Contact4Eme">Contact for Emergency</string>
     <!-- Option view Settings file -->

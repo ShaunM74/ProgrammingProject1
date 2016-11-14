@@ -16,7 +16,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
 
     private String phoneNo=null;
     private String message=null;
-
+    private boolean deliveryCompleteFlag=false;
 
     public EcallMessageDespatcherViaSMS(EcallAlert alert)
     {
@@ -46,15 +46,24 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
 
             try {
                 JSONObject mainObject = new JSONObject(getAlert().getPayload());
-                Log.d("DEBUG",mainObject.toString());
-                message =""+mainObject.getString("Message") + " Lat:"+mainObject.getString("Latitude")+
-                        " Long:"+mainObject.getString("Longitude")+" Date:"+mainObject.getString("Date")+
-                        " Time:"+mainObject.getString("Time");
+                message =""+mainObject.getString("MessageText");
+                try {
+                    message += " Lat:" + mainObject.getString("Latitude") +
+                            " Long:" + mainObject.getString("Longitude")+". "+
+                            mainObject.getString("Location");
+                }
+                catch (Exception e)
+                {
+                    //No lat or long in JSON string
+                    // Generally if GPS co-ordinates are set to off.
+                }
+                message +=" Date:"+mainObject.getString("Date")+
+                        " Time:"+mainObject.getString("Time")+" "+mainObject.getString("Website");
                 Log.d("DEBUG",message);
             }
             catch(Exception e)
             {
-                Log.d("DEBUG","Message failed");
+                Log.d("DEBUG","Message creation failed"+e.toString());
                 return false;
             }
             return true;
@@ -69,11 +78,13 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
 
             try {
                 SmsManager smsManager = SmsManager.getDefault();
-                //smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                Log.d("DEBUG","SMS sent");
+                this.deliveryCompleteFlag=true;
             }
 
             catch (Exception e) {
-
+                Log.d("DEBUG",e.getMessage());
                 e.printStackTrace();
                 return false;
             }
@@ -86,7 +97,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
         @Override
     /* get depatch result */
         public  Boolean deliveryComplete () {
-            return false;
+            return deliveryCompleteFlag;
         }
 
         @Override
@@ -98,7 +109,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
         @Override
     /* get depatch result */
         public  Boolean deliverySuccessful () {
-            return false;
+            return deliveryCompleteFlag;
         }
 
         @Override

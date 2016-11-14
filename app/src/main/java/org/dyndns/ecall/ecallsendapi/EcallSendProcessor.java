@@ -1,6 +1,7 @@
 package org.dyndns.ecall.ecallsendapi;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.dyndns.ecall.ecalldataapi.EcallAlert;
 
@@ -17,7 +18,7 @@ public class EcallSendProcessor {
     private Context securityContext ;
 
 
-    public EcallSendProcessor(EcallAlertQueue queue)
+    public EcallSendProcessor()
     {
         pendingAlerts = new EcallAlertQueue();
     }
@@ -26,9 +27,16 @@ public class EcallSendProcessor {
         securityContext = context;
     }
 
+    public void addAlert(EcallAlert alert)
+    {
+        pendingAlerts.queueAlert(alert);
+    }
+
     private EcallMessageDespatcher createMessageDespatcher(EcallAlert alert)
     {
         switch(alert.getAlertMethod()) {
+            case DUMMY:
+                return ((EcallMessageDespatcher) new  EcallMessageDespatcherViaDummySender(alert));
             case EMAIL:
                 return ((EcallMessageDespatcher) new  EcallMessageDespatcherViaEmail(alert));
             case SMS:
@@ -47,6 +55,7 @@ public class EcallSendProcessor {
     {
 
         while (pendingAlerts.getQueueCount() > 0) {
+            Log.d("DEBUG",""+pendingAlerts.getQueueCount());
 
             EcallAlert alert = pendingAlerts.firstAlert();
             EcallMessageDespatcher despatcher ;
@@ -56,14 +65,14 @@ public class EcallSendProcessor {
             // send the alert data using appropriate method
 
 
-            if(alert.isSent()) {
+            if(!alert.isSent()) {
                 despatcher = createMessageDespatcher(alert);
                 despatcher.sendMessage() ;
                 while(!despatcher.deliveryComplete()) {
-                // yield or something - do we really need to implement call back ?
-                // alternatively, do we keep  a list of despatchers working asynchronously
-                // much easier to assume at this point that delivery will be synchronous
-                // the pending alerts queue allows for failure and resending
+                    // yield or something - do we really need to implement call back ?
+                    // alternatively, do we keep  a list of despatchers working asynchronously
+                    // much easier to assume at this point that delivery will be synchronous
+                    // the pending alerts queue allows for failure and resending
                     // we could mark as pending, but the lifertime of the despatcher objects
                     // will need to be allowed for
                     // we'd need to add to a list to be purged as they completed
@@ -82,11 +91,12 @@ public class EcallSendProcessor {
                 // the alert will stay in the queue and come back to here to re upload
                 if(alert.isSent()) {
                     if (!alert.isUploaded()) {
+                        Log.d("DEBUG","Uploading");
                         iotDespatcher = new EcallMessageDespatcherViaIOT(alert);
                         // note we may have to fiddle here to make sure the despatcher doesnt
                         // get disposed of before completion
 
-                        iotDespatcher.SetSecurityContext(securityContext);
+                        iotDespatcher.setSecurityContext(securityContext);
                         iotDespatcher.sendMessage();
                         alert.setStatus(EcallAlert.alertStatusEnum.UPLOADED);
 
@@ -94,10 +104,17 @@ public class EcallSendProcessor {
                 }
                 if(alert.isUploaded()) {
                     pendingAlerts.dropAlert(alert);  // check this doesn't stuff up the iterator.
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
                 }
                 pendingAlerts.saveAlerts() ;   //update the saved data so that app can restore if required
-                                        // if this creates a performance issue, move outside the
-                                        // block
+                // if this creates a performance issue, move outside the
+                // block
             }
 
         }
