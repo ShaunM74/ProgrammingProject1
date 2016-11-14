@@ -182,7 +182,7 @@ public class AlertService extends Service {
                                 /////////////////////////////////////////////////////
 
                                 dataHandler datahandler = new dataHandler();
-                                EcallAlert alertSMS = null;
+                                EcallAlert alertSMS;
                                 final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
                                         getString(R.string.GPSLat), getString(R.string.GPSLONG),
                                         getString(R.string.OptSettingsFile));
@@ -208,11 +208,10 @@ public class AlertService extends Service {
                                         payLoadObject.put("AccountID", accountId);
                                         payLoadObject.put("DeviceID", deviceID);
                                         Log.d("DEBUG", "" + dataHandler.isGPSMaps(getApplicationContext()));
-                                        if (dataHandler.isGPSMaps(getApplicationContext()) == true) {
-                                            Log.d("DEBUG","Adding co-ords");
+                                        if (dataHandler.isGPSMaps(getApplicationContext())) {
                                             payLoadObject.put("Latitude", currentGPS.getLatitude());
                                             payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                            payLoadObject.put("Location", "["+datahandler.getaddress(getApplicationContext())+"]");
+                                            payLoadObject.put("Location", "["+dataHandler.getaddress(getApplicationContext())+"]");
                                         }
                                         payLoadObject.put("Date", date);
                                         payLoadObject.put("Time", time);
@@ -235,7 +234,7 @@ public class AlertService extends Service {
 
                         }.run();
                     } catch (Exception e) {
-                        Log.d("DEBUG", e.getMessage().toString());
+                        Log.d("DEBUG", e.getMessage());
                     }
                 }
 
@@ -251,7 +250,7 @@ public class AlertService extends Service {
                                 /////////////////////////////////////////////////////
 
                                 dataHandler datahandler = new dataHandler();
-                                EcallAlert alertUpload = null;
+                                EcallAlert alertUpload;
                                 final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
                                         getString(R.string.GPSLat), getString(R.string.GPSLONG),
                                         getString(R.string.OptSettingsFile));
@@ -277,11 +276,11 @@ public class AlertService extends Service {
                                         payLoadObject.put("AccountID", accountId);
                                         payLoadObject.put("DeviceID", deviceID);
 
-                                        if (dataHandler.isGPSMaps(getApplicationContext()) == true) {
+                                        if (dataHandler.isGPSMaps(getApplicationContext())) {
                                             Log.d("DEBUG","Adding co-ords");
                                             payLoadObject.put("Latitude", currentGPS.getLatitude());
                                             payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                            payLoadObject.put("Location", "["+datahandler.getaddress(getApplicationContext())+"]");
+                                            payLoadObject.put("Location", "["+dataHandler.getaddress(getApplicationContext())+"]");
                                         }
                                         payLoadObject.put("AttachmentName", attachmentFileName);
                                         payLoadObject.put("AttachmentLocation", attachmentFileLocation);
@@ -315,7 +314,7 @@ public class AlertService extends Service {
                         @Override
                         public void run() {
                             try {
-                                //ecallSendProcessor.processPendingAlerts();
+                                ecallSendProcessor.processPendingAlerts();
                                 Log.d("DEBUG","Processing");
                             } catch (Exception e){
                                     //EcallSendException e) {
