@@ -555,6 +555,7 @@ public class dataHandler extends AppCompatActivity
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
                     tempCurrentContact.setPhoneNumber("" + pCur.getString(contacts.getColumnIndex(
                             ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[^\\d]", ""));
+                    break;
                 }
             }
             pCur.close();
