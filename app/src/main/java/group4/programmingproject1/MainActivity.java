@@ -507,7 +507,6 @@ public class MainActivity extends AppCompatActivity {
     private String getAddress()
     {
 
-
         List<Address> addresses = null;
         Geocoder geocoder;
 
@@ -545,7 +544,9 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            return "Address Unknown";
+            AllOurPowersCombined = "Address Unknown";
+            dataHandler.saveAddress(context,AllOurPowersCombined);
+            return AllOurPowersCombined;
         }
     }
 
