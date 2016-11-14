@@ -18,6 +18,7 @@ package group4.programmingproject1;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -32,6 +33,7 @@ public class CameraActivity extends Activity {
     String filename="";
     String fileLocation="";
     String alertID="";
+    Context context;
     Camera2VideoFragment camFragment = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class CameraActivity extends Activity {
             dataHandler datahandler = new dataHandler();
             args.putInt("RECORD_LENGTH",datahandler.getRecordTimeBySeconds(this,
                     getString(R.string.OptSettingsFile),"SoundVideoRecordTime"));
+            args.putBoolean("CAMERA",dataHandler.whichCamera(getApplicationContext()));
             camFragment.setArguments(args);
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
