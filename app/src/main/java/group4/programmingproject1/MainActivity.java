@@ -319,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            Log.d("DEBUG","In action up");
             saveGPSNow();
             // Check if event occured within the bounds of the button, if so do button action
             // Otherwise cancel/ignore the event.
@@ -334,7 +333,8 @@ public class MainActivity extends AppCompatActivity {
 
                  Date alertDate = new java.util.Date();
 
-                String alertID = new SimpleDateFormat("yyyyMMddHHmmss").format(alertDate);
+                String alertID = new SimpleDateFormat("yyyyMMddHHmmss").format(alertDate)+"-"+
+                        dataHandler.getDeviceID(context);
                 if(lastAlertDate != null )
                 {
                     long temp =(alertDate.getTime()-lastAlertDate.getTime());
