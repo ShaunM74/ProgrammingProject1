@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -31,31 +33,26 @@ import android.widget.Toast;
 public class SoundRecordActivity extends AppCompatActivity {
 
     private MediaRecorder myRecorder;
-    //private MediaPlayer myPlayer;
     private String outputFile;
-
+    private String fileName;
+    private String fileLocation;
     private TextView text;
     private int playTime = 5;
-    //Context context;
-    //dataHandler data1 = new dataHandler();
-    //private int playTime = data1.getRecordTimeBySeconds(context);
-
+    Context context;
+    private boolean recorded=false;
     public static final int RECORD_AUDIO = 0;
+    private String alertID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_rec);
-
+        Intent intent=getIntent();
+        alertID = intent.getStringExtra("ALERT_ID");
         text = (TextView) findViewById(R.id.text1);
-        // store it to sd card
-        //outputFile = Environment.getExternalStorageDirectory().
-        //       getAbsolutePath() + "/SNDTEST.3gpp";
-
-        //alternative from codestack and our video file save
-        outputFile = Environment.getExternalStorageDirectory() + File.separator
-                + Environment.DIRECTORY_DCIM + File.separator + "FILE_NAME";
-
+        dataHandler datahandler = new dataHandler();
+        playTime =datahandler.getRecordTimeBySeconds(getApplicationContext(),
+                        getString(R.string.OptSettingsFile),"SoundVideoRecordTime");
 
         outputFile = getSoundFilePath(getApplicationContext());
 
@@ -73,23 +70,28 @@ public class SoundRecordActivity extends AppCompatActivity {
         myRecorder = new MediaRecorder();
         myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 
-
-        //myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         myRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        //myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+
         myRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         myRecorder.setOutputFile(outputFile);
-        //myRecorder.setMaxDuration(playTime);
+
 
         //hijacking for automation
-        start();
+        if(!recorded)
+        {
+            recorded=true;
+            Log.d("DEBUG","Starting recording");
+            start();
+
+        }
+
     }
 
     private String getSoundFilePath(Context context) {
-        Log.d("Debug","Output:"+ context.getExternalFilesDir(null).getAbsolutePath() + "/" +
-                System.currentTimeMillis() + "SRM.mp3");
-        return context.getExternalFilesDir(null).getAbsolutePath() + "/"
-                + System.currentTimeMillis() + "SRM.mp3";
+        fileLocation = context.getExternalFilesDir(null).getAbsolutePath() + "/";
+        fileName = alertID + ".mp3";
+        Log.d("Debug","Output:"+ fileLocation + fileName);
+        return fileLocation+fileName;
     }
     // hijacking start
     private void start()
@@ -114,10 +116,11 @@ public class SoundRecordActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void stop()
+    private void stop()
     {
         try {
             myRecorder.stop();
+            myRecorder.reset();
             myRecorder.release();
             myRecorder  = null;
 
@@ -187,6 +190,18 @@ public class SoundRecordActivity extends AppCompatActivity {
             Log.d("Debug","Stopping recorder post async");
             stop();
             unlockScreenRotation();
+
+            Intent intent = new Intent(getString(R.string.recording_finished));
+            intent.putExtra("fileName",fileName);
+            intent.putExtra("fileLocation",fileLocation);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            try {
+                Thread.sleep(100);
+            }
+            catch(Exception e)
+            {
+                Log.d("DEBUG","Sleep in recorder failed");
+            }
             finish();
         }
 

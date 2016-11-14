@@ -116,6 +116,7 @@ public class ContactPickerActivity extends AppCompatActivity {
                         int phoneType = pCur.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                         if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
                             phoneNumber = pCur.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            break;
                         }
                     }
                     pCur.close();

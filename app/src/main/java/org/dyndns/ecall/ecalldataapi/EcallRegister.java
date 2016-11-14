@@ -34,6 +34,7 @@ public class EcallRegister {
         String tempString ="";
         String accountID= dataHandler.getAccountID(context);
         String deviceID = dataHandler.getDeviceKey(context);
+        Log.d("DEBUG","Sending:"+accountID+":"+deviceID);
         String data=null;
         try {
              data = URLEncoder.encode("accountKey", "UTF-8")

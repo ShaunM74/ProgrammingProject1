@@ -120,17 +120,21 @@ public class EcallIOTConnection
     }
     public void startConnectionStatusHandler(String certid,String keystore) {
       //  final Activity activity1 = (Activity) context;
+        try {
+            // get the certificate
+            String keystorePath = this.context.getFilesDir().getPath();
+            String keystoreName = keystore;
+            String keystorePassword = "";
 
-        // get the certificate
-        String keystorePath = this.context.getFilesDir().getPath();
-        String keystoreName = keystore;
-        String keystorePassword = "";
+            // read the certifictae
 
-        // read the certifictae
-
-        clientKeyStore = AWSIotKeystoreHelper.getIotKeystore(certid,
-                keystorePath, keystoreName, keystorePassword);
-
+            clientKeyStore = AWSIotKeystoreHelper.getIotKeystore(certid,
+                    keystorePath, keystoreName, keystorePassword);
+        }
+        catch(Exception e)
+        {
+            Log.d("DEBUG",e.getMessage());
+        }
         try {
             mqttManager.connect(clientKeyStore, new AWSIotMqttClientStatusCallback() {
                 @Override
@@ -139,6 +143,7 @@ public class EcallIOTConnection
                     Log.d(LOG_TAG, "Status = " + String.valueOf(status));
                     if (status == AWSIotMqttClientStatus.Connected) {
                         setStatus("Connected");
+                        Log.d("DEBUG","connected");
                     }
 
                     new Runnable() {

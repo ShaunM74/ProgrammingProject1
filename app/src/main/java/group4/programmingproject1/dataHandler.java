@@ -2,8 +2,10 @@ package group4.programmingproject1;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.*;
 import android.provider.Settings;
@@ -13,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import org.dyndns.ecall.ecalldataapi.EcallContact;
 import org.json.JSONArray;
 import org.json.JSONObject;
 //import java.util.Date;
@@ -38,7 +41,7 @@ public class dataHandler extends AppCompatActivity
             return userChoice;
         }
 
-        return -1;
+        return 2;
 
     }
 
@@ -81,11 +84,11 @@ public class dataHandler extends AppCompatActivity
             return userChoice+3;
         }
 
-        return -1;
+        return 5;
 
     }
 
-    public int getRecordTimeBySeconds(Context context)
+    public static int getRecordTimeBySeconds(Context context)
     {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -97,7 +100,7 @@ public class dataHandler extends AppCompatActivity
             return userChoice+3;
         }
 
-        return -1;
+        return 5;
     }
 
     // set video sound record time by actual seconds value
@@ -200,7 +203,10 @@ public class dataHandler extends AppCompatActivity
 
         String address = sharedPreferences.getString(context.getString(R.string.GPSAddress), null);
 
-
+        if (address==null)
+        {
+            return "Unknown address";
+        }
         return address;
     }
 
@@ -488,7 +494,7 @@ public class dataHandler extends AppCompatActivity
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 context.getString(R.string.OptSettingsFile), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
+        Log.d("DEBUG","CertID saving as:"+newCertID);
         String key = context.getString(R.string.cert_id_key);
         editor.putString(key, newCertID);
         editor.commit();
@@ -504,6 +510,64 @@ public class dataHandler extends AppCompatActivity
         String certID= sharedPreferences.getString(key,null);
         return certID;
     }
+
+    public static EcallContact getContact(Context context) {
+        Cursor contacts;
+
+        ContentResolver cr = context.getContentResolver();
+        EcallContact tempCurrentContact=null;
+
+        String existingPhone = "";
+        String fileName = context.getString(R.string.OptSettingsFile);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(
+                fileName, Context.MODE_PRIVATE);
+
+
+        String idKey = context.getString(R.string.pref_contact_id);
+        String existingID = sharedPreferences.getString(idKey,null);
+
+        if (existingID != null)
+
+        {
+            tempCurrentContact = new EcallContact(existingID);
+            contacts = context.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                    ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " +
+                    existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
+            contacts.moveToNext();
+            String existingName = null;
+            try {
+                tempCurrentContact.setDisplayName("" + contacts.getString(contacts.getColumnIndex(
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+
+            } catch (Exception e) {
+                Log.d("Debug", "ERROR:" + e.getMessage());
+            }
+
+            // Get mobile phone number of contact
+            Cursor pCur = cr.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    null,
+                    ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = ?",
+                    new String[]{existingID}, null);
+            while (pCur.moveToNext()) {
+                int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                    tempCurrentContact.setPhoneNumber("" + pCur.getString(contacts.getColumnIndex(
+                            ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("[^\\d]", ""));
+                    break;
+                }
+            }
+            pCur.close();
+
+            tempCurrentContact.setEmailAddress("" + contacts.getString(contacts.getColumnIndex(
+                    ContactsContract.CommonDataKinds.Email.DATA1)));
+            contacts.close();
+        }
+
+        return tempCurrentContact;
+    }
+
     /*
     public static String getCertPEM(Context context)
     {

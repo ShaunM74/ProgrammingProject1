@@ -9,6 +9,8 @@ import com.amazonaws.mobileconnectors.iot.AWSIotKeystoreHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.KeyStore;
+
 import group4.programmingproject1.dataHandler;
 
 /**
@@ -20,10 +22,10 @@ public class EcallRegistration {
     String keystoreName = "ECALL" ;
     private Context context ;
    // private Activity activity;
+    // Default Data for debug
+    String certARN= "arn:aws:iot:us-west-2:665849750025:cert/f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
 
-    String certARN = "arn:aws:iot:us-west-2:665849750025:cert/f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
-
-    String certID = "f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
+    String certID= "f45f2a3a9dae58f3455d49addc08a4c125b47d52a2178ef97e61bad54f4b23df";
     String certPEM = "-----BEGIN CERTIFICATE-----\n" +
             "MIIDWjCCAkKgAwIBAgIVAJb+S4+EQ3Bo5qnOQDRmH7FPHtrpMA0GCSqGSIb3DQEB\n" +
             "CwUAME0xSzBJBgNVBAsMQkFtYXpvbiBXZWIgU2VydmljZXMgTz1BbWF6b24uY29t\n" +
@@ -45,7 +47,7 @@ public class EcallRegistration {
             "TvBD/BrlFy0wJtWwKLshdTC1VH4xG7wLVrtEq8Bnm4WBAXpVrhfkIuuFN6aIKA==\n" +
             "-----END CERTIFICATE-----\n";
 
-    String certPubKey = "-----BEGIN PUBLIC KEY-----\n" +
+    String certPubKey= "-----BEGIN PUBLIC KEY-----\n" +
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlNJdqGP6MzzT3XlIiGrW\n" +
             "zY4wnGKZsdtmLzo9XvYDd/uS8kwLy/BeNTx7klcgBsmQtTV1OeIK3OTZf1Zm/3m4\n" +
             "zqBdoexMeGy5ms2BpX5J75fOZTBx/5IEWMsgXOrTm2Z0BEU0Vj6TmLtOa24+EVky\n" +
@@ -55,7 +57,7 @@ public class EcallRegistration {
             "OQIDAQAB\n" +
             "-----END PUBLIC KEY-----\n";
 
-    String certPrivKey = "-----BEGIN RSA PRIVATE KEY-----\n" +
+    String certPrivKey    = "-----BEGIN RSA PRIVATE KEY-----\n" +
             "MIIEpAIBAAKCAQEAlNJdqGP6MzzT3XlIiGrWzY4wnGKZsdtmLzo9XvYDd/uS8kwL\n" +
             "y/BeNTx7klcgBsmQtTV1OeIK3OTZf1Zm/3m4zqBdoexMeGy5ms2BpX5J75fOZTBx\n" +
             "/5IEWMsgXOrTm2Z0BEU0Vj6TmLtOa24+EVkyQiELiUy5F0NU+drxMSRSXTV6MEPR\n" +
@@ -89,6 +91,7 @@ public class EcallRegistration {
         context = caller;
 
         // load the certid from the settings
+        certID = dataHandler.getCertID(context);
 
     }
 
@@ -106,14 +109,14 @@ public class EcallRegistration {
         JSONObject json;
         try {
             json = new JSONObject(registrationResponse);
-            certARN=json.getString("CertificateARN");
-            certID=json.getString("CertificateOD");
-            certARN=json.getString("CertificateARN");
-            certPEM=json.getString("CertificatePEM");
-            certPubKey = json.getString("CertificatePublicKey");
-            certPrivKey = json.getString("CertificatePrivateKey");
-            String deviceID = json.getString("DeviceID");
+            certARN=json.getString("certificateARN");
+            certID=json.getString("certificateID");
 
+            certPEM=json.getString("certificatePEM");
+            certPubKey = json.getString("certificatePublicKey");
+            certPrivKey = json.getString("certificatePrivateKey");
+            String deviceID = json.getString("deviceID");
+            Log.d("DEBUG",certARN+":"+certID+":"+certPEM+":"+certPubKey+":"+certPrivKey);
             dataHandler.setCertID(context,certID);
             dataHandler.setDeviceID(context,deviceID);
 
@@ -137,11 +140,13 @@ public class EcallRegistration {
             AWSIotKeystoreHelper.saveCertificateAndPrivateKey(certID,certPEM,
                     certPrivKey,
                     keystorePath, keystoreName, keystorePassword);
+
         }
         catch (Exception e)
         {
-            Log.d("DEBUG",e.getMessage().toString());
+            Log.d("DEBUG","Keystore saving failed:"+e.getMessage());
         }
+
 
 
 

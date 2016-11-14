@@ -35,6 +35,8 @@ public class EcallSendProcessor {
     private EcallMessageDespatcher createMessageDespatcher(EcallAlert alert)
     {
         switch(alert.getAlertMethod()) {
+            case DUMMY:
+                return ((EcallMessageDespatcher) new  EcallMessageDespatcherViaDummySender(alert));
             case EMAIL:
                 return ((EcallMessageDespatcher) new  EcallMessageDespatcherViaEmail(alert));
             case SMS:
@@ -53,6 +55,7 @@ public class EcallSendProcessor {
     {
 
         while (pendingAlerts.getQueueCount() > 0) {
+            Log.d("DEBUG",""+pendingAlerts.getQueueCount());
 
             EcallAlert alert = pendingAlerts.firstAlert();
             EcallMessageDespatcher despatcher ;
@@ -88,6 +91,7 @@ public class EcallSendProcessor {
                 // the alert will stay in the queue and come back to here to re upload
                 if(alert.isSent()) {
                     if (!alert.isUploaded()) {
+                        Log.d("DEBUG","Uploading");
                         iotDespatcher = new EcallMessageDespatcherViaIOT(alert);
                         // note we may have to fiddle here to make sure the despatcher doesnt
                         // get disposed of before completion

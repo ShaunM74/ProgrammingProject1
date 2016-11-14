@@ -109,14 +109,12 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
                 new IntentFilter(getString(R.string.no_contact_error)));
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
-                new IntentFilter(getString(R.string.record_video)));
 
         // Assign buttons to variables
 
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
-        Log.d("Debug",""+dataHandler.getCertID(this));
+        Log.d("Debug","CertID:"+dataHandler.getCertID(this));
         if(dataHandler.getCertID(this)==null)
         {
             RegisterDevice registerDevice = new RegisterDevice();
@@ -173,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 return onAlertTouch(v,event);
             }
         });
-
-
 
         //GPS stuff here
 
@@ -256,8 +252,20 @@ public class MainActivity extends AppCompatActivity {
     {
         gpsHandler.removeCallbacks(GPSStatusSaver);
     }
+/*
+    @Override
+    protected void onPause()
+    {
+        context.unregisterReceiver(noContactBroadcastReceiver);
+        super.onPause();
+    }
 
+    @Override
+    protect void onResume()
+    {
 
+    }
+*/
     //Gets current screen orientation and sets it as requested screen orientation
 
     private void lockScreenRotation()
@@ -311,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (event.getAction() == MotionEvent.ACTION_UP) {
-
             saveGPSNow();
             // Check if event occured within the bounds of the button, if so do button action
             // Otherwise cancel/ignore the event.
@@ -322,10 +329,12 @@ public class MainActivity extends AppCompatActivity {
             }
             else
             {
+                // Start of Alert processing, checking alert not fired within 30 seconds
 
                  Date alertDate = new java.util.Date();
 
-                String alertID = new SimpleDateFormat("yyyyMMddHHmmss").format(alertDate);
+                String alertID = new SimpleDateFormat("yyyyMMddHHmmss").format(alertDate)+"-"+
+                        dataHandler.getDeviceID(context);
                 if(lastAlertDate != null )
                 {
                     long temp =(alertDate.getTime()-lastAlertDate.getTime());
@@ -338,9 +347,9 @@ public class MainActivity extends AppCompatActivity {
                     else
                     {
 
+                        Log.d("DEBUG","Doing another alert");
 
                         lastAlertDate = alertDate;
-
                         Intent intent = new Intent("startInstAlertAlarm");
                         intent.putExtra("alertID",alertID);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -349,16 +358,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    Log.d("DEBUG","Doing first alert");
                     lastAlertDate = alertDate;
-
                     Intent intent = new Intent("startInstAlertAlarm");
                     intent.putExtra("alertID",alertID);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-
                 }
-
-
 
             }
             vibrator.cancel();
@@ -557,8 +563,6 @@ public class MainActivity extends AppCompatActivity {
     {
 
         Calendar c = Calendar.getInstance();
-        //SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss a");
-        //SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss a");
         SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
 
         String formattedDate = df.format(c.getTime());

@@ -1,6 +1,7 @@
 package group4.programmingproject1;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import org.dyndns.ecall.ecalldataapi.EcallContact;
+
 /**
  * Created by Shane Drobnick on 6/11/2016.
  */
@@ -22,16 +25,16 @@ public class PhoneActivity extends AppCompatActivity
 {
 
     Button call;
+    Context context;
     //number needs to be retrieved from contact settings here , edit to test
-    private String number = "0467640471";
+    private String number = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
-
-        //** add contact given number to be called retrieval here
-        //number =
-        //*******************
+        context=this;
+        EcallContact tempcontact;
+        number = dataHandler.getContact(context).getPhoneNumber();
 
         Intent intent = new Intent(android.content.Intent.ACTION_CALL, Uri.parse("tel: "+number));
 

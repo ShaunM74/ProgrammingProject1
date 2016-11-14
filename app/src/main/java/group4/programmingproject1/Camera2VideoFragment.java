@@ -67,8 +67,9 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import group4.programmingproject1.dataHandler;
 /**
- * Created by Yipster on 25/10/2016.
+ * Created by Shane Drobnick on 25/10/2016.
  */
 
 public class Camera2VideoFragment extends Fragment
@@ -77,7 +78,8 @@ public class Camera2VideoFragment extends Fragment
 
     //need to change this so it gets the actual time on creation?
     //for how long recording goes for timer
-    private int howLongRecord = 3;
+    private int howLongRecord = 5;
+
 
     private String fileName="";
     private String fileLocation="";
@@ -143,6 +145,7 @@ public class Camera2VideoFragment extends Fragment
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture,
                                               int width, int height) {
+            Log.d("DEBUG","In available");
             openCamera(width, height);
         }
 
@@ -166,11 +169,21 @@ public class Camera2VideoFragment extends Fragment
             }
             else
             {
-                startRecordingVideo();
-                if(!hasCaptured)
+
+                    startRecordingVideo();
+               if(!hasCaptured)
                 {
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
+                    //startRecordingVideo();
                     new postTask().execute("errm");
-                    hasCaptured=true;
+                    hasCaptured = true;
+
                 }
 
             }
@@ -221,6 +234,7 @@ public class Camera2VideoFragment extends Fragment
         @Override
         public void onOpened(CameraDevice cameraDevice) {
             mCameraDevice = cameraDevice;
+            Log.d("DEBUG","In on opened");
             startPreview();
             mCameraOpenCloseLock.release();
             if (null != mTextureView) {
@@ -265,7 +279,8 @@ public class Camera2VideoFragment extends Fragment
      */
     private static Size chooseVideoSize(Size[] choices) {
         for (Size size : choices) {
-            if (size.getWidth() == size.getHeight() * 4 / 3 && size.getWidth() <= 1080) {
+            if (size.getHeight() == 480 && size.getWidth() == 640) {
+                Log.d("DEBUG","Returning size:"+size.toString());
                 return size;
             }
         }
@@ -290,8 +305,7 @@ public class Camera2VideoFragment extends Fragment
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
-            if (option.getHeight() == option.getWidth() * h / w &&
-                    option.getWidth() >= width && option.getHeight() >= height) {
+            if (option.getWidth() >= width && option.getHeight() >= height) {
                 bigEnough.add(option);
             }
         }
@@ -320,7 +334,14 @@ public class Camera2VideoFragment extends Fragment
         //mButtonVideo = (Button) view.findViewById(R.id.button2);
         mButtonVideo.setOnClickListener(this);
         //view.findViewById(R.id.info).setOnClickListener(this);
-        startRecordingVideo();
+
+        if(!hasCaptured)
+        {
+           // startRecordingVideo();
+           // new postTask().execute("errm");
+           // hasCaptured = true;
+        }
+
         //startRecordingVideo();
 
     }
@@ -466,7 +487,6 @@ public class Camera2VideoFragment extends Fragment
         }
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
-            Log.d(TAG, "tryAcquire");
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
@@ -628,8 +648,10 @@ public class Camera2VideoFragment extends Fragment
             mNextVideoAbsolutePath = getVideoFilePath(getActivity());
         }
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
-        mMediaRecorder.setVideoEncodingBitRate(10000000);
-        mMediaRecorder.setVideoFrameRate(30);
+        //mMediaRecorder.setVideoEncodingBitRate(10000000);
+        mMediaRecorder.setVideoEncodingBitRate(1500000);
+        //mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoFrameRate(15);
 
         //length limiter  O.O
         //mMediaRecorder.setMaxDuration(5000);
@@ -660,9 +682,19 @@ public class Camera2VideoFragment extends Fragment
     }
 
     public void startRecordingVideo() {
-        if (null == mCameraDevice || !mTextureView.isAvailable() || null == mPreviewSize) {
+        if (null == mCameraDevice ) {
+
             return;
         }
+        if (!mTextureView.isAvailable()) {
+
+            return;
+        }
+        if ( null == mPreviewSize) {
+
+            return;
+        }
+
         try {
             closePreviewSession();
             setUpMediaRecorder();
@@ -695,11 +727,12 @@ public class Camera2VideoFragment extends Fragment
                         @Override
                         public void run() {
                             // UI
-                            mButtonVideo.setText(R.string.stop);
+                            //mButtonVideo.setText(R.string.stop);
                             mIsRecordingVideo = true;
 
                             // Start recording
                             mMediaRecorder.start();
+
                         }
                     });
                 }
@@ -734,16 +767,17 @@ public class Camera2VideoFragment extends Fragment
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+        mMediaRecorder.release();
+        mMediaRecorder=null;
 
 
         Activity activity = getActivity();
         if (null != activity) {
             Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
                     Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
+
         }
-//        mNextVideoAbsolutePath = null;
-//        startPreview();
+
     }
 
     /**
@@ -816,7 +850,12 @@ public class Camera2VideoFragment extends Fragment
 
     private class postTask extends AsyncTask<String,Integer,String>
     {
+        @Override
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
 
+        }
         @Override
         protected String doInBackground(String... params)
         {
@@ -837,10 +876,12 @@ public class Camera2VideoFragment extends Fragment
         protected void onPostExecute(String doneTask)
         {
             //uptimer(tracker);
+           // if (mIsRecordingVideo) {
+               stopRecordingVideo();
 
-            stopRecordingVideo();
+            //}
 
-            Intent intent = new Intent("recordingFinished");
+            Intent intent = new Intent(getString(R.string.recording_finished));
             intent.putExtra("fileName",fileName);
             intent.putExtra("fileLocation",fileLocation);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
@@ -854,11 +895,7 @@ public class Camera2VideoFragment extends Fragment
 
         }
 
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-        }
+
 
 
     }
