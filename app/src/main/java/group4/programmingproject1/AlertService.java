@@ -1,5 +1,6 @@
 package group4.programmingproject1;
 
+import android.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -19,6 +21,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -311,7 +315,7 @@ public class AlertService extends Service {
                         @Override
                         public void run() {
                             try {
-                                ecallSendProcessor.processPendingAlerts();
+                                //ecallSendProcessor.processPendingAlerts();
                                 Log.d("DEBUG","Processing");
                             } catch (Exception e){
                                     //EcallSendException e) {
@@ -322,6 +326,14 @@ public class AlertService extends Service {
                     }.run();
 
                 } catch (Exception e) {
+
+                }
+
+                if(dataHandler.isCall(context))
+                {
+                    Intent phoneIntent = new Intent(getApplicationContext(), PhoneActivity.class);
+                    phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(phoneIntent);
 
                 }
             }
