@@ -1,5 +1,6 @@
 package group4.programmingproject1;
 
+import android.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -10,14 +11,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -99,7 +104,8 @@ public class AlertService extends Service {
         public void onReceive(Context context, Intent intent) {
             if(getString(R.string.start_instalert_alarm).equals(intent.getAction())) {
                 alertID = intent.getStringExtra("alertID");
-
+                Context appContext = getApplicationContext();
+                Toast.makeText(appContext, "Alert Processing Started", Toast.LENGTH_SHORT).show();
 
                 if(dataHandler.isVid(context))
                 {
@@ -122,7 +128,7 @@ public class AlertService extends Service {
                     startActivity(soundIntent);
 
                 }
-                else
+                else if(!dataHandler.isSnd(context) && !dataHandler.isVid(context))
                 {
                     Log.d("DEBUG","No uploads");
                     // No recording required
@@ -143,7 +149,7 @@ public class AlertService extends Service {
     public void startAlert(String alertID, final String attachmentFileName,final String attachmentFileLocation)
     {
         Context context = getApplicationContext();
-        Toast.makeText(context, "Alert Processing Started", Toast.LENGTH_SHORT).show();
+        Log.d("DEBUG","Starting alert:"+alertID +":"+ attachmentFileName + attachmentFileLocation);
         final String thisAlertID=alertID;
         final EcallContact currentContact;
         final String defaultMessage = getString(R.string.default_message);
@@ -176,7 +182,7 @@ public class AlertService extends Service {
                                 /////////////////////////////////////////////////////
 
                                 dataHandler datahandler = new dataHandler();
-                                EcallAlert alertSMS = null;
+                                EcallAlert alertSMS;
                                 final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
                                         getString(R.string.GPSLat), getString(R.string.GPSLONG),
                                         getString(R.string.OptSettingsFile));
@@ -202,11 +208,10 @@ public class AlertService extends Service {
                                         payLoadObject.put("AccountID", accountId);
                                         payLoadObject.put("DeviceID", deviceID);
                                         Log.d("DEBUG", "" + dataHandler.isGPSMaps(getApplicationContext()));
-                                        if (dataHandler.isGPSMaps(getApplicationContext()) == true) {
-                                            Log.d("DEBUG","Adding co-ords");
+                                        if (dataHandler.isGPSMaps(getApplicationContext())) {
                                             payLoadObject.put("Latitude", currentGPS.getLatitude());
                                             payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                            payLoadObject.put("Location", "["+datahandler.getaddress(getApplicationContext())+"]");
+                                            payLoadObject.put("Location", "["+dataHandler.getaddress(getApplicationContext())+"]");
                                         }
                                         payLoadObject.put("Date", date);
                                         payLoadObject.put("Time", time);
@@ -229,7 +234,7 @@ public class AlertService extends Service {
 
                         }.run();
                     } catch (Exception e) {
-                        Log.d("DEBUG", e.getMessage().toString());
+                        Log.d("DEBUG", e.getMessage());
                     }
                 }
 
@@ -245,7 +250,7 @@ public class AlertService extends Service {
                                 /////////////////////////////////////////////////////
 
                                 dataHandler datahandler = new dataHandler();
-                                EcallAlert alertUpload = null;
+                                EcallAlert alertUpload;
                                 final dataHandler.GPSobject currentGPS = datahandler.getGPS(getApplicationContext(),
                                         getString(R.string.GPSLat), getString(R.string.GPSLONG),
                                         getString(R.string.OptSettingsFile));
@@ -271,11 +276,11 @@ public class AlertService extends Service {
                                         payLoadObject.put("AccountID", accountId);
                                         payLoadObject.put("DeviceID", deviceID);
 
-                                        if (dataHandler.isGPSMaps(getApplicationContext()) == true) {
+                                        if (dataHandler.isGPSMaps(getApplicationContext())) {
                                             Log.d("DEBUG","Adding co-ords");
                                             payLoadObject.put("Latitude", currentGPS.getLatitude());
                                             payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                            payLoadObject.put("Location", "["+datahandler.getaddress(getApplicationContext())+"]");
+                                            payLoadObject.put("Location", "["+dataHandler.getaddress(getApplicationContext())+"]");
                                         }
                                         payLoadObject.put("AttachmentName", attachmentFileName);
                                         payLoadObject.put("AttachmentLocation", attachmentFileLocation);
@@ -318,7 +323,16 @@ public class AlertService extends Service {
                             }
                         }
                     }.run();
+
                 } catch (Exception e) {
+
+                }
+
+                if(dataHandler.isCall(context))
+                {
+                    Intent phoneIntent = new Intent(getApplicationContext(), PhoneActivity.class);
+                    phoneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(phoneIntent);
 
                 }
             }
@@ -337,4 +351,5 @@ public class AlertService extends Service {
         Log.d("DEBUG", "Past runnable!");
 
     }
+
 }

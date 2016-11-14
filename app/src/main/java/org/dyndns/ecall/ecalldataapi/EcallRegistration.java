@@ -107,12 +107,12 @@ public class EcallRegistration {
         JSONObject json;
         try {
             json = new JSONObject(registrationResponse);
-           // certARN=json.getString("certificateARN");
-            //certID=json.getString("certificateID");
+            certARN=json.getString("certificateARN");
+            certID=json.getString("certificateID");
 
-            //certPEM=json.getString("certificatePEM");
-            //certPubKey = json.getString("certificatePublicKey");
-            //certPrivKey = json.getString("certificatePrivateKey");
+            certPEM=json.getString("certificatePEM");
+            certPubKey = json.getString("certificatePublicKey");
+            certPrivKey = json.getString("certificatePrivateKey");
             String deviceID = json.getString("deviceID");
 
             dataHandler.setCertID(context,certID);

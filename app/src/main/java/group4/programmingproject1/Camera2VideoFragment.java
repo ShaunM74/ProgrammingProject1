@@ -174,7 +174,7 @@ public class Camera2VideoFragment extends Fragment
                if(!hasCaptured)
                 {
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(1000);
                     }
                     catch(Exception e)
                     {
@@ -487,7 +487,6 @@ public class Camera2VideoFragment extends Fragment
         }
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
-            Log.d(TAG, "tryAcquire");
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
@@ -684,15 +683,15 @@ public class Camera2VideoFragment extends Fragment
 
     public void startRecordingVideo() {
         if (null == mCameraDevice ) {
-            Log.d("DEBUG","Something null1");
+
             return;
         }
         if (!mTextureView.isAvailable()) {
-            Log.d("DEBUG","Something null2");
+
             return;
         }
         if ( null == mPreviewSize) {
-            Log.d("DEBUG","Something null3");
+
             return;
         }
 
@@ -717,7 +716,7 @@ public class Camera2VideoFragment extends Fragment
 
             // Start a capture session
             // Once the session starts, we can update the UI and start recording
-            Log.d("DEBUG","before capture session");
+
             mCameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
 
                 @Override
@@ -733,7 +732,7 @@ public class Camera2VideoFragment extends Fragment
 
                             // Start recording
                             mMediaRecorder.start();
-                            Log.d("DEBUG","Mediarecorder started");
+
                         }
                     });
                 }
@@ -747,10 +746,8 @@ public class Camera2VideoFragment extends Fragment
                 }
             }, mBackgroundHandler);
         } catch (CameraAccessException e) {
-            Log.d("DEBUG","CameraAccessExcepton"+e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            Log.d("DEBUG","IOExcepton"+e.getMessage());
             e.printStackTrace();
         }
 
@@ -770,16 +767,17 @@ public class Camera2VideoFragment extends Fragment
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+        mMediaRecorder.release();
+        mMediaRecorder=null;
 
 
         Activity activity = getActivity();
         if (null != activity) {
             Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
                     Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
+
         }
-//        mNextVideoAbsolutePath = null;
-//        startPreview();
+
     }
 
     /**
@@ -880,9 +878,10 @@ public class Camera2VideoFragment extends Fragment
             //uptimer(tracker);
            // if (mIsRecordingVideo) {
                stopRecordingVideo();
+
             //}
 
-            Intent intent = new Intent("recordingFinished");
+            Intent intent = new Intent(getString(R.string.recording_finished));
             intent.putExtra("fileName",fileName);
             intent.putExtra("fileLocation",fileLocation);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
