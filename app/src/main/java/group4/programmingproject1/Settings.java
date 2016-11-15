@@ -398,6 +398,7 @@ public class Settings extends AppCompatActivity {
     //get values for contact
     private void getContactSettingsKeyValueFile()
     {
+
         Cursor contacts;
         Context context = getApplicationContext();
         ContentResolver cr = getContentResolver();
@@ -413,7 +414,7 @@ public class Settings extends AppCompatActivity {
         if(existingID!=null) {
             contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + existingID + "", null, ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " ASC");
             contacts.moveToNext();
-            String existingName = null;
+            String existingName = "1";
             Log.d("Debug", existingID);
             try {
                 existingName = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
@@ -426,12 +427,13 @@ public class Settings extends AppCompatActivity {
             Cursor pCur = cr.query(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                    ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = ?",
                     new String[]{existingID}, null);
             while (pCur.moveToNext()) {
                 int phoneType = pCur.getInt(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                 if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
                     existingPhone = pCur.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    Log.d("Debug", "Existing phone:"+existingPhone);
                     break;
                 }
 
