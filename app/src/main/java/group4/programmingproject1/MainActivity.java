@@ -431,13 +431,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity (intent);
                 return true;
             }
+            /*
             case R.id.devmenu:
             {
                 Intent intent = new Intent(this, DevModeActivity.class);
                 startActivity(intent);
                 return true;
             }
-
+*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -551,9 +552,8 @@ public class MainActivity extends AppCompatActivity {
         return formattedDate;
     }
 
-
-
-
+    // Receive the broadcast from the service to notify that there is no contact set when an alarm is
+    // triggered
     private BroadcastReceiver noContactBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -571,6 +571,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+
+    // This registers the device, required to be asynchronous on another thread due to not
+    // allowing networking on the UI thread.
 
     class RegisterDevice extends AsyncTask<Void, Void, String> {
         Context appContext;

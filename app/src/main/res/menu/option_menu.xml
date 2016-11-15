@@ -9,6 +9,4 @@
         android:title="Help" />
     <item android:id="@+id/quit"
         android:title="Quit" />
-    <item android:id="@+id/devmenu"
-        android:title="Devmenu" />
 </menu>
