@@ -79,6 +79,7 @@ public class Camera2VideoFragment extends Fragment
     //need to change this so it gets the actual time on creation?
     //for how long recording goes for timer
     private int howLongRecord = 5;
+    private boolean frontCamera = true;
 
 
     private String fileName="";
@@ -323,7 +324,7 @@ public class Camera2VideoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         howLongRecord = getArguments().getInt("RECORD_LENGTH");
-
+        frontCamera = getArguments().getBoolean("CAMERA");
         return inflater.inflate(R.layout.fragment_camera2_video, container, false);
     }
 
@@ -490,10 +491,28 @@ public class Camera2VideoFragment extends Fragment
             if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
-            String cameraId = manager.getCameraIdList()[0];
+            String cameraId;
+            CameraCharacteristics characteristics;
+            if(frontCamera) {
+                // Default camera
+                cameraId = manager.getCameraIdList()[0];
+            }
+            else {
+                try {
+                    // Try to enable back camera, if exception, then revert to front camera
+                    cameraId = manager.getCameraIdList()[1];
+                    Log.d("DEBUG","Back cam");
+                }
+                catch(Exception e)
+                {
+                    cameraId = manager.getCameraIdList()[0];
+                    Log.d("DEBUG","Failed back cam");
+                }
+            }
+                // Choose the sizes for camera preview and video recording
+            characteristics = manager.getCameraCharacteristics(cameraId);
 
-            // Choose the sizes for camera preview and video recording
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+
             StreamConfigurationMap map = characteristics
                     .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             mSensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
