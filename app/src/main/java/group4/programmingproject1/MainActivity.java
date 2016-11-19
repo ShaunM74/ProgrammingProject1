@@ -99,27 +99,30 @@ public class MainActivity extends AppCompatActivity {
         context=this;
         Toolbar myToolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(myToolbar);
+
         // Try to set icon, if not found, leave blank
-
-            if(getSupportActionBar() != null)
+        if(getSupportActionBar() != null)
+        {
             getSupportActionBar().setIcon(R.drawable.appiconsmall);
-
+        }
         vibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
 
+        // Listen for local broadcast for the noContacterror from the service
         LocalBroadcastManager.getInstance(this).registerReceiver(noContactBroadcastReceiver,
                 new IntentFilter(getString(R.string.no_contact_error)));
 
 
         // Assign buttons to variables
-
         alertButton = (ImageButton)findViewById(R.id.alertButton);
         cancelButton = (ImageButton)findViewById(R.id.cancelButton);
-        Log.d("Debug","CertID:"+dataHandler.getCertID(this));
+
+        // Check if there is a certifiID, if not, register the device with the server.
         if(dataHandler.getCertID(this)==null)
         {
             RegisterDevice registerDevice = new RegisterDevice();
             registerDevice.execute();
         }
+
         //Permission for sending SMS request
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED)
@@ -143,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
                     this.RECORD_AUDIO);
-
         }
         else
         {
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // On touch listeners to report button touches
-        // Using touch listeners to capture finger raised events.
+        // Using touch listeners to capture finger on and off events.
         alertButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch (View v, MotionEvent event)
@@ -182,12 +184,6 @@ public class MainActivity extends AppCompatActivity {
         {
             @Override
             public void onLocationChanged(Location location) {
-                //test text
-                //textView.append("\n " + location.getLatitude() + " " + location.getLongitude());
-                //** this is for the test text display over button, comment out to remove
-                //textView.setText(location.getLatitude() + " " + location.getLongitude());
-                //textView.setText("Lat:"+Latitude + " " + "Lon:"+Longitude);
-                //**
                 Longitude = String.valueOf(location.getLongitude());
                 Latitude  = String.valueOf(location.getLatitude());
 
@@ -217,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         // AlertService/////////////////////////////////////////////////////////////
+        // Start the service if it is not already running.
+        // Service allow alerts to continue even if the activity is closed
         alertServiceIntent = new Intent(context,AlertService.class);
         startService(alertServiceIntent);
 
@@ -232,9 +230,7 @@ public class MainActivity extends AppCompatActivity {
         {
             try
             {
-                //updateStatus();
                 saveGPSNow();
-                //Toast.makeText(MainActivity.this, "GPS SAVED by Handler", Toast.LENGTH_LONG).show();
             }
             finally
             {
@@ -252,20 +248,7 @@ public class MainActivity extends AppCompatActivity {
     {
         gpsHandler.removeCallbacks(GPSStatusSaver);
     }
-/*
-    @Override
-    protected void onPause()
-    {
-        context.unregisterReceiver(noContactBroadcastReceiver);
-        super.onPause();
-    }
 
-    @Override
-    protect void onResume()
-    {
-
-    }
-*/
     //Gets current screen orientation and sets it as requested screen orientation
 
     private void lockScreenRotation()
@@ -346,9 +329,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
-
-                        Log.d("DEBUG","Doing another alert");
-
                         lastAlertDate = alertDate;
                         Intent intent = new Intent("startInstAlertAlarm");
                         intent.putExtra("alertID",alertID);
@@ -358,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    Log.d("DEBUG","Doing first alert");
                     lastAlertDate = alertDate;
                     Intent intent = new Intent("startInstAlertAlarm");
                     intent.putExtra("alertID",alertID);
@@ -379,6 +358,8 @@ public class MainActivity extends AppCompatActivity {
         // Return false to indicate that touch event was not handled.
         return false;
     }
+
+    // Displays the about dialogue for the app.
 
     private void doAbout()
     {
@@ -450,13 +431,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity (intent);
                 return true;
             }
+            /*
             case R.id.devmenu:
             {
                 Intent intent = new Intent(this, DevModeActivity.class);
                 startActivity(intent);
                 return true;
             }
-
+*/
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -517,7 +499,6 @@ public class MainActivity extends AppCompatActivity {
     private String getAddress()
     {
 
-
         List<Address> addresses = null;
         Geocoder geocoder;
 
@@ -571,9 +552,8 @@ public class MainActivity extends AppCompatActivity {
         return formattedDate;
     }
 
-
-
-
+    // Receive the broadcast from the service to notify that there is no contact set when an alarm is
+    // triggered
     private BroadcastReceiver noContactBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -591,6 +571,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+
+    // This registers the device, required to be asynchronous on another thread due to not
+    // allowing networking on the UI thread.
 
     class RegisterDevice extends AsyncTask<Void, Void, String> {
         Context appContext;

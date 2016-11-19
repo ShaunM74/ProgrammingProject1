@@ -171,6 +171,13 @@ public class AlertService extends Service {
                 if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                 {
                     lastCall=new Date();
+                    try {
+                        Thread.sleep(1000);
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
                     String fileName = intent.getStringExtra("fileName");
                     String fileLocation = intent.getStringExtra("fileLocation");
                     Log.d("receiver", "Got message: " + fileLocation+fileName);
