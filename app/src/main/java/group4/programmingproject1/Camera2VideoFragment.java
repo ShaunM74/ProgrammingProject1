@@ -79,7 +79,7 @@ public class Camera2VideoFragment extends Fragment
     //need to change this so it gets the actual time on creation?
     //for how long recording goes for timer
     private int howLongRecord = 5;
-    private boolean frontCamera = true;
+    private boolean backCamera = true;
 
 
     private String fileName="";
@@ -324,7 +324,7 @@ public class Camera2VideoFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         howLongRecord = getArguments().getInt("RECORD_LENGTH");
-        frontCamera = getArguments().getBoolean("CAMERA");
+        backCamera = getArguments().getBoolean("CAMERA");
         return inflater.inflate(R.layout.fragment_camera2_video, container, false);
     }
 
@@ -493,15 +493,16 @@ public class Camera2VideoFragment extends Fragment
             }
             String cameraId;
             CameraCharacteristics characteristics;
-            if(frontCamera) {
+            if(!backCamera) {
                 // Default camera
                 cameraId = manager.getCameraIdList()[0];
+                Log.d("DEBUG","Front cam");
             }
             else {
                 try {
                     // Try to enable back camera, if exception, then revert to front camera
                     cameraId = manager.getCameraIdList()[1];
-                    Log.d("DEBUG","Back cam");
+                    Log.d("DEBUG","Back cam"+backCamera);
                 }
                 catch(Exception e)
                 {

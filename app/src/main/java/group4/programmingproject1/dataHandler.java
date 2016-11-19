@@ -335,8 +335,8 @@ public class dataHandler extends AppCompatActivity
     }
 
     //if isVid is yes and this can show you whether Front or not
-    //true = front
-    //false = face
+    //true = face
+    //false = front
     static public boolean whichCamera(Context context)
     {
         //Context context = getApplicationContext();
@@ -352,11 +352,11 @@ public class dataHandler extends AppCompatActivity
         if(existingTextMsg != null) {
             if (existingTextMsg.equals("true"))
             {
-                //front cam if true
+                //face cam if true
                 return true;
             }
         }
-        //face cam
+        //front cam
         return false;
     }
 
