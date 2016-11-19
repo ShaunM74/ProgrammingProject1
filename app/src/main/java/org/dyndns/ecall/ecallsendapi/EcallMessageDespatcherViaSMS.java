@@ -48,14 +48,17 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
                 JSONObject mainObject = new JSONObject(getAlert().getPayload());
                 message =""+mainObject.getString("MessageText");
                 try {
-                    message += " Lat:" + mainObject.getString("Latitude") +
-                            " Long:" + mainObject.getString("Longitude")+". "+
-                            mainObject.getString("Location");
+                    message+=mainObject.getString("Location");
                 }
-                catch (Exception e)
-                {
-                    //No lat or long in JSON string
-                    // Generally if GPS co-ordinates are set to off.
+                catch(Exception e) {
+                    try {
+                        message += " Lat:" + mainObject.getString("Latitude") +
+                                " Long:" + mainObject.getString("Longitude") + ". ";
+
+                    } catch (Exception e2) {
+                        //No lat or long in JSON string
+                        // Generally if GPS co-ordinates are set to off.
+                    }
                 }
                 message +=" Date:"+mainObject.getString("Date")+
                         " Time:"+mainObject.getString("Time")+" "+mainObject.getString("Website");
@@ -79,7 +82,7 @@ public class EcallMessageDespatcherViaSMS extends EcallMessageDespatcher {
             try {
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(phoneNo, null, message, null, null);
-                Log.d("DEBUG","SMS sent");
+                Log.d("DEBUG","SMS sent to "+phoneNo +":"+message);
                 this.deliveryCompleteFlag=true;
             }
 
