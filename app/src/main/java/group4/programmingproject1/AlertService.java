@@ -171,7 +171,7 @@ public class AlertService extends Service {
                 if(lastCall==null || (tempDate.getTime() - lastCall.getTime())>100)
                 {
                     lastCall=new Date();
-                    String fileName = intent.getStringExtra("fileName");
+                     String fileName = intent.getStringExtra("fileName");
                     String fileLocation = intent.getStringExtra("fileLocation");
                     Log.d("receiver", "Got message: " + fileLocation+fileName);
                     startAlert(alertID, fileName, fileLocation);
@@ -249,10 +249,15 @@ public class AlertService extends Service {
                                             payLoadObject.put("AccountID", accountId);
                                             payLoadObject.put("DeviceID", deviceID);
                                             Log.d("DEBUG", "" + dataHandler.isGPSMaps(getApplicationContext()));
-                                            if (dataHandler.isGPSMaps(getApplicationContext())) {
-                                                payLoadObject.put("Latitude", currentGPS.getLatitude());
-                                                payLoadObject.put("Longitude", currentGPS.getLongitude());
-                                                payLoadObject.put("Location", "[" + dataHandler.getaddress(getApplicationContext()) + "]");
+                                            String tempLocation=dataHandler.getaddress(getApplicationContext());
+                                            if( !tempLocation.contains("Unknown")) {
+                                                payLoadObject.put("Location", "" + tempLocation + "");
+                                            }
+                                            else {
+                                                if (dataHandler.isGPSMaps(getApplicationContext())) {
+                                                    payLoadObject.put("Latitude", currentGPS.getLatitude());
+                                                    payLoadObject.put("Longitude", currentGPS.getLongitude());
+                                                }
                                             }
                                             payLoadObject.put("Date", date);
                                             payLoadObject.put("Time", time);
